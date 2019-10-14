@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>$(HttpLibTargetFramework)</TargetFrameworks>
+    <Version>$(HttpLibVersion)</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="UAParser" Version="3.1.42" />
+    <PackageReference Include="System.IO.Pipelines" Version="4.6.0" />
+    <PackageReference Include="System.Text.Json" Version="$(SystemTextJson)" />
+    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="1.2.2" />
+  </ItemGroup>
+
+</Project>
