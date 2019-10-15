@@ -8,6 +8,6 @@ namespace raccoonLog.Http
     {
         Task Log(HttpRequest request);
 
-        Task Log(HttpResponse response,Stream bodyStream);
+        Task Log(HttpResponse response, Stream body);
     }
 }   

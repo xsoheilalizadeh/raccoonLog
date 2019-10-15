@@ -5,9 +5,9 @@ namespace raccoonLog
 {
     public static class RaccoonLogServiceCollectionExtensions
     {
-        public static void AddRaccoongLog(this IServiceCollection services, Action<RacconLogBuilder> builder)
+        public static void AddRaccoonLog(this IServiceCollection services, Action<RaccoonLogBuilder> builder)
         {
-            var logBuilder = new RacconLogBuilder(services);
+            var logBuilder = new RaccoonLogBuilder(services);
 
             builder(logBuilder);
         }

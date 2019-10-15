@@ -24,18 +24,15 @@ namespace raccoonLog.Http
 
             var originalBody = context.Response.Body;
 
-            using (var bodyStream = _recyclableMemoryStreamManager.GetStream())
-            {
-                context.Response.Body = bodyStream;
+            using var bodyStream = _recyclableMemoryStreamManager.GetStream();
 
-                await _next(context);
+            context.Response.Body = bodyStream;
 
-                bodyStream.Position = 0;
+            await _next(context);
 
-                await bodyStream.CopyToAsync(originalBody);
+            bodyStream.Position = 0;
 
-                await httpLogging.Log(context.Response, bodyStream);
-            }
+            await bodyStream.CopyToAsync(originalBody);
 
             context.Response.Body = originalBody;
         }

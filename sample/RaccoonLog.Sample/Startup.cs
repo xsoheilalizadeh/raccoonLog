@@ -30,9 +30,12 @@ namespace RaccoonLog.Sample
 
             services.AddHttpContextAccessor();
 
-            services.AddRaccoongLog(builder =>
+            services.AddRaccoonLog(builder =>
             {
-                builder.AddHttpLogging();
+                builder.AddHttpLogging(options =>
+                {
+                    options.JsonSerializerOptions.WriteIndented = true;
+                });
             });
         }
 
