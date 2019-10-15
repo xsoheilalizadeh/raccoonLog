@@ -16,7 +16,7 @@ namespace raccoonLog.Tests.Handlers
         public async Task HandleThrowsNullReferenceExceptionOnNullRequest()
         {
             // arrange
-            var handler = new DefaultHttpLogAgentHandler();
+            var handler = new DefaultHttpRequestLogAgentHandler();
 
             // act and assert
             await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(null));
@@ -26,7 +26,7 @@ namespace raccoonLog.Tests.Handlers
         public async Task HandleReturnsNullOnNoneSetUserAgent()
         {
             // arrange
-            var handler = new DefaultHttpLogAgentHandler();
+            var handler = new DefaultHttpRequestLogAgentHandler();
             var context = new DefaultHttpContext();
 
             // act 
@@ -42,7 +42,7 @@ namespace raccoonLog.Tests.Handlers
         {
             // arrange  
             var userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3919.0 Safari/537.36 Edg/79.0.299.0";
-            var handler = new DefaultHttpLogAgentHandler();
+            var handler = new DefaultHttpRequestLogAgentHandler();
             var context = new DefaultHttpContext();
 
             context.Request.Headers.Add(HeaderNames.UserAgent, userAgent);
