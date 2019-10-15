@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
 namespace raccoonLog.Http
 {
-    public interface IHttpLogRequestBodyHandler
+    public interface IHttpRequestLogBodyHandler
     {
-        Task Handle(HttpRequest request, HttpRequestLog logMessage);
+        Task Handle(Stream body, HttpRequestLog logMessage);
     }
 }

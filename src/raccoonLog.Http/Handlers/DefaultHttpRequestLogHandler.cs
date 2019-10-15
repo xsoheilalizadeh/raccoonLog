@@ -4,20 +4,20 @@ using System.Threading.Tasks;
 
 namespace raccoonLog.Http
 {
-    public class DefaultHttpLogRequestHandler : IHttpLogRequestHandler
+    public class DefaultHttpRequestLogHandler : IHttpRequestLogHandler
     {   
-        private readonly IHttpLogFormHandler _formContentHandler;
+        private readonly IHttpRequestLogFormHandler _formContentHandler;
 
         private readonly IHttpLogMessageFactory _logMessageFactory;
 
-        private readonly IHttpLogRequestBodyHandler _bodyHandler;
+        private readonly IHttpRequestLogBodyHandler _bodyHandler;
 
-        private readonly IHttpLogAgentHandler _logAgentHandler;
+        private readonly IHttpRequestLogAgentHandler _logAgentHandler;
 
-        public DefaultHttpLogRequestHandler(IHttpLogMessageFactory logMessageFactory,
-            IHttpLogFormHandler formContentHandler,
-            IHttpLogRequestBodyHandler bodyHandler,
-            IHttpLogAgentHandler logAgentHandler)
+        public DefaultHttpRequestLogHandler(IHttpLogMessageFactory logMessageFactory,
+            IHttpRequestLogFormHandler formContentHandler,
+            IHttpRequestLogBodyHandler bodyHandler,
+            IHttpRequestLogAgentHandler logAgentHandler)
         {
             _formContentHandler = formContentHandler;
             _logMessageFactory = logMessageFactory;
@@ -25,7 +25,7 @@ namespace raccoonLog.Http
             _bodyHandler = bodyHandler;
         }
 
-        public async Task<HttpRequestLog> Hendle(HttpRequest request)
+        public async Task<HttpRequestLog> Handle(HttpRequest request)
         {
             request.EnableBuffering();
 
@@ -47,7 +47,7 @@ namespace raccoonLog.Http
             }
             else
             {
-                await _bodyHandler.Handle(request, logMessage);
+                await _bodyHandler.Handle(request.Body, logMessage);
             }
 
             return logMessage;

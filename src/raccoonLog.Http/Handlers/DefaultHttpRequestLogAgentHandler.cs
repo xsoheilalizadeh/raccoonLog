@@ -6,7 +6,7 @@ using UAParser;
 
 namespace raccoonLog.Http
 {
-    public class DefaultHttpLogAgentHandler : IHttpLogAgentHandler
+    public class DefaultHttpRequestLogAgentHandler : IHttpRequestLogAgentHandler
     {
         public Task<AgentLog> Handle(HttpRequest request)
         {

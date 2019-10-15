@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace raccoonLog.Http
 {
-    public interface IHttpLogRequestHandler
+    public interface IHttpRequestLogHandler
     {
-        Task<HttpRequestLog> Hendle(HttpRequest request);
+        Task<HttpRequestLog> Handle(HttpRequest request);
     }
 }

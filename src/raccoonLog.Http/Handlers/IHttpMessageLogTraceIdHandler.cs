@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace raccoonLog.Http
 {
-    public interface IHttpLogTraceIdHandler
+    public interface IHttpMessageLogTraceIdHandler
     {
         Task Handle(HttpContext context, HttpMessageLog logMessage);
     }
