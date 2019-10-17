@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
@@ -21,6 +22,16 @@ namespace raccoonLog.Http
         public async Task<HttpResponseLog> Handle(HttpResponse response, Stream body)
         {
             var logMessage = CreateLogMessage();
+
+            if (logMessage == null)
+            {
+                throw new NullReferenceException(nameof(logMessage));
+            }
+
+            if (body == null)
+            {
+                throw new NullReferenceException(nameof(body));
+            }
 
             logMessage.StatusCode = response.StatusCode;
 

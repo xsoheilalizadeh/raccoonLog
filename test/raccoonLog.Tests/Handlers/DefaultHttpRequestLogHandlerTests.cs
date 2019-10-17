@@ -7,6 +7,7 @@ using Xunit;
 
 namespace raccoonLog.Tests.Handlers
 {
+
     public class DefaultHttpRequestLogHandlerTests
     {
         private Mock<IHttpLogMessageFactory> _logMessageFactory;
