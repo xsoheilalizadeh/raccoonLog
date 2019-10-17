@@ -12,4 +12,4 @@ before_install:
 script:
  - dotnet build
  - dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=../../
- - curl -s https://codecov.io/bash > codecov chmod +x codecov ./codecov -f "coverage.opencover.xml" -t $codecov_token
+ - bash <(curl -s https://codecov.io/bash)
