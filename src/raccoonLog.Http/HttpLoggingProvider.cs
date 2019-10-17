@@ -36,7 +36,7 @@ namespace raccoonLog.Http
         }
 
 
-        public Task Log(HttpResponse response, Stream bodyStream)
+        public Task Log(HttpResponse response, Stream body)
         {
 
             if (response == null)
@@ -44,12 +44,12 @@ namespace raccoonLog.Http
                 throw new NullReferenceException(nameof(response));
             }
 
-            return LogResponse(response, bodyStream);
+            return LogResponse(response, body);
         }
 
-        private async Task LogResponse(HttpResponse response, Stream bodyStream)
+        private async Task LogResponse(HttpResponse response, Stream body)
         {
-            var logMessage = await _responseHandler.Handle(response, bodyStream);
+            var logMessage = await _responseHandler.Handle(response, body);
 
             var options = _options.Value;
 
