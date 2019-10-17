@@ -1,10 +1,8 @@
 language: csharp
 mono: none
 
-before_install:
-- ./install.dotnet.sh
-
 script:
+ - ./install.dotnet.sh
  - dotnet build
  - dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=../../
  - ./Codecov.sh
