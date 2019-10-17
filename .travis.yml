@@ -2,7 +2,7 @@ language: csharp
 mono: none
 
 before_install:
-- ./install.dotnet.sh
+- sudo ./install.dotnet.sh
 
 script:
  - dotnet build
