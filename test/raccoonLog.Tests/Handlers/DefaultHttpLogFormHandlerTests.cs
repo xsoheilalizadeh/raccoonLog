@@ -19,7 +19,7 @@ namespace raccoonLog.Tests.Handlers
         public async Task HandleThrowsNullRefreceExceptionOnNullRequest()
         {
             // arrange
-            var handler = new DefaultHttpLogFormHandler();
+            var handler = new DefaultHttpRequestLogFormHandler();
 
             // act and assert
             await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(null, null));
@@ -30,7 +30,7 @@ namespace raccoonLog.Tests.Handlers
         {
             // arrange
             var context = new DefaultHttpContext();
-            var handler = new DefaultHttpLogFormHandler();
+            var handler = new DefaultHttpRequestLogFormHandler();
 
             // act and assert
             await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(context.Request, null));
@@ -41,7 +41,7 @@ namespace raccoonLog.Tests.Handlers
         {
             // arrange
             var logMessage = new HttpRequestLog();
-            var handler = new DefaultHttpLogFormHandler();
+            var handler = new DefaultHttpRequestLogFormHandler();
 
             // act
             await handler.Handle(request, logMessage);

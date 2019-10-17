@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace raccoonLog.Http
 {
-    public interface IHttpLogAgentHandler
+    public interface IHttpRequestLogAgentHandler
     {
         Task<AgentLog> Handle(HttpRequest request);
     }

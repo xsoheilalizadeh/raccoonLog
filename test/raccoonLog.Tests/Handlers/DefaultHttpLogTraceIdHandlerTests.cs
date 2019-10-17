@@ -17,7 +17,7 @@ namespace raccoonLog.Tests.Handlers
         {
             // arrange
             var options = new StubHttpLogOptions();
-            var handler = new DefaultHttpLogTraceIdHandler(options);
+            var handler = new DefaultHttpMessageLogTraceIdHandler(options);
 
             // act and assert
             await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(null, null));
@@ -29,7 +29,7 @@ namespace raccoonLog.Tests.Handlers
             // arrange
             var options = new StubHttpLogOptions();
             var context = new DefaultHttpContext();
-            var handler = new DefaultHttpLogTraceIdHandler(options);
+            var handler = new DefaultHttpMessageLogTraceIdHandler(options);
 
             // act and assert
             await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(context, null));
@@ -37,13 +37,13 @@ namespace raccoonLog.Tests.Handlers
 
 
         [Fact]
-        public async Task HandleInitialaizTraceId()
+        public async Task HandleInitializeTraceId()
         {
             // arrange  
             var options = new StubHttpLogOptions();
             var context = new DefaultHttpContext();
             var logMessage = new HttpMessageLog();
-            var handler = new DefaultHttpLogTraceIdHandler(options);
+            var handler = new DefaultHttpMessageLogTraceIdHandler(options);
 
             // act
             await handler.Handle(context, logMessage);
@@ -59,7 +59,7 @@ namespace raccoonLog.Tests.Handlers
             var options = new StubHttpLogOptions();
             var context = new DefaultHttpContext();
             var logMessage = new HttpMessageLog();
-            var handler = new DefaultHttpLogTraceIdHandler(options);
+            var handler = new DefaultHttpMessageLogTraceIdHandler(options);
 
             // act
             await handler.Handle(context, logMessage);
@@ -75,7 +75,7 @@ namespace raccoonLog.Tests.Handlers
             var options = new StubHttpLogOptions();
             var context = new DefaultHttpContext();
             var logMessage = new HttpMessageLog();
-            var handler = new DefaultHttpLogTraceIdHandler(options);
+            var handler = new DefaultHttpMessageLogTraceIdHandler(options);
 
             context.Features.Set<IHttpResponseFeature>(new StartedResponseFeature());
 
@@ -88,9 +88,9 @@ namespace raccoonLog.Tests.Handlers
     }
 
 
-    class StubHttpLogOptions : IOptions<RacconLogHttpOptions>
+    class StubHttpLogOptions : IOptions<RaccoonLogHttpOptions>
     {
-        public RacconLogHttpOptions Value => new RacconLogHttpOptions { TraceIdHeaderName = "x-trace-id" };
+        public RaccoonLogHttpOptions Value => new RaccoonLogHttpOptions { TraceIdHeaderName = "x-trace-id" };
     }
 
     class StartedResponseFeature : IHttpResponseFeature

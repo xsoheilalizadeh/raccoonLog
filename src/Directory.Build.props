@@ -3,10 +3,11 @@
     <Authors>Soheil Alizadeh</Authors>
     <LangVersion>latest</LangVersion>
     <RepositoryUrl>https://github.com/xsoheilalizadeh/raccoonLog</RepositoryUrl>
+    <Company>raccoonLog</Company>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
   </PropertyGroup>
-
+  
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
@@ -22,6 +23,7 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="3.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="3.0.0" />
   </ItemGroup>
 
   <Import Project="../Versions.props"/>

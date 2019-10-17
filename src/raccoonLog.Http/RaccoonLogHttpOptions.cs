@@ -7,13 +7,20 @@ using System.Text.Json.Serialization;
 
 namespace raccoonLog.Http
 {
-    public class RacconLogHttpOptions
+    public class RaccoonLogHttpOptions
     {
-        public RacconLogHttpOptions()
+        public RaccoonLogHttpOptions()
         {
             IgnoreHeaders = new List<string>();
+            TraceIdHeaderName = "X-RaccoonLog-Id";
+            JsonSerializerOptions = new JsonSerializerOptions
+            {
+                IgnoreNullValues = true,
+            };
+
+            JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         }
-            
+
         public string TraceIdHeaderName { get; set; }
 
         public bool EnableConsoleLogging { get; set; }

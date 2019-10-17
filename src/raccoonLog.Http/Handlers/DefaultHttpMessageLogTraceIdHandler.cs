@@ -5,11 +5,11 @@ using Microsoft.Extensions.Options;
 
 namespace raccoonLog.Http
 {
-    public class DefaultHttpLogTraceIdHandler : IHttpLogTraceIdHandler
+    public class DefaultHttpMessageLogTraceIdHandler : IHttpMessageLogTraceIdHandler
     {
-        public IOptions<RacconLogHttpOptions> _options;
+        public IOptions<RaccoonLogHttpOptions> _options;
 
-        public DefaultHttpLogTraceIdHandler(IOptions<RacconLogHttpOptions> options)
+        public DefaultHttpMessageLogTraceIdHandler(IOptions<RaccoonLogHttpOptions> options)
         {
             _options = options;
         }

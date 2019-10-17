@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace raccoonLog.Http
 {
-    public interface IHttpLogFormHandler
+    public interface IHttpRequestLogFormHandler
     {
         Task Handle(HttpRequest request, HttpRequestLog logMessage);
     }

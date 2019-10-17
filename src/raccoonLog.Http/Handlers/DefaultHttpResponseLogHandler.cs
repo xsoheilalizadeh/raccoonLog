@@ -5,20 +5,20 @@ using System.Threading.Tasks;
 
 namespace raccoonLog.Http
 {
-    public class DefaultHttpLogResponseHandler : IHttpLogResponseHandler
+    public class DefaultHttpResponseLogHandler : IHttpResponseLogHandler
     {
         private readonly IHttpLogMessageFactory _logMessageFactory;
 
-        private readonly IHttpLogResponseBodyHandler _bodyHandler;
+        private readonly IHttpResponseLogBodyHandler _bodyHandler;
 
-        public DefaultHttpLogResponseHandler(IHttpLogMessageFactory logMessageFactory,
-            IHttpLogResponseBodyHandler bodyHandler)
+        public DefaultHttpResponseLogHandler(IHttpLogMessageFactory logMessageFactory,
+            IHttpResponseLogBodyHandler bodyHandler)
         {
             _logMessageFactory = logMessageFactory;
             _bodyHandler = bodyHandler;
         }
 
-        public async Task<HttpResponseLog> Hendle(HttpResponse response, Stream bodyStream)
+        public async Task<HttpResponseLog> Handle(HttpResponse response, Stream body)
         {
             var logMessage = CreateLogMessage();
 
@@ -26,10 +26,10 @@ namespace raccoonLog.Http
 
             logMessage.Status = (HttpStatusCode)response.StatusCode;
 
-            await _bodyHandler.Handle(response, logMessage, bodyStream);
+            await _bodyHandler.Handle(response.Body, logMessage);
 
             return logMessage;
-        }
+        }   
 
         private HttpResponseLog CreateLogMessage()
         {

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace raccoonLog.Http
 {
-    public class DefaultHttpLogFormHandler : IHttpLogFormHandler
+    public class DefaultHttpRequestLogFormHandler : IHttpRequestLogFormHandler
     {
         public async Task Handle(HttpRequest request, HttpRequestLog logMessage)
         {
