@@ -61,6 +61,25 @@ namespace raccoonLog.Tests.Handlers
             Assert.True(handler.Ignored);
         }
 
+
+        [Fact]
+        public async Task HandleIgnoresWhenLogMessageIgnored()
+        {
+            // arrange
+            var body = new MemoryStream();
+            var handler = new BaseHttpMessageLogBodyHandler<THttpMessageLog>();
+            var logMessage = new THttpMessageLog();
+
+            logMessage.IgnoreBody();
+
+            // act
+            await handler.Handle(body, logMessage);
+
+            // assert
+            Assert.True(handler.Ignored);   
+        }
+
+
         [Fact]
         public async Task HandleReadBodyAsStringWhenRequestIsNotJson()
         {

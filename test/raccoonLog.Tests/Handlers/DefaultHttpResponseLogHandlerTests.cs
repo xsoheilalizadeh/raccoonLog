@@ -43,6 +43,22 @@ namespace raccoonLog.Tests.Handlers
             await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(context.Response,null));
         }
 
+
+        [Fact]
+        public async Task HandleThrowsNullReferenceExceptionOnNullLogMessage()
+        {
+            // arrange
+            var context = new DefaultHttpContext();
+            var body = new MemoryStream();
+            var handler = CreateHandler();
+            _logMessageFactor.Setup(s => s.Create<HttpResponseLog>())
+                .Returns(() => null);
+
+            // act and assert
+            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(context.Response, body));
+        }
+
+
         private DefaultHttpResponseLogHandler CreateHandler()
         {
             return new DefaultHttpResponseLogHandler(

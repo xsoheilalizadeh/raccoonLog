@@ -21,16 +21,23 @@ namespace raccoonLog.Http
 
         public async Task<HttpResponseLog> Handle(HttpResponse response, Stream body)
         {
-            var logMessage = CreateLogMessage();
 
-            if (logMessage == null)
+            if (response == null)
             {
-                throw new NullReferenceException(nameof(logMessage));
+                throw new NullReferenceException();
             }
 
             if (body == null)
             {
                 throw new NullReferenceException(nameof(body));
+            }
+
+
+            var logMessage = CreateLogMessage();
+
+            if (logMessage == null)
+            {
+                throw new NullReferenceException(nameof(logMessage));
             }
 
             logMessage.StatusCode = response.StatusCode;
