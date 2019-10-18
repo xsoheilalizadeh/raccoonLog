@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace raccoonLog.Http
@@ -14,15 +15,23 @@ namespace raccoonLog.Http
 
         private readonly IHttpRequestLogHandler _requestHandler;
 
+        private readonly ILogger<HttpRequest> _requestLogger;
+
+        private readonly ILogger<HttpResponse> _responseLogger;
+
         private IOptions<RaccoonLogHttpOptions> _options;
 
         public HttpLoggingProvider(IHttpResponseLogHandler responseHandler,
             IHttpRequestLogHandler requestHandler,
-            IOptions<RaccoonLogHttpOptions> options)
+            IOptions<RaccoonLogHttpOptions> options,
+            ILoggerFactory loggerFactory)
         {
+            _options = options;
             _responseHandler = responseHandler;
             _requestHandler = requestHandler;
-            _options = options;
+            
+            _requestLogger = loggerFactory.CreateLogger<HttpRequest>();
+            _responseLogger = loggerFactory.CreateLogger<HttpResponse>();
         }
 
         public Task Log(HttpRequest request)
@@ -53,9 +62,12 @@ namespace raccoonLog.Http
 
             var options = _options.Value;
 
-            var json = JsonSerializer.Serialize(logMessage, options.JsonSerializerOptions);
-            
-            Debug.WriteLine(json);
+            if (options.EnableConsoleLogging)
+            {
+                var json = JsonSerializer.Serialize(logMessage, options.JsonSerializerOptions);
+
+                _responseLogger.LogInformation(json);
+            }
 
             // store log message
         }
@@ -66,12 +78,14 @@ namespace raccoonLog.Http
 
             var options = _options.Value;
 
-            var json = JsonSerializer.Serialize(logMessage, options.JsonSerializerOptions);
+            if (options.EnableConsoleLogging)
+            {
+                var json = JsonSerializer.Serialize(logMessage, options.JsonSerializerOptions);
 
-            Debug.WriteLine(json);
+                _requestLogger.LogInformation(json);
+            }
 
             // store log Message
         }
-
     }
 }
