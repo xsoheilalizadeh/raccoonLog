@@ -11,7 +11,6 @@ namespace raccoonLog.Http
     {
         public RaccoonLogHttpOptions()
         {
-            IgnoreHeaders = new List<string>();
             TraceIdHeaderName = "X-RaccoonLog-Id";
             JsonSerializerOptions = new JsonSerializerOptions
             {
@@ -25,8 +24,26 @@ namespace raccoonLog.Http
 
         public bool EnableConsoleLogging { get; set; }
 
-        public IList<string> IgnoreHeaders { get; set; }
+        public RaccoonLogHttpRequestOptions Request { get; } = new RaccoonLogHttpRequestOptions();
+
+        public RaccoonLogHttpResponseOptions Response { get; } = new RaccoonLogHttpResponseOptions();
 
         public JsonSerializerOptions JsonSerializerOptions { get; set; }
     }
-}
+
+
+    public abstract class RaccoonLogHttpMessageOptions
+    {
+        public IList<string> IgnoreHeaders { get; set; } = new List<string>();
+
+        public IList<string> IgnoreContentTypes { get; set; } = new List<string>();
+    }
+        
+    public class RaccoonLogHttpResponseOptions : RaccoonLogHttpMessageOptions
+    {
+    }
+
+    public class RaccoonLogHttpRequestOptions : RaccoonLogHttpMessageOptions
+    {
+    }
+}       

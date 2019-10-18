@@ -50,7 +50,7 @@ namespace raccoonLog.Http
 
             logMessage.SetUrl(request.GetEncodedUrl(), request.Protocol);
 
-            await _logAgentHandler.Handle(request);
+            await _logAgentHandler.Handle(request, logMessage);
 
             if (request.HasFormContentType)
             {

@@ -40,7 +40,7 @@ namespace raccoonLog.Http
 
             var user = context.User;
 
-            var ignoreHeaders = _options.Value.IgnoreHeaders;
+            var options = _options.Value;
 
             logMessage.SetClaims(user.Claims);
 
@@ -48,17 +48,37 @@ namespace raccoonLog.Http
             {
                 var request = context.Request;
 
+                var requestOptions = options.Request;
+
+                var ignoreHeaders = requestOptions.IgnoreHeaders;
+
                 logMessage.ContentType = request.ContentType;
 
                 logMessage.SetHeaders(request.Headers, ignoreHeaders);
+
+                if (requestOptions.IgnoreContentTypes.Contains(request.ContentType))
+                {
+                    logMessage.IgnoreBody();     
+                }
             }
             else
-            {
+            {   
                 var response = context.Response;
+
+                var responseOptions = options.Response;
+                    
+                var ignoreHeaders = responseOptions.IgnoreHeaders;
+
+                var ignoreContentTypes = responseOptions.IgnoreContentTypes;
 
                 logMessage.ContentType = response.ContentType;
 
                 logMessage.SetHeaders(response.Headers, ignoreHeaders);
+
+                if (ignoreContentTypes.Contains(response.ContentType))
+                {
+                    logMessage.IgnoreBody();
+                }
             }
         }
     }

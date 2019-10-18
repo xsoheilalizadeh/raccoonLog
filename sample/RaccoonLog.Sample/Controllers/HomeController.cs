@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using raccoonLog.Http;
 using RaccoonLog.Sample.Models;
 
 namespace RaccoonLog.Sample.Controllers
@@ -20,7 +21,6 @@ namespace RaccoonLog.Sample.Controllers
 
         public IActionResult Index()
         {
-
             return View();
         }
 

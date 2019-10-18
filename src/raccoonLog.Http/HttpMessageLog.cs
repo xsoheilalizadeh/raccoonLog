@@ -22,21 +22,23 @@ namespace raccoonLog.Http
             CreatedOn = DateTimeOffset.UtcNow;
         }
 
-        public virtual bool HasBody() => _hasBody;
+        public bool HasBody => _hasBody;
 
-        public virtual string TraceId { get; set; }
+        public bool BodyIgnored { get; private set; }
+            
+        public string TraceId { get; set; } 
 
-        public virtual string ContentType { get; set; }
+        public string ContentType { get; set; }
 
-        public virtual DateTimeOffset CreatedOn { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
 
-        public virtual HttpMessageLogType Type { get; set; }
+        public HttpMessageLogType Type { get; set; }
 
-        public virtual Dictionary<string, string> Headers { get; private set; }
+        public Dictionary<string, string> Headers { get; private set; }
 
-        public virtual Dictionary<string, string> Claims { get; private set; }
+        public Dictionary<string, string> Claims { get; private set; }
 
-        public virtual object Body
+        public object Body
         {
             get => _body;
             set
@@ -47,7 +49,7 @@ namespace raccoonLog.Http
             }
         }
 
-        public virtual void SetHeaders(IHeaderDictionary headers, IList<string> ignoreHeaders)
+        internal void SetHeaders(IHeaderDictionary headers, IList<string> ignoreHeaders)
         {
             foreach (var header in headers)
             {
@@ -58,7 +60,7 @@ namespace raccoonLog.Http
             }
         }
 
-        public virtual void SetClaims(IEnumerable<Claim> claims)
+        internal void SetClaims(IEnumerable<Claim> claims)
         {
             var claimsDictionary = claims.ToDictionary();
 
@@ -67,6 +69,7 @@ namespace raccoonLog.Http
                 Claims.Add(claim.Key, claim.Value);
             }
         }
+
+        internal void IgnoreBody() => BodyIgnored = true;
     }
 }
-    

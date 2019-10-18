@@ -34,7 +34,10 @@ namespace raccoonLog.Http
 
             if(!response.HasStarted)
             {
-                response.Headers.Add(options.TraceIdHeaderName, logMessage.TraceId);
+                if (!response.Headers.ContainsKey(options.TraceIdHeaderName))
+                {
+                    response.Headers.Add(options.TraceIdHeaderName, logMessage.TraceId);
+                }
             }
 
             return Task.CompletedTask;  

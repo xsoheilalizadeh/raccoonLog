@@ -8,11 +8,16 @@ namespace raccoonLog.Http
 {
     public class DefaultHttpRequestLogAgentHandler : IHttpRequestLogAgentHandler
     {
-        public Task<AgentLog> Handle(HttpRequest request)
+        public Task Handle(HttpRequest request, HttpRequestLog logMessage)
         {
             if (request == null)
             {
                 throw new NullReferenceException(nameof(request));
+            }
+
+            if (logMessage == null)
+            {
+                throw new NullReferenceException(nameof(logMessage));
             }
 
             if (request.Headers.TryGetValue(HeaderNames.UserAgent, out var agent))
@@ -25,12 +30,10 @@ namespace raccoonLog.Http
 
                 var userAgent = new UserAgentLog(clientInfo.UA.Family, clientInfo.UA.Major);
 
-                var agentLog = new AgentLog(os, userAgent, agent);
-
-                return Task.FromResult(agentLog);
+                logMessage.Agent = new AgentLog(os, userAgent, agent);
             }
 
-            return Task.FromResult<AgentLog>(null);
+            return Task.CompletedTask;
         }
     }
 }

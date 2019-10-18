@@ -26,7 +26,7 @@ namespace raccoonLog.Http
                 throw new NullReferenceException(nameof(logMessage));
             }
 
-            if (logMessage.HasBody())
+            if (logMessage.HasBody || logMessage.BodyIgnored)
             {
                 Ignored = true;
                 return;

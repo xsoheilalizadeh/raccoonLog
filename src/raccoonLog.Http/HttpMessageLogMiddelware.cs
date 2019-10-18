@@ -30,6 +30,8 @@ namespace raccoonLog.Http
 
             await _next(context);
 
+            await httpLogging.Log(context.Response, bodyStream);
+
             bodyStream.Position = 0;
 
             await bodyStream.CopyToAsync(originalBody);

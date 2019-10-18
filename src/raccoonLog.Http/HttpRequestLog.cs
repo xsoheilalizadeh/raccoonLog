@@ -21,8 +21,6 @@ namespace raccoonLog.Http
 
         public string Method { get; set; }
 
-        public string Service { get; set; }
-
         public Dictionary<string, string> Parameters { get; set; }
 
         public Dictionary<string, string> Cookies { get; set; }

@@ -8,6 +8,7 @@ namespace raccoonLog.Http
 {
     public interface IHttpRequestLogAgentHandler
     {
-        Task<AgentLog> Handle(HttpRequest request);
+        Task Handle(HttpRequest request, HttpRequestLog logMessage);
     }
 }
+    
