@@ -32,7 +32,7 @@ namespace raccoonLog.Http
             Url = new UrlLog(uri, protocol);
         }
 
-        public void SetParameters(IQueryCollection queries)
+        internal void SetParameters(IQueryCollection queries)
         {
             foreach (var query in queries)
             {
@@ -40,7 +40,7 @@ namespace raccoonLog.Http
             }
         }
 
-        public void SetCookies(IRequestCookieCollection cookies)
+        internal void SetCookies(IRequestCookieCollection cookies)
         {
             foreach (var cookie in cookies)
             {
