@@ -23,7 +23,7 @@ namespace raccoonLog.Tests
                 .SetHttpContext(context)
                 .AddHttpLogging()
                 .BuildServiceProvider()
-                .GetService<IHttpLogMessageFactory>();
+                .GetService<HttpLogMessageFactory>();
 
             request.ContentType = "application/x-www-form-urlencoded";
             context.Features.Set<IHttpRequestFeature>(new RequestFeatureStub());
@@ -46,7 +46,7 @@ namespace raccoonLog.Tests
                 .SetHttpContext(context)
                 .AddHttpLogging()
                 .BuildServiceProvider()
-                .GetService<IHttpLogMessageFactory>();
+                .GetService<HttpLogMessageFactory>();
 
             context.Features.Set<IHttpResponseFeature>(new IResponseFeatureStub());
 
@@ -70,7 +70,7 @@ namespace raccoonLog.Tests
                 .SetHttpContext(context)
                 .AddHttpLogging(o => o.Request.IgnoreContentTypes.Add(requestContenType))
                 .BuildServiceProvider()
-                .GetService<IHttpLogMessageFactory>();
+                .GetService<HttpLogMessageFactory>();
 
             request.ContentType = requestContenType;
             context.Features.Set<IHttpRequestFeature>(new RequestFeatureStub());
@@ -90,7 +90,7 @@ namespace raccoonLog.Tests
                 .SetHttpContext(context)
                 .AddHttpLogging(o => o.Response.IgnoreContentTypes.Add(requestContenType))
                 .BuildServiceProvider()
-                .GetService<IHttpLogMessageFactory>();
+                .GetService<HttpLogMessageFactory>();
 
             response.ContentType = requestContenType;
             context.Features.Set<IHttpResponseFeature>(new IResponseFeatureStub());
@@ -110,7 +110,7 @@ namespace raccoonLog.Tests
                 .SetHttpContext(context)
                 .AddHttpLogging()
                 .BuildServiceProvider()
-                .GetService<IHttpLogMessageFactory>();
+                .GetService<HttpLogMessageFactory>();
 
             request.ContentType = requestContenType;
             context.Features.Set<IHttpRequestFeature>(new RequestFeatureStub());
@@ -133,7 +133,7 @@ namespace raccoonLog.Tests
                 .GetService<IHttpLogMessageFactory>();
 
             response.ContentType = requestContenType;
-            context.Features.Set<IHttpResponseFeature>(new IResponseFeatureStub());
+            context.Features.Set<HttpLogMessageFactory>(new IResponseFeatureStub());
 
             var logMessage = await logMessageFactory.Create<HttpResponseLog>();
 
