@@ -130,10 +130,10 @@ namespace raccoonLog.Tests
                 .SetHttpContext(context)
                 .AddHttpLogging()
                 .BuildServiceProvider()
-                .GetService<IHttpLogMessageFactory>();
+                .GetService<HttpLogMessageFactory>();
 
             response.ContentType = requestContenType;
-            context.Features.Set<HttpLogMessageFactory>(new IResponseFeatureStub());
+            context.Features.Set<IHttpResponseFeature>(new IResponseFeatureStub());
 
             var logMessage = await logMessageFactory.Create<HttpResponseLog>();
 
