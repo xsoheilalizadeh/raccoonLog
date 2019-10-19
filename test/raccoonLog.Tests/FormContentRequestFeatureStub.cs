@@ -13,14 +13,33 @@ using System.Threading.Tasks;
 namespace raccoonLog.Tests.Handlers
 {
 
-    class RequestFeatureStub : IHttpRequestFeature
+    public class RequestCookiesFeatureStub : IRequestCookiesFeature
+    {
+        public RequestCookiesFeatureStub()
+        {
+            Cookies = new RequestCookieCollection(new Dictionary<string, string>
+            {
+                {"x_x","programmingisbullshit" }
+            });
+        }
+
+        public IRequestCookieCollection Cookies { get; set; }
+    }
+
+    public class RequestFeatureStub : IHttpRequestFeature
     {
         public RequestFeatureStub()
         {
+            Protocol = "HTTP/2";
+            Scheme = "http";
+            Path = "/this-is-path";
+            QueryString = "?name=soheil&age=12";
+            Body = new MemoryStream();
             Headers = new HeaderDictionary(new Dictionary<string, StringValues>
             {
                 {"X-Custom","noo" },
-                {HeaderNames.ContentType,"application/json" }
+                {HeaderNames.ContentType,"application/json" },
+                {HeaderNames.Host,"ex.com" }
             });
         }
         public string Protocol { get; set; }
@@ -34,7 +53,7 @@ namespace raccoonLog.Tests.Handlers
         public Stream Body { get; set; }
     }
 
-    class IResponseFeatureStub : IHttpResponseFeature
+    public class IResponseFeatureStub : IHttpResponseFeature
     {
 
         public IResponseFeatureStub()
@@ -66,7 +85,7 @@ namespace raccoonLog.Tests.Handlers
         }
     }
 
-    public class FormContentRequestFeatureStub : IFormFeature, IHttpRequestFeature 
+    public class FormContentRequestFeatureStub : IFormFeature, IHttpRequestFeature
     {
         public FormContentRequestFeatureStub()
         {

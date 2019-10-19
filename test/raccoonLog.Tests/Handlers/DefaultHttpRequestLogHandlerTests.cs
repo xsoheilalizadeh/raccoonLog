@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Moq;
 using raccoonLog.Http;
 using Xunit;
@@ -103,6 +104,35 @@ namespace raccoonLog.Tests.Handlers
             _bodyHandler.Verify(s => s.Handle(context.Request.Body, logMessage), Times.Once);
 
             _formContentHandler.Verify(s => s.Handle(context.Request, logMessage), Times.Never);
+        }
+
+
+        [Fact]
+        public async Task HandleSetsRequestInformationToLogMessage()
+        {
+            // arrange
+            var handler = CreateHandler();
+            var logMessage = new HttpRequestLog();
+            var context = new DefaultHttpContext();
+            var request = context.Request;
+
+            _logMessageFactory.Setup(s => s.Create<HttpRequestLog>())
+              .ReturnsAsync(logMessage);
+
+
+            context.Features.Set<IHttpRequestFeature>(new RequestFeatureStub());
+
+            context.Features.Set<IRequestCookiesFeature>(new RequestCookiesFeatureStub());
+
+            // act 
+            await handler.Handle(request);
+
+            Assert.Equal(logMessage.Cookies.Count, request.Cookies.Count);
+            Assert.Equal(logMessage.Parameters.Count, request.Query.Count);
+            Assert.Equal(logMessage.Url.Path, request.Path);
+            Assert.Equal(logMessage.Url.Scheme, request.Scheme);
+            Assert.Equal(logMessage.Url.Protocol, request.Protocol);
+            Assert.Equal(logMessage.Url.Host, request.Host.ToString());
         }
 
 
