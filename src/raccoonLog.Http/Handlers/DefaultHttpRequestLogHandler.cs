@@ -35,7 +35,7 @@ namespace raccoonLog.Http
 
             request.EnableBuffering();
 
-            var logMessage = CreateLogMessage();
+            var logMessage = await CreateLogMessage();
 
             if (logMessage == null)
             {
@@ -65,7 +65,7 @@ namespace raccoonLog.Http
         }
 
 
-        private HttpRequestLog CreateLogMessage()
+        private Task<HttpRequestLog> CreateLogMessage()
         {
             return _logMessageFactory.Create<HttpRequestLog>();
         }

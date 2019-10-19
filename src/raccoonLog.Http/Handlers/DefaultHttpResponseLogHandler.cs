@@ -33,7 +33,7 @@ namespace raccoonLog.Http
             }
 
 
-            var logMessage = CreateLogMessage();
+            var logMessage = await CreateLogMessage();
 
             if (logMessage == null)
             {
@@ -49,7 +49,7 @@ namespace raccoonLog.Http
             return logMessage;
         }   
 
-        private HttpResponseLog CreateLogMessage()
+        private Task<HttpResponseLog> CreateLogMessage()
         {
             return _logMessageFactory.Create<HttpResponseLog>();
         }

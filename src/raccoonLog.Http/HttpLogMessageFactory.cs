@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 
 namespace raccoonLog.Http
 {
@@ -20,13 +21,13 @@ namespace raccoonLog.Http
             _options = options;
         }
 
-        public THttpMessageLog Create<THttpMessageLog>() where THttpMessageLog : HttpMessageLog, new()
+        public async Task<THttpMessageLog> Create<THttpMessageLog>() where THttpMessageLog : HttpMessageLog, new()
         {
             var context = _httpContextAccessor.HttpContext;
 
             var logMessage = new THttpMessageLog();
 
-            _traceIdHandler.Handle(context, logMessage);
+            await _traceIdHandler.Handle(context, logMessage);
 
             SetCommonLogProperties(logMessage);
 
@@ -58,15 +59,15 @@ namespace raccoonLog.Http
 
                 if (requestOptions.IgnoreContentTypes.Contains(request.ContentType))
                 {
-                    logMessage.IgnoreBody();     
+                    logMessage.IgnoreBody();
                 }
             }
             else
-            {   
+            {
                 var response = context.Response;
 
                 var responseOptions = options.Response;
-                    
+
                 var ignoreHeaders = responseOptions.IgnoreHeaders;
 
                 var ignoreContentTypes = responseOptions.IgnoreContentTypes;

@@ -1,19 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
-using Microsoft.Extensions.Primitives;
-using Microsoft.Net.Http.Headers;
+using Microsoft.AspNetCore.Http.Features;
 using raccoonLog.Http;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace raccoonLog.Tests.Handlers
 {
-    public class DefaultHttpLogFormHandlerTests
+    public partial class DefaultHttpLogFormHandlerTests
     {
         [Fact]
         public async Task HandleThrowsNullRefreceExceptionOnNullRequest()
@@ -36,12 +31,16 @@ namespace raccoonLog.Tests.Handlers
             await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(context.Request, null));
         }
 
-        [Theory, MemberData(nameof(FormContentRequest))]
-        public async Task HandleInitializeFormLog(HttpRequest request)
+        [Fact]
+        public async Task HandleInitializeFormLog()
         {
             // arrange
+            var context = new DefaultHttpContext();
+            var request = context.Request;
             var logMessage = new HttpRequestLog();
             var handler = new DefaultHttpRequestLogFormHandler();
+
+            context.Features.Set<IFormFeature>(new FormContentRequestFeatureStub());
 
             // act
             await handler.Handle(request, logMessage);
@@ -71,45 +70,6 @@ namespace raccoonLog.Tests.Handlers
                 Assert.Equal(item.ContentLength, file.Length);
                 Assert.Equal(item.ContentType, file.ContentType);
                 Assert.Equal(item.ContentDisposition, file.ContentDisposition);
-            }
-        }
-
-        public static IEnumerable<object[]> FormContentRequest
-        {
-            get
-            {
-                var context = new DefaultHttpContext();
-                yield return new object[]
-                {
-                    new DefaultHttpRequest(context)
-                    {
-                        ContentType = "application/x-www-form-urlencoded",
-                        Form = new FormCollection(new Dictionary<string, StringValues>
-                        {
-                            {"Name", "Soheil" },
-                            {"Age", "20" }
-                        },
-                        new FormFileCollection
-                        {
-                            new FormFile(Stream.Null,0,100,"image","photo.png")
-                            {
-                               Headers = new HeaderDictionary
-                               {
-                                    {HeaderNames.ContentType, MediaTypeNames.Text.Plain},
-                                    {HeaderNames.ContentDisposition, $"attachment; filename=\"{Guid.NewGuid():N}.text\""}
-                               }
-                            },
-                            new FormFile(Stream.Null,0,100,"video","video.mp4")
-                            {
-                                Headers = new HeaderDictionary
-                                {
-                                    {HeaderNames.ContentType, MediaTypeNames.Text.Plain},
-                                    {HeaderNames.ContentDisposition, $"attachment; filename=\"{Guid.NewGuid():N}.text\""}
-                                }
-                            },
-                        }),
-                    }
-                };
             }
         }
     }

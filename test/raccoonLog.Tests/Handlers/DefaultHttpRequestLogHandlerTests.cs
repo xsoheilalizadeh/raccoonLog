@@ -65,7 +65,7 @@ namespace raccoonLog.Tests.Handlers
             };
 
             _logMessageFactory.Setup(s => s.Create<HttpRequestLog>())
-            .Returns(logMessage);
+            .ReturnsAsync(logMessage);
 
             // act 
             await handler.Handle(context.Request);
@@ -94,7 +94,7 @@ namespace raccoonLog.Tests.Handlers
             };
 
             _logMessageFactory.Setup(s => s.Create<HttpRequestLog>())
-            .Returns(logMessage);
+            .ReturnsAsync(logMessage);
 
             // act 
             await handler.Handle(context.Request);

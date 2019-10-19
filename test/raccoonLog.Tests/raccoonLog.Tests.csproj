@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\raccoonLog.Http\raccoonLog.Http.csproj" />
+    <ProjectReference Include="..\..\src\raccoonLog\raccoonLog.csproj" />
   </ItemGroup>
 
 </Project>
