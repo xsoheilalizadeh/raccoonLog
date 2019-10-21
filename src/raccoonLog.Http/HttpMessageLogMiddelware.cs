@@ -42,7 +42,7 @@ namespace raccoonLog.Http
 
     public static class RaccoonLogMiddelwareExtensions
     {
-        public static void UseRacconLog(this IApplicationBuilder app, Action<HttpMessageLogMiddelwareBuilder> confgureBuilder)
+        public static void UseRaccoonLog(this IApplicationBuilder app, Action<HttpMessageLogMiddelwareBuilder> confgureBuilder)
         {
             var builder = new HttpMessageLogMiddelwareBuilder();
 

@@ -4,11 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using raccoonLog.Http;
-using RaccoonLog.Sample.Models;
+using raccoonLog.Sample_2_2.Models;
 
-namespace RaccoonLog.Sample.Controllers
+namespace raccoonLog.Sample_2_2.Controllers
 {
     public class HomeController : Controller
     {

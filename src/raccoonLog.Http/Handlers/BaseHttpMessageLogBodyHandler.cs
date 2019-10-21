@@ -30,7 +30,7 @@ namespace raccoonLog.Http
             {
                 Ignored = true;
                 return;
-            }   
+            }
 
             body.Position = 0;
 
@@ -49,8 +49,14 @@ namespace raccoonLog.Http
             var reader = PipeReader.Create(body);
 
             var result = await reader.ReadAsync();
-
+#if NETCOREAPP3_0
+       
             return Encoding.UTF8.GetString(result.Buffer.FirstSpan);
+
+#elif  NETCOREAPP2_2
+            
+            return Encoding.UTF8.GetString(result.Buffer.First.ToArray());
+#endif
         }
 
         protected virtual ValueTask<object> DeserializeBody(Stream body)

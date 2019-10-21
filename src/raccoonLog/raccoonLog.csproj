@@ -4,13 +4,7 @@
     <TargetFrameworks>$(CoreLibTargetFramework)</TargetFrameworks>
     <Version>$(CoreLibVersion)</Version>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\raccoonLog.Http\raccoonLog.Http.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0" />
-  </ItemGroup>
-
 </Project>
