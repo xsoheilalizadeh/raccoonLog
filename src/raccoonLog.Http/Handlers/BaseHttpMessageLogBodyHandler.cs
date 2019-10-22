@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
 using System.IO;
 using System.IO.Pipelines;
 using System.Runtime.CompilerServices;
@@ -14,6 +15,14 @@ namespace raccoonLog.Http
     {
         internal protected bool Ignored { get; set; }
 
+        private readonly IOptions<RaccoonLogHttpOptions> _options;
+
+        public BaseHttpMessageLogBodyHandler(IOptions<RaccoonLogHttpOptions> options)
+        {
+            _options = options;
+        }
+
+
         public async Task Handle(Stream body, THttpMessageLog logMessage)
         {
             if (body == null)
@@ -26,7 +35,7 @@ namespace raccoonLog.Http
                 throw new NullReferenceException(nameof(logMessage));
             }
 
-            if (logMessage.HasBody || logMessage.BodyIgnored)
+            if (logMessage.HasBody() || logMessage.IsBodyIgnored())
             {
                 Ignored = true;
                 return;
@@ -49,14 +58,25 @@ namespace raccoonLog.Http
             var reader = PipeReader.Create(body);
 
             var result = await reader.ReadAsync();
+
+            string bodyAsString;
+
 #if NETCOREAPP3_0
        
-            return Encoding.UTF8.GetString(result.Buffer.FirstSpan);
+            bodyAsString = Encoding.UTF8.GetString(result.Buffer.FirstSpan);
 
-#elif  NETCOREAPP2_2
-            
-            return Encoding.UTF8.GetString(result.Buffer.First.ToArray());
+#elif NETCOREAPP2_2
+
+            bodyAsString = Encoding.UTF8.GetString(result.Buffer.First.ToArray());
 #endif
+            if (string.IsNullOrEmpty(bodyAsString) || string.IsNullOrWhiteSpace(bodyAsString))
+            {
+                return null; // this ignores body in json output
+            }
+            else
+            {
+                return bodyAsString;
+            }
         }
 
         protected virtual ValueTask<object> DeserializeBody(Stream body)

@@ -15,17 +15,15 @@ namespace raccoonLog.Http
 
         private bool _hasBody;
 
+        private bool _bodyIgnored;
+            
         public HttpMessageLog()
         {
             Headers = new Dictionary<string, string>();
-            Claims = new Dictionary<string, string>();
+            Claims = new Dictionary<string, string>();  
             CreatedOn = DateTimeOffset.UtcNow;
         }
-
-        public bool HasBody => _hasBody;
-
-        public bool BodyIgnored { get; private set; }
-            
+     
         public string TraceId { get; set; } 
 
         public string ContentType { get; set; }
@@ -49,27 +47,10 @@ namespace raccoonLog.Http
             }
         }
 
-        internal void SetHeaders(IHeaderDictionary headers, IList<string> ignoreHeaders)
-        {
-            foreach (var header in headers)
-            {
-                if (!ignoreHeaders.Contains(header.Key))
-                {
-                    Headers.Add(header.Key, header.Value);
-                }
-            }
-        }
+        public bool HasBody() => _hasBody;
 
-        internal void SetClaims(IEnumerable<Claim> claims)
-        {
-            var claimsDictionary = claims.ToDictionary();
+        public bool IsBodyIgnored() => _bodyIgnored;
 
-            foreach (var claim in claimsDictionary)
-            {
-                Claims.Add(claim.Key, claim.Value);
-            }
-        }
-
-        internal void IgnoreBody() => BodyIgnored = true;
+        internal void IgnoreBody() => _bodyIgnored = true;
     }
 }

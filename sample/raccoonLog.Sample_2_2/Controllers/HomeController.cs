@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using raccoonLog.Sample_2_2.Models;
 
@@ -12,7 +13,13 @@ namespace raccoonLog.Sample_2_2.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            Response.Cookies.Append("MyCooOnSet", Guid.NewGuid().ToString(), new CookieOptions
+            {
+                Expires = DateTime.Now,
+                SameSite = SameSiteMode.Lax,
+                HttpOnly = true
+            });
+            return Json(new { boo = "isBoo" });
         }
 
         public IActionResult Privacy()

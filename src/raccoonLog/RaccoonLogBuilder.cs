@@ -23,6 +23,7 @@ namespace raccoonLog
 
             Services.AddScoped<IHttpLoggingProvider, HttpLoggingProvider>();
             Services.AddScoped<IHttpLogMessageFactory, HttpLogMessageFactory>();
+            Services.AddScoped<IDataProtector, DataProtector>();
 
             // handlers 
 

@@ -10,7 +10,6 @@ namespace raccoonLog.Http
             Protocol = protocol;
             Scheme = uri.Scheme;
             Path = uri.AbsolutePath;
-            Absolute = uri.AbsoluteUri;
         }
 
         public string Path { get; set; }
@@ -20,8 +19,6 @@ namespace raccoonLog.Http
         public string Scheme { get; set; }
 
         public string Protocol { get; set; }
-
-        public string Absolute { get; set; }
     }
 }
 

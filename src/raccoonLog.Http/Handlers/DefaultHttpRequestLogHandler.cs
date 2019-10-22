@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace raccoonLog.Http
@@ -42,14 +45,6 @@ namespace raccoonLog.Http
                 throw new NullReferenceException(nameof(logMessage));
             }
 
-            logMessage.Method = request.Method;
-
-            logMessage.SetParameters(request.Query);
-
-            logMessage.SetCookies(request.Cookies);
-
-            logMessage.SetUrl(request.GetEncodedUrl(), request.Protocol);
-
             await _logAgentHandler.Handle(request, logMessage);
 
             if (request.HasFormContentType)
@@ -63,7 +58,6 @@ namespace raccoonLog.Http
 
             return logMessage;
         }
-
 
         private Task<HttpRequestLog> CreateLogMessage()
         {

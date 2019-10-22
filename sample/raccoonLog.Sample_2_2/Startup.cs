@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -42,6 +43,14 @@ namespace raccoonLog.Sample_2_2
                     options.JsonSerializerOptions.WriteIndented = true;
                     options.EnableConsoleLogging = true;
                     options.Response.IgnoreContentTypes.Add("text/html; charset=utf-8");
+
+                    options.SensitiveData.Request.Parameters.Add("MyPar", ProtectType.Encrypt);
+
+                    options.SensitiveData.Request.Cookies.Add("MyCoo", ProtectType.Truncate);
+
+                    options.SensitiveData.Request.Cookies.Add("MyCooOnSet", ProtectType.Encrypt);
+
+                    options.SensitiveData.Request.Headers.Add("MyHead", ProtectType.Truncate);
                 });
             });
         }

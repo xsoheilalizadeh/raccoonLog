@@ -1,11 +1,22 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace raccoonLog.Http
 {
     public class DefaultHttpRequestLogFormHandler : IHttpRequestLogFormHandler
     {
+        private readonly IOptions<RaccoonLogHttpOptions> _options;
+
+        private readonly IDataProtector _dataProtector;
+
+        public DefaultHttpRequestLogFormHandler(IOptions<RaccoonLogHttpOptions> options, IDataProtector dataProtector)
+        {
+            _options = options;
+            _dataProtector = dataProtector;
+        }
+
         public async Task Handle(HttpRequest request, HttpRequestLog logMessage)
         {
             if (request == null)
@@ -22,9 +33,24 @@ namespace raccoonLog.Http
 
             var form = await request.ReadFormAsync();
 
+            var option = _options.Value;
+
+            var sensitiveData = option.SensitiveData.Request.Forms;
+
             foreach (var item in form)
             {
-                formLog.Form.Add(item.Key, item.Value);
+                string itemValue;
+
+                if (sensitiveData.TryGetValue(item.Key, out var protectType))
+                {
+                    itemValue = _dataProtector.Protect(item.Value, protectType);
+                }
+                else
+                {
+                    itemValue = item.Value;
+                }
+
+                formLog.Form.Add(item.Key, itemValue);
             }
 
             foreach (var file in form.Files)

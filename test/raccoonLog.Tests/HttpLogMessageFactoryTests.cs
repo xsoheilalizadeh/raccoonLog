@@ -77,7 +77,7 @@ namespace raccoonLog.Tests
 
             var logMessage = await logMessageFactory.Create<HttpRequestLog>();
 
-            Assert.True(logMessage.BodyIgnored);
+            Assert.True(logMessage.IsBodyIgnored());
         }
 
         [Fact]
@@ -97,7 +97,7 @@ namespace raccoonLog.Tests
 
             var logMessage = await logMessageFactory.Create<HttpResponseLog>();
 
-            Assert.True(logMessage.BodyIgnored);
+            Assert.True(logMessage.IsBodyIgnored());
         }
 
         [Fact]
@@ -117,7 +117,7 @@ namespace raccoonLog.Tests
 
             var logMessage = await logMessageFactory.Create<HttpRequestLog>();
 
-            Assert.False(logMessage.BodyIgnored);
+            Assert.False(logMessage.IsBodyIgnored());
         }
 
         [Fact]
@@ -137,7 +137,7 @@ namespace raccoonLog.Tests
 
             var logMessage = await logMessageFactory.Create<HttpResponseLog>();
 
-            Assert.False(logMessage.BodyIgnored);
+            Assert.False(logMessage.IsBodyIgnored());
         }
     }
 

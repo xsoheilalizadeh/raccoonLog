@@ -31,22 +31,6 @@ namespace raccoonLog.Http
 
             Url = new UrlLog(uri, protocol);
         }
-
-        internal void SetParameters(IQueryCollection queries)
-        {
-            foreach (var query in queries)
-            {
-                Parameters.Add(query.Key, query.Value);
-            }
-        }
-
-        internal void SetCookies(IRequestCookieCollection cookies)
-        {
-            foreach (var cookie in cookies)
-            {
-                Cookies.Add(cookie.Key, cookie.Value);
-            }
-        }
     }
 }
 

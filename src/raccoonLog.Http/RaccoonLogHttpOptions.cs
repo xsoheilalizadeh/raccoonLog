@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Net.Http.Headers;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -7,6 +8,26 @@ using System.Text.Json.Serialization;
 
 namespace raccoonLog.Http
 {
+    public class DefaultSensitiveData
+    {
+        public static IList<string> RequestHeaders = new List<string>
+        {
+            "Authorization",    
+            "Proxy-Authorization"
+        };
+
+        public static IList<string> Cookies = new List<string>
+        {
+            ".AspNetCore.Cookies",
+        };
+
+        public static IList<string> Forms = new List<string>
+        {
+            "Password",
+            "ConfirmPassword"
+        };
+    }
+
     public class RaccoonLogHttpOptions
     {
         public RaccoonLogHttpOptions()
@@ -24,11 +45,13 @@ namespace raccoonLog.Http
 
         public bool EnableConsoleLogging { get; set; }
 
+        public HttpLogSensitiveDataOptions SensitiveData { get; } = new HttpLogSensitiveDataOptions();
+
+        public JsonSerializerOptions JsonSerializerOptions { get; } = new JsonSerializerOptions();
+
         public RaccoonLogHttpRequestOptions Request { get; } = new RaccoonLogHttpRequestOptions();
 
         public RaccoonLogHttpResponseOptions Response { get; } = new RaccoonLogHttpResponseOptions();
-
-        public JsonSerializerOptions JsonSerializerOptions { get; set; }
     }
 
 
@@ -38,12 +61,16 @@ namespace raccoonLog.Http
 
         public IList<string> IgnoreContentTypes { get; set; } = new List<string>();
     }
-        
+
     public class RaccoonLogHttpResponseOptions : RaccoonLogHttpMessageOptions
     {
     }
 
     public class RaccoonLogHttpRequestOptions : RaccoonLogHttpMessageOptions
     {
+        public RaccoonLogHttpRequestOptions()
+        {
+            IgnoreHeaders.Add(HeaderNames.Cookie);
+        }
     }
-}       
+}

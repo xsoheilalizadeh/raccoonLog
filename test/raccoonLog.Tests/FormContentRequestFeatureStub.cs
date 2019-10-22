@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Mime;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,13 +35,20 @@ namespace raccoonLog.Tests.Handlers
             Scheme = "http";
             Path = "/this-is-path";
             QueryString = "?name=soheil&age=12";
-            Body = new MemoryStream();
             Headers = new HeaderDictionary(new Dictionary<string, StringValues>
             {
                 {"X-Custom","noo" },
                 {HeaderNames.ContentType,"application/json" },
                 {HeaderNames.Host,"ex.com" }
             });
+
+            var jsonBody = new MemoryStream();
+            var text = "{\"name\":\"soheil\"}";
+            var textAsBytes = Encoding.UTF8.GetBytes(text);
+
+            jsonBody.Write(textAsBytes);
+
+            Body = jsonBody;
         }
         public string Protocol { get; set; }
         public string Scheme { get; set; }
