@@ -15,11 +15,9 @@ namespace raccoonLog.Http
     {
         internal protected bool Ignored { get; set; }
 
-        private readonly IOptions<RaccoonLogHttpOptions> _options;
 
-        public BaseHttpMessageLogBodyHandler(IOptions<RaccoonLogHttpOptions> options)
+        public BaseHttpMessageLogBodyHandler()
         {
-            _options = options;
         }
 
 
@@ -79,9 +77,34 @@ namespace raccoonLog.Http
             }
         }
 
-        protected virtual ValueTask<object> DeserializeBody(Stream body)
+        protected virtual async ValueTask<object> DeserializeBody(Stream body)
         {
-            return JsonSerializer.DeserializeAsync<object>(body);
+            // { "numbers":[1, 2] }
+
+            var document = await JsonSerializer.DeserializeAsync<JsonElement>(body);
+
+            var numbers = document.GetProperty("numbers"); // [1, 2]
+
+            if (numbers.GetArrayLength() == 0)
+            {
+                using var memoryStream = new MemoryStream();
+
+                var utf8Json = new Utf8JsonWriter(memoryStream);
+
+                utf8Json.WriteNull("orders");
+
+                // or
+
+                utf8Json.WriteNullValue();
+
+                // or ...
+
+                numbers.WriteTo(utf8Json);
+            }
+          
+
+            return testElement;
         }
     }
+
 }

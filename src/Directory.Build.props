@@ -5,7 +5,6 @@
     <RepositoryUrl>https://github.com/xsoheilalizadeh/raccoonLog</RepositoryUrl>
     <Company>raccoonLog</Company>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">

@@ -1,14 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>$(HttpLibTargetFramework)</TargetFrameworks>
     <Version>$(HttpLibVersion)</Version>
+    <PackageId>raccoonLog.Http</PackageId>
+    <TargetFrameworks>$(HttpLibTargetFramework)</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="UAParser" Version="3.1.42" />
     <PackageReference Include="System.IO.Pipelines" Version="4.6.0" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="1.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\raccoonLog\raccoonLog.csproj" />
   </ItemGroup>
 
 </Project>

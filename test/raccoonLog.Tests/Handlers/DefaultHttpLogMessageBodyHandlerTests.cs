@@ -108,7 +108,7 @@ namespace raccoonLog.Tests.Handlers
             var handler = new BaseHttpMessageLogBodyHandler<THttpMessageLog>();
             var logMessage = new THttpMessageLog();
             var body = new MemoryStream();
-            var text = "{\"name\":\"soheil\"}";
+            var text = "{\"name\":\"soheil\",\"orders\":[1,2]}";
             var textAsBytes = Encoding.UTF8.GetBytes(text);
 
             await body.WriteAsync(textAsBytes);
