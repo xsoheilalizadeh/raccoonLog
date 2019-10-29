@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using Moq;
 using raccoonLog.Http;
 using raccoonLog.Tests.Handlers;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -125,14 +121,14 @@ namespace raccoonLog.Tests
         {
             var context = new DefaultHttpContext();
             var response = context.Response;
-            var requestContenType = "application/json";
+            var requestContentType = "application/json";
             var logMessageFactory = new ServiceCollection()
                 .SetHttpContext(context)
                 .AddHttpLogging()
                 .BuildServiceProvider()
                 .GetService<IHttpLogMessageFactory>();
 
-            response.ContentType = requestContenType;
+            response.ContentType = requestContentType;
             context.Features.Set<IHttpResponseFeature>(new IResponseFeatureStub());
 
             var logMessage = await logMessageFactory.Create<HttpResponseLog>();

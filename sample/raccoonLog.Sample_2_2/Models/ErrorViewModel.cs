@@ -1,5 +1,3 @@
-using System;
-
 namespace raccoonLog.Sample_2_2.Models
 {
     public class ErrorViewModel

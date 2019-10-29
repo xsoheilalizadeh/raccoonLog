@@ -1,8 +1,5 @@
 ﻿using Microsoft.Net.Http.Headers;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -16,10 +13,6 @@ namespace raccoonLog.Http
             "Proxy-Authorization"
         };
 
-        public static IList<string> Cookies = new List<string>
-        {
-            ".AspNetCore.Cookies",
-        };
 
         public static IList<string> Forms = new List<string>
         {
@@ -45,9 +38,10 @@ namespace raccoonLog.Http
 
         public bool EnableConsoleLogging { get; set; }
 
+        public JsonSerializerOptions JsonSerializerOptions { get; }
+        
         public HttpLogSensitiveDataOptions SensitiveData { get; } = new HttpLogSensitiveDataOptions();
 
-        public JsonSerializerOptions JsonSerializerOptions { get; } = new JsonSerializerOptions();
 
         public RaccoonLogHttpRequestOptions Request { get; } = new RaccoonLogHttpRequestOptions();
 
@@ -71,6 +65,7 @@ namespace raccoonLog.Http
         public RaccoonLogHttpRequestOptions()
         {
             IgnoreHeaders.Add(HeaderNames.Cookie);
+            IgnoreContentTypes.Add("text/html; charset=utf-8");
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using Microsoft.Net.Http.Headers;
 
 namespace raccoonLog.Http
 {
@@ -22,17 +22,29 @@ namespace raccoonLog.Http
 
     public class HttpRequestLogSensitiveDataOptions : HttpMessageLogSensitiveDataOptions
     {
+        public HttpRequestLogSensitiveDataOptions()
+        {
+            Forms.Add("Password", ProtectType.Encrypt);
+            Forms.Add("ConfirmPassword", ProtectType.Encrypt);
+            
+            Headers.Add(HeaderNames.Authorization, ProtectType.Encrypt);
+            Headers.Add(HeaderNames.ProxyAuthorization, ProtectType.Encrypt);
+        }
+
         public Dictionary<string, ProtectType> Parameters { get; set; } = new Dictionary<string, ProtectType>();
 
-        public Dictionary<string, ProtectType> Cookies { get ; set ; } = new Dictionary<string, ProtectType>();
+        public Dictionary<string, ProtectType> Cookies { get; set; } = new Dictionary<string, ProtectType>();
 
         public Dictionary<string, ProtectType> Forms { get; set; } = new Dictionary<string, ProtectType>();
     }
 
-    public class HttpResponseLogSensitiveDataOptions : HttpMessageLogSensitiveDataOptions { }
+    public class HttpResponseLogSensitiveDataOptions : HttpMessageLogSensitiveDataOptions
+    {
+    }
 
     public class HttpMessageLogBodySensitiveDataOptions
     {
+        [Obsolete("Don't use this because it's not ready.")]
         public Dictionary<string, ProtectType> JsonKeyValues { get; set; } = new Dictionary<string, ProtectType>();
     }
 

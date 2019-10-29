@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using System;
+﻿using System;
 using System.IO;
 using System.IO.Pipelines;
 using System.Runtime.CompilerServices;
@@ -14,12 +13,6 @@ namespace raccoonLog.Http
     public class BaseHttpMessageLogBodyHandler<THttpMessageLog> where THttpMessageLog : HttpMessageLog
     {
         internal protected bool Ignored { get; set; }
-
-
-        public BaseHttpMessageLogBodyHandler()
-        {
-        }
-
 
         public async Task Handle(Stream body, THttpMessageLog logMessage)
         {
@@ -60,7 +53,6 @@ namespace raccoonLog.Http
             string bodyAsString;
 
 #if NETCOREAPP3_0
-       
             bodyAsString = Encoding.UTF8.GetString(result.Buffer.FirstSpan);
 
 #elif NETCOREAPP2_2
@@ -77,34 +69,9 @@ namespace raccoonLog.Http
             }
         }
 
-        protected virtual async ValueTask<object> DeserializeBody(Stream body)
+        protected virtual ValueTask<object> DeserializeBody(Stream body)
         {
-            // { "numbers":[1, 2] }
-
-            var document = await JsonSerializer.DeserializeAsync<JsonElement>(body);
-
-            var numbers = document.GetProperty("numbers"); // [1, 2]
-
-            if (numbers.GetArrayLength() == 0)
-            {
-                using var memoryStream = new MemoryStream();
-
-                var utf8Json = new Utf8JsonWriter(memoryStream);
-
-                utf8Json.WriteNull("orders");
-
-                // or
-
-                utf8Json.WriteNullValue();
-
-                // or ...
-
-                numbers.WriteTo(utf8Json);
-            }
-          
-
-            return testElement;
+            return JsonSerializer.DeserializeAsync<object>(body);
         }
     }
-
 }
