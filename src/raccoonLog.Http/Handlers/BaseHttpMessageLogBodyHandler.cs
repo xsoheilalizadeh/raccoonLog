@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("raccoonLog.Tests")]
 
-namespace raccoonLog.Http
+namespace raccoonLog.Http.Handlers
 {
     public class BaseHttpMessageLogBodyHandler<THttpMessageLog> where THttpMessageLog : HttpMessageLog
     {

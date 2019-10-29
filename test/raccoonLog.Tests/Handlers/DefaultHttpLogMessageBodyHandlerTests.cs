@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using raccoonLog.Http;
+using raccoonLog.Http.Handlers;
 using Xunit;
 
 namespace raccoonLog.Tests.Handlers

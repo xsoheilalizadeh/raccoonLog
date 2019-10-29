@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using raccoonLog.Http;
+using raccoonLog.Http.Handlers;
 using Xunit;
 
 namespace raccoonLog.Tests.Handlers
@@ -32,7 +33,6 @@ namespace raccoonLog.Tests.Handlers
         public async Task HanleThrowsNullReferenceExceptionOnNullRequest()
         {
             // arrange
-            var logMessage = new HttpRequestLog();
             var handler = CreateHandler();
 
             // act and assert

@@ -1,17 +1,17 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Http.Internal;
-using Microsoft.Extensions.Primitives;
-using Microsoft.Net.Http.Headers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Mime;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.Extensions.Primitives;
+using Microsoft.Net.Http.Headers;
 
-namespace raccoonLog.Tests.Handlers
+namespace raccoonLog.Tests
 {
 
     public class RequestCookiesFeatureStub : IRequestCookiesFeature

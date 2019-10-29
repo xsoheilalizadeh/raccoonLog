@@ -3,6 +3,7 @@ using Microsoft.Net.Http.Headers;
 using raccoonLog.Http;
 using System;
 using System.Threading.Tasks;
+using raccoonLog.Http.Handlers;
 using Xunit;
 
 namespace raccoonLog.Tests.Handlers

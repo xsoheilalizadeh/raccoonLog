@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-namespace raccoonLog.Http
+namespace raccoonLog.Http.Handlers
 {
     public class DefaultHttpRequestLogFormHandler : IHttpRequestLogFormHandler
     {

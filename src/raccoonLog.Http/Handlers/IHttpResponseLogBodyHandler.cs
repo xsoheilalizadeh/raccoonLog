@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 
-namespace raccoonLog.Http
+namespace raccoonLog.Http.Handlers
 {
     public interface IHttpResponseLogBodyHandler
     {

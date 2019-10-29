@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
 using raccoonLog.Http;
-using raccoonLog.Tests.Handlers;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -11,7 +10,7 @@ namespace raccoonLog.Tests
     public class HttpLogMessageFactoryTests
     {
         [Fact]
-        public async Task CreateIntializeMessageLogOnHttpRequestFormContent()
+        public async Task CreateInitializeMessageLogOnHttpRequestFormContent()
         {
             var context = new DefaultHttpContext();
             var request = context.Request;
@@ -31,12 +30,12 @@ namespace raccoonLog.Tests
             Assert.Equal(logMessage.ContentType, request.ContentType);
 
             Assert.Equal(logMessage.Headers.Count, request.Headers.Count);
-        }
+        }    
 
         [Fact]
-        public async Task CreateIntializeMessageLogOnHttpResponse()
+        public async Task CreateInitializeMessageLogOnHttpResponse()
         {
-            var context = new DefaultHttpContext();
+            var context = new DefaultHttpContext();    
             var response = context.Response;
             var logMessageFactory = new ServiceCollection() 
                 .SetHttpContext(context)
@@ -61,14 +60,14 @@ namespace raccoonLog.Tests
         {
             var context = new DefaultHttpContext();
             var request = context.Request;
-            var requestContenType = "application/json";
+            var requestContentType = "application/json";
             var logMessageFactory = new ServiceCollection()
                 .SetHttpContext(context)
-                .AddHttpLogging(o => o.Request.IgnoreContentTypes.Add(requestContenType))
+                .AddHttpLogging(o => o.Request.IgnoreContentTypes.Add(requestContentType))
                 .BuildServiceProvider()
                 .GetService<IHttpLogMessageFactory>();
 
-            request.ContentType = requestContenType;
+            request.ContentType = requestContentType;
             context.Features.Set<IHttpRequestFeature>(new RequestFeatureStub());
 
             var logMessage = await logMessageFactory.Create<HttpRequestLog>();
@@ -81,14 +80,14 @@ namespace raccoonLog.Tests
         {
             var context = new DefaultHttpContext();
             var response = context.Response;  
-            var requestContenType = "application/json";
+            var requestContentType = "application/json";
             var logMessageFactory = new ServiceCollection()
                 .SetHttpContext(context)
-                .AddHttpLogging(o => o.Response.IgnoreContentTypes.Add(requestContenType))
+                .AddHttpLogging(o => o.Response.IgnoreContentTypes.Add(requestContentType))
                 .BuildServiceProvider()
                 .GetService<IHttpLogMessageFactory>();
 
-            response.ContentType = requestContenType;
+            response.ContentType = requestContentType;
             context.Features.Set<IHttpResponseFeature>(new IResponseFeatureStub());
 
             var logMessage = await logMessageFactory.Create<HttpResponseLog>();
@@ -101,14 +100,14 @@ namespace raccoonLog.Tests
         {
             var context = new DefaultHttpContext();
             var request = context.Request;
-            var requestContenType = "application/json";
-            var logMessageFactory = new ServiceCollection()
+            var requestContentType = "application/json";
+            var logMessageFactory = new ServiceCollection() 
                 .SetHttpContext(context)
                 .AddHttpLogging()
                 .BuildServiceProvider()
                 .GetService<IHttpLogMessageFactory>();
 
-            request.ContentType = requestContenType;
+            request.ContentType = requestContentType;
             context.Features.Set<IHttpRequestFeature>(new RequestFeatureStub());
 
             var logMessage = await logMessageFactory.Create<HttpRequestLog>();

@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		src\Directory.Build.props = src\Directory.Build.props
 		Versions.props = Versions.props
+		README.md = README.md
+		.travis.yml = .travis.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "raccoonLog", "src\raccoonLog\raccoonLog.csproj", "{55F9CF01-6956-40A0-8BB3-2F4DE095F314}"

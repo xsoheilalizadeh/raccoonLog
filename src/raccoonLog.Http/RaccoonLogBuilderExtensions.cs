@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using raccoonLog.Http.Handlers;
 
 namespace raccoonLog.Http
 {
