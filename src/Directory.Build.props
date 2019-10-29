@@ -17,6 +17,7 @@
   
   <PropertyGroup Condition="'$(Configuration)' == 'Release'"> 
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Label="TargetFrameoworks">
