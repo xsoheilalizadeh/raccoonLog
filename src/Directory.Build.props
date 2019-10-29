@@ -2,12 +2,20 @@
   <PropertyGroup>
     <Authors>Soheil Alizadeh</Authors>
     <LangVersion>latest</LangVersion>
-    <RepositoryUrl>https://github.com/xsoheilalizadeh/raccoonLog</RepositoryUrl>
     <Company>raccoonLog</Company>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+  <PropertyGroup>
+    <RepositoryUrl>https://github.com/xsoheilalizadeh/raccoonLog</RepositoryUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/xsoheilalizadeh/raccoonLog/master/LICENSE</PackageLicenseUrl>
+    <RepositoryType>git</RepositoryType>
+    <Copyright>Copyright © Soheil Alizadeh 2019</Copyright>
+    <PackageTags>log;logging;http-logging;tracing;log-http</PackageTags>
+    <Description>The logging library for log HTTP Request/Response (Yet) and store them in various data stores.</Description>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'"> 
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
