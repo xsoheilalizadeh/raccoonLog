@@ -55,6 +55,10 @@ namespace raccoonLog.Http
 
     public class RaccoonLogHttpResponseOptions : RaccoonLogHttpMessageOptions
     {
+        public RaccoonLogHttpResponseOptions()
+        {
+            IgnoreContentTypes.Add("text/html; charset=utf-8");
+        }
     }
 
     public class RaccoonLogHttpRequestOptions : RaccoonLogHttpMessageOptions
@@ -62,7 +66,6 @@ namespace raccoonLog.Http
         public RaccoonLogHttpRequestOptions()
         {
             IgnoreHeaders.Add(HeaderNames.Cookie);
-            IgnoreContentTypes.Add("text/html; charset=utf-8");
         }
     }
 }

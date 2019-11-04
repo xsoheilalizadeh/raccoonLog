@@ -26,10 +26,7 @@ namespace RaccoonLog.Sample
 
             services.AddRaccoonLog(builder =>
             {
-                builder.AddHttpLogging(options =>
-                {
-                    options.Response.IgnoreContentTypes.Add("text/html; charset=utf-8");
-                });
+                builder.AddHttpLogging();
             });
         }
 
@@ -55,8 +52,6 @@ namespace RaccoonLog.Sample
             });
 
             app.UseRouting();
-
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

@@ -79,11 +79,11 @@ namespace raccoonLog.Http
 
             var ignoreContentTypes = responseOptions.IgnoreContentTypes;
 
-            var sestitiveData = options.SensitiveData.Response.Headers;
+            var sensitiveData = options.SensitiveData.Response.Headers;
 
             logMessage.ContentType = response.ContentType;
 
-            SetHeaders(logMessage, ignoreHeaders, sestitiveData, response.Headers);
+            SetHeaders(logMessage, ignoreHeaders, sensitiveData, response.Headers);
 
             if (ignoreContentTypes.Contains(response.ContentType))
             {
@@ -102,17 +102,17 @@ namespace raccoonLog.Http
 
             var ignoreHeaders = requestOptions.IgnoreHeaders;
 
-            var sestitiveData = options.SensitiveData.Request;
+            var sensitiveData = options.SensitiveData.Request;
 
             logMessage.Method = request.Method;
 
             logMessage.ContentType = request.ContentType;
 
-            SetCookies(logMessage, sestitiveData.Cookies, request.Cookies);
+            SetCookies(logMessage, sensitiveData.Cookies, request.Cookies);
 
-            SetHeaders(logMessage, ignoreHeaders, sestitiveData.Headers, request.Headers);
+            SetHeaders(logMessage, ignoreHeaders, sensitiveData.Headers, request.Headers);
 
-            SetParameters(logMessage, sestitiveData.Parameters, request.Query);
+            SetParameters(logMessage, sensitiveData.Parameters, request.Query);
 
             logMessage.SetUrl(request.GetEncodedUrl(), request.Protocol);
 
@@ -148,10 +148,10 @@ namespace raccoonLog.Http
                 }
             }
 
-            RemoveSenstiiveCookiesFromHeader(logMessage);
+            RemoveSensitiveCookiesFromHeader(logMessage);
         }
 
-        private void RemoveSenstiiveCookiesFromHeader<THttpMessageLog>(THttpMessageLog logMessage) where THttpMessageLog : HttpMessageLog, new()
+        private void RemoveSensitiveCookiesFromHeader<THttpMessageLog>(THttpMessageLog logMessage) where THttpMessageLog : HttpMessageLog, new()
         {
             if (logMessage is HttpResponseLog)
             {
