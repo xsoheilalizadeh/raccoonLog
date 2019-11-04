@@ -10,7 +10,8 @@ raccoonLog is a logging library that supports HTTP request/response logging in *
 
 ### Features
 - Log request/response in console
-- Sensitive data protection in request/response
+- Custom form content requests logging  
+- Sensitive data protection in request/response (body limitation)
 - Ignoring content types and headers in request/response
 - Use `System.Text.Json` as JSON API
 - Use `System.IO.Pipelines` as I/O API
@@ -23,7 +24,7 @@ raccoonLog is a logging library that supports HTTP request/response logging in *
  `raccoonLog.Http` | [![NuGet](https://img.shields.io/nuget/v/raccoonLog.Http.svg?style=flat-square&label=nuget)](https://www.nuget.org/packages/raccoonLog.Http/) 
 
 
- ### Quick Getting Started
+ ### Quick Start
  Use following startup codes to configure raccoonLog in you ASP.NET Core application
 
  _Learn more in [documentation][doc]_
@@ -58,6 +59,6 @@ This library is young, as young as me and it needs to represent more abilities a
 
 _Feel free to open PR/issue._
 
-[doc]:http://google.com
+[doc]:https://github.com/xsoheilalizadeh/raccoonLog/wiki
 
 
