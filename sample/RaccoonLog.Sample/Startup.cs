@@ -28,8 +28,6 @@ namespace RaccoonLog.Sample
             {
                 builder.AddHttpLogging(options =>
                 {
-                    options.JsonSerializerOptions.WriteIndented = true;
-                    options.EnableConsoleLogging = true;
                     options.Response.IgnoreContentTypes.Add("text/html; charset=utf-8");
                 });
             });

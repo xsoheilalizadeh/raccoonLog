@@ -34,8 +34,9 @@ namespace raccoonLog.Sample_2_2
             {
                 builder.AddHttpLogging(options =>
                 {
-                    options.
-                    
+                    options.SensitiveData.Request.Cookies.Add("MyCookie", ProtectType.Truncate);
+
+                    options.SensitiveData.Request.Headers.Add("MyHead", ProtectType.Truncate);
                 });
             });
         }
