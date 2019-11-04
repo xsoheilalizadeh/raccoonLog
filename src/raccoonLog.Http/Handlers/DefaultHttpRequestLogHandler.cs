@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
-namespace raccoonLog.Http
+namespace raccoonLog.Http.Handlers
 {
     public class DefaultHttpRequestLogHandler : IHttpRequestLogHandler
     {
@@ -35,22 +34,14 @@ namespace raccoonLog.Http
 
             request.EnableBuffering();
 
-            var logMessage = CreateLogMessage();
+            var logMessage = await CreateLogMessage();
 
             if (logMessage == null)
             {
                 throw new NullReferenceException(nameof(logMessage));
             }
 
-            logMessage.Method = request.Method;
-
-            logMessage.SetParameters(request.Query);
-
-            logMessage.SetCookies(request.Cookies);
-
-            logMessage.SetUrl(request.GetEncodedUrl(), request.Protocol);
-
-            await _logAgentHandler.Handle(request);
+            await _logAgentHandler.Handle(request, logMessage);
 
             if (request.HasFormContentType)
             {
@@ -64,8 +55,7 @@ namespace raccoonLog.Http
             return logMessage;
         }
 
-
-        private HttpRequestLog CreateLogMessage()
+        private Task<HttpRequestLog> CreateLogMessage()
         {
             return _logMessageFactory.Create<HttpRequestLog>();
         }

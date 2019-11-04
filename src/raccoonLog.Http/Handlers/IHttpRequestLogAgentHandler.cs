@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
-namespace raccoonLog.Http
+namespace raccoonLog.Http.Handlers
 {
     public interface IHttpRequestLogAgentHandler
     {
-        Task<AgentLog> Handle(HttpRequest request);
+        Task Handle(HttpRequest request, HttpRequestLog logMessage);
     }
 }
+    

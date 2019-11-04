@@ -30,6 +30,8 @@ namespace raccoonLog.Http
 
             await _next(context);
 
+            await httpLogging.Log(context.Response, bodyStream);
+
             bodyStream.Position = 0;
 
             await bodyStream.CopyToAsync(originalBody);
@@ -40,7 +42,7 @@ namespace raccoonLog.Http
 
     public static class RaccoonLogMiddelwareExtensions
     {
-        public static void UseRacconLog(this IApplicationBuilder app, Action<HttpMessageLogMiddelwareBuilder> confgureBuilder)
+        public static void UseRaccoonLog(this IApplicationBuilder app, Action<HttpMessageLogMiddelwareBuilder> confgureBuilder)
         {
             var builder = new HttpMessageLogMiddelwareBuilder();
 

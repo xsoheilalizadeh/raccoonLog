@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿using Microsoft.Net.Http.Headers;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -9,24 +7,62 @@ namespace raccoonLog.Http
 {
     public class RaccoonLogHttpOptions
     {
+        private bool _enableConsoleLogging;
+
         public RaccoonLogHttpOptions()
         {
-            IgnoreHeaders = new List<string>();
             TraceIdHeaderName = "X-RaccoonLog-Id";
             JsonSerializerOptions = new JsonSerializerOptions
             {
                 IgnoreNullValues = true,
             };
-
             JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            EnableConsoleLogging = true;
         }
 
         public string TraceIdHeaderName { get; set; }
 
-        public bool EnableConsoleLogging { get; set; }
+        public bool EnableConsoleLogging
+        {
+            get => _enableConsoleLogging;
+            set
+            {
+                _enableConsoleLogging = value;
+                
+                if (value)
+                {
+                    JsonSerializerOptions.WriteIndented = true;
+                }
+            }
+        }
 
-        public IList<string> IgnoreHeaders { get; set; }
+        public JsonSerializerOptions JsonSerializerOptions { get; }
 
-        public JsonSerializerOptions JsonSerializerOptions { get; set; }
+        public RaccoonLogHttpRequestOptions Request { get; } = new RaccoonLogHttpRequestOptions();
+
+        public RaccoonLogHttpResponseOptions Response { get; } = new RaccoonLogHttpResponseOptions();
+
+        public HttpLogSensitiveDataOptions SensitiveData { get; } = new HttpLogSensitiveDataOptions();
+    }
+
+
+    public abstract class RaccoonLogHttpMessageOptions
+    {
+        public IList<string> IgnoreHeaders { get; set; } = new List<string>();
+
+        public IList<string> IgnoreContentTypes { get; set; } = new List<string>();
+    }
+
+    public class RaccoonLogHttpResponseOptions : RaccoonLogHttpMessageOptions
+    {
+    }
+
+    public class RaccoonLogHttpRequestOptions : RaccoonLogHttpMessageOptions
+    {
+        public RaccoonLogHttpRequestOptions()
+        {
+            IgnoreHeaders.Add(HeaderNames.Cookie);
+            IgnoreContentTypes.Add("text/html; charset=utf-8");
+        }
     }
 }

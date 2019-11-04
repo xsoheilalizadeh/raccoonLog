@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace raccoonLog.Http
 {
@@ -21,8 +19,6 @@ namespace raccoonLog.Http
 
         public string Method { get; set; }
 
-        public string Service { get; set; }
-
         public Dictionary<string, string> Parameters { get; set; }
 
         public Dictionary<string, string> Cookies { get; set; }
@@ -32,22 +28,6 @@ namespace raccoonLog.Http
             var uri = new Uri(url);
 
             Url = new UrlLog(uri, protocol);
-        }
-
-        public void SetParameters(IQueryCollection queries)
-        {
-            foreach (var query in queries)
-            {
-                Parameters.Add(query.Key, query.Value);
-            }
-        }
-
-        public void SetCookies(IRequestCookieCollection cookies)
-        {
-            foreach (var cookie in cookies)
-            {
-                Cookies.Add(cookie.Key, cookie.Value);
-            }
         }
     }
 }

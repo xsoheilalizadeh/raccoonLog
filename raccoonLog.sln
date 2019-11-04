@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		src\Directory.Build.props = src\Directory.Build.props
 		Versions.props = Versions.props
+		README.md = README.md
+		.travis.yml = .travis.yml
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "raccoonLog", "src\raccoonLog\raccoonLog.csproj", "{55F9CF01-6956-40A0-8BB3-2F4DE095F314}"
@@ -19,9 +21,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{88F9305A-56B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8C9919E9-D1EB-483C-92DF-299F3279CA5B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "raccoonLog.Tests", "test\raccoonLog.Tests\raccoonLog.Tests.csproj", "{906D071A-5900-4DE5-A55A-21C635D6D4F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "raccoonLog.Tests", "test\raccoonLog.Tests\raccoonLog.Tests.csproj", "{906D071A-5900-4DE5-A55A-21C635D6D4F0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{DC0F18D2-D35F-49A0-A489-C0733435D26D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "raccoonLog.Sample_2_2", "sample\raccoonLog.Sample_2_2\raccoonLog.Sample_2_2.csproj", "{9CC5EDEA-1324-4668-A14A-E589E2C29542}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +49,10 @@ Global
 		{906D071A-5900-4DE5-A55A-21C635D6D4F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{906D071A-5900-4DE5-A55A-21C635D6D4F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{906D071A-5900-4DE5-A55A-21C635D6D4F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9CC5EDEA-1324-4668-A14A-E589E2C29542}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CC5EDEA-1324-4668-A14A-E589E2C29542}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CC5EDEA-1324-4668-A14A-E589E2C29542}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CC5EDEA-1324-4668-A14A-E589E2C29542}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +62,7 @@ Global
 		{61FD4468-E019-43F5-BF7C-653C964D8164} = {88F9305A-56B3-4F40-B57D-051659963650}
 		{FEB1C7BC-15C7-4A81-9E10-11DC39BCE8CC} = {DC0F18D2-D35F-49A0-A489-C0733435D26D}
 		{906D071A-5900-4DE5-A55A-21C635D6D4F0} = {8C9919E9-D1EB-483C-92DF-299F3279CA5B}
+		{9CC5EDEA-1324-4668-A14A-E589E2C29542} = {DC0F18D2-D35F-49A0-A489-C0733435D26D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DD751939-CA3E-406E-BFE0-20C0E1CD5770}

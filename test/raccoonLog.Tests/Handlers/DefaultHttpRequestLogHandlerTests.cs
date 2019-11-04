@@ -1,13 +1,15 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using raccoonLog.Http;
+using raccoonLog.Http.Handlers;
 using Xunit;
 
 namespace raccoonLog.Tests.Handlers
 {
-
     public class DefaultHttpRequestLogHandlerTests
     {
         private Mock<IHttpLogMessageFactory> _logMessageFactory;
@@ -31,7 +33,6 @@ namespace raccoonLog.Tests.Handlers
         public async Task HanleThrowsNullReferenceExceptionOnNullRequest()
         {
             // arrange
-            var logMessage = new HttpRequestLog();
             var handler = CreateHandler();
 
             // act and assert
@@ -66,7 +67,7 @@ namespace raccoonLog.Tests.Handlers
             };
 
             _logMessageFactory.Setup(s => s.Create<HttpRequestLog>())
-            .Returns(logMessage);
+            .ReturnsAsync(logMessage);
 
             // act 
             await handler.Handle(context.Request);
@@ -95,7 +96,7 @@ namespace raccoonLog.Tests.Handlers
             };
 
             _logMessageFactory.Setup(s => s.Create<HttpRequestLog>())
-            .Returns(logMessage);
+            .ReturnsAsync(logMessage);
 
             // act 
             await handler.Handle(context.Request);
@@ -104,6 +105,34 @@ namespace raccoonLog.Tests.Handlers
             _bodyHandler.Verify(s => s.Handle(context.Request.Body, logMessage), Times.Once);
 
             _formContentHandler.Verify(s => s.Handle(context.Request, logMessage), Times.Never);
+        }
+
+
+        [Fact]
+        public async Task HandleSetsRequestInformationToLogMessage()
+        {
+            // arrange
+            var context = new DefaultHttpContext();
+            var request = context.Request;
+            var handler = new ServiceCollection()
+                .SetHttpContext(context)
+                .AddHttpLogging()
+                .BuildServiceProvider()
+                .GetService<IHttpRequestLogHandler>();
+
+            context.Features.Set<IHttpRequestFeature>(new RequestFeatureStub());
+
+            context.Features.Set<IRequestCookiesFeature>(new RequestCookiesFeatureStub());
+
+            // act 
+            var logMessage = await handler.Handle(request);
+
+            Assert.Equal(logMessage.Cookies.Count, request.Cookies.Count);
+            Assert.Equal(logMessage.Parameters.Count, request.Query.Count);
+            Assert.Equal(logMessage.Url.Path, request.Path);
+            Assert.Equal(logMessage.Url.Scheme, request.Scheme);
+            Assert.Equal(logMessage.Url.Protocol, request.Protocol);
+            Assert.Equal(logMessage.Url.Host, request.Host.ToString());
         }
 
 

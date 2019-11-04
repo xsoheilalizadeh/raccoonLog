@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
-namespace raccoonLog.Http
+namespace raccoonLog.Http.Handlers
 {
     public interface IHttpResponseLogHandler
     {

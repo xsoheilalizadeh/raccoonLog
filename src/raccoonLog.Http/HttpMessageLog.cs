@@ -1,10 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Net.Http.Headers;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
 
 namespace raccoonLog.Http
 {
@@ -15,28 +10,28 @@ namespace raccoonLog.Http
 
         private bool _hasBody;
 
+        private bool _bodyIgnored;
+            
         public HttpMessageLog()
         {
             Headers = new Dictionary<string, string>();
-            Claims = new Dictionary<string, string>();
+            Claims = new Dictionary<string, string>();  
             CreatedOn = DateTimeOffset.UtcNow;
         }
+     
+        public string TraceId { get; set; } 
 
-        public virtual bool HasBody() => _hasBody;
+        public string ContentType { get; set; }
 
-        public virtual string TraceId { get; set; }
+        public DateTimeOffset CreatedOn { get; set; }
 
-        public virtual string ContentType { get; set; }
+        public HttpMessageLogType Type { get; set; }
 
-        public virtual DateTimeOffset CreatedOn { get; set; }
+        public Dictionary<string, string> Headers { get; private set; }
 
-        public virtual HttpMessageLogType Type { get; set; }
+        public Dictionary<string, string> Claims { get; private set; }
 
-        public virtual Dictionary<string, string> Headers { get; private set; }
-
-        public virtual Dictionary<string, string> Claims { get; private set; }
-
-        public virtual object Body
+        public object Body
         {
             get => _body;
             set
@@ -47,26 +42,10 @@ namespace raccoonLog.Http
             }
         }
 
-        public virtual void SetHeaders(IHeaderDictionary headers, IList<string> ignoreHeaders)
-        {
-            foreach (var header in headers)
-            {
-                if (!ignoreHeaders.Contains(header.Key))
-                {
-                    Headers.Add(header.Key, header.Value);
-                }
-            }
-        }
+        public bool HasBody() => _hasBody;
 
-        public virtual void SetClaims(IEnumerable<Claim> claims)
-        {
-            var claimsDictionary = claims.ToDictionary();
+        public bool IsBodyIgnored() => _bodyIgnored;
 
-            foreach (var claim in claimsDictionary)
-            {
-                Claims.Add(claim.Key, claim.Value);
-            }
-        }
+        internal void IgnoreBody() => _bodyIgnored = true;
     }
 }
-    

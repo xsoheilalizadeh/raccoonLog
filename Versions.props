@@ -1,12 +1,11 @@
 <Project>
   <PropertyGroup Label="InternalPackagesVersions">
-    <CoreLibVersion>1.0.0</CoreLibVersion>
-    <HttpLibVersion>1.0.0</HttpLibVersion>
+    <CoreLibVersion>1.0.0-preview2</CoreLibVersion>
+    <HttpLibVersion>1.0.0-preview2</HttpLibVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="ExternalPackagesVersions">
     <SystemTextJson>4.6.0</SystemTextJson>
-    <NewtonsoftJson>12.0.2</NewtonsoftJson>
   </PropertyGroup>
 
 </Project>

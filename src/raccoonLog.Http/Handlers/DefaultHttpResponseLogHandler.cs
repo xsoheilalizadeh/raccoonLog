@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
-namespace raccoonLog.Http
+namespace raccoonLog.Http.Handlers
 {
     public class DefaultHttpResponseLogHandler : IHttpResponseLogHandler
     {
@@ -21,16 +21,23 @@ namespace raccoonLog.Http
 
         public async Task<HttpResponseLog> Handle(HttpResponse response, Stream body)
         {
-            var logMessage = CreateLogMessage();
 
-            if (logMessage == null)
+            if (response == null)
             {
-                throw new NullReferenceException(nameof(logMessage));
+                throw new NullReferenceException();
             }
 
             if (body == null)
             {
                 throw new NullReferenceException(nameof(body));
+            }
+
+
+            var logMessage = await CreateLogMessage();
+
+            if (logMessage == null)
+            {
+                throw new NullReferenceException(nameof(logMessage));
             }
 
             logMessage.StatusCode = response.StatusCode;
@@ -42,7 +49,7 @@ namespace raccoonLog.Http
             return logMessage;
         }   
 
-        private HttpResponseLog CreateLogMessage()
+        private Task<HttpResponseLog> CreateLogMessage()
         {
             return _logMessageFactory.Create<HttpResponseLog>();
         }

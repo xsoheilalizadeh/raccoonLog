@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-namespace raccoonLog.Http
+namespace raccoonLog.Http.Handlers
 {
     public class DefaultHttpMessageLogTraceIdHandler : IHttpMessageLogTraceIdHandler
     {
@@ -34,7 +34,10 @@ namespace raccoonLog.Http
 
             if(!response.HasStarted)
             {
-                response.Headers.Add(options.TraceIdHeaderName, logMessage.TraceId);
+                if (!response.Headers.ContainsKey(options.TraceIdHeaderName))
+                {
+                    response.Headers.Add(options.TraceIdHeaderName, logMessage.TraceId);
+                }
             }
 
             return Task.CompletedTask;  

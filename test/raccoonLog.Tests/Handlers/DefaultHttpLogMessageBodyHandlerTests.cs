@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using raccoonLog.Http;
+using raccoonLog.Http.Handlers;
 using Xunit;
 
 namespace raccoonLog.Tests.Handlers
@@ -61,6 +60,25 @@ namespace raccoonLog.Tests.Handlers
             Assert.True(handler.Ignored);
         }
 
+
+        [Fact]
+        public async Task HandleIgnoresWhenLogMessageIgnored()
+        {
+            // arrange
+            var body = new MemoryStream();
+            var handler = new BaseHttpMessageLogBodyHandler<THttpMessageLog>();
+            var logMessage = new THttpMessageLog();
+
+            logMessage.IgnoreBody();
+
+            // act
+            await handler.Handle(body, logMessage);
+
+            // assert
+            Assert.True(handler.Ignored);   
+        }
+
+
         [Fact]
         public async Task HandleReadBodyAsStringWhenRequestIsNotJson()
         {
@@ -89,7 +107,7 @@ namespace raccoonLog.Tests.Handlers
             var handler = new BaseHttpMessageLogBodyHandler<THttpMessageLog>();
             var logMessage = new THttpMessageLog();
             var body = new MemoryStream();
-            var text = "{\"name\":\"soheil\"}";
+            var text = "{\"name\":\"soheil\",\"orders\":[1,2]}";
             var textAsBytes = Encoding.UTF8.GetBytes(text);
 
             await body.WriteAsync(textAsBytes);

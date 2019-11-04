@@ -1,12 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using System;
+﻿using System.Threading.Tasks;
 
 namespace raccoonLog.Http
 {
     public interface IHttpLogMessageFactory
     {
-        THttpMessageLog Create<THttpMessageLog>() where THttpMessageLog : HttpMessageLog, new();
+        Task<THttpMessageLog> Create<THttpMessageLog>() where THttpMessageLog : HttpMessageLog, new();
     }
 }

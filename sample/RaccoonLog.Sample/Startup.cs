@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Net.Http.Headers;
 using raccoonLog;
 using raccoonLog.Http;
 
@@ -34,7 +28,7 @@ namespace RaccoonLog.Sample
             {
                 builder.AddHttpLogging(options =>
                 {
-                    options.JsonSerializerOptions.WriteIndented = true;
+                    options.Response.IgnoreContentTypes.Add("text/html; charset=utf-8");
                 });
             });
         }
@@ -55,7 +49,7 @@ namespace RaccoonLog.Sample
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseRacconLog(builder =>
+            app.UseRaccoonLog(builder =>
             {
                 builder.EnableHttpLogging();
             });

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("raccoonLog.Tests")]
 
-namespace raccoonLog.Http
+namespace raccoonLog.Http.Handlers
 {
     public class BaseHttpMessageLogBodyHandler<THttpMessageLog> where THttpMessageLog : HttpMessageLog
     {
@@ -26,11 +26,11 @@ namespace raccoonLog.Http
                 throw new NullReferenceException(nameof(logMessage));
             }
 
-            if (logMessage.HasBody())
+            if (logMessage.HasBody() || logMessage.IsBodyIgnored())
             {
                 Ignored = true;
                 return;
-            }   
+            }
 
             body.Position = 0;
 
@@ -50,7 +50,23 @@ namespace raccoonLog.Http
 
             var result = await reader.ReadAsync();
 
-            return Encoding.UTF8.GetString(result.Buffer.FirstSpan);
+            string bodyAsString;
+
+#if NETCOREAPP3_0
+            bodyAsString = Encoding.UTF8.GetString(result.Buffer.FirstSpan);
+
+#elif NETCOREAPP2_2
+
+            bodyAsString = Encoding.UTF8.GetString(result.Buffer.First.ToArray());
+#endif
+            if (string.IsNullOrEmpty(bodyAsString) || string.IsNullOrWhiteSpace(bodyAsString))
+            {
+                return null; // this ignores body in json output
+            }
+            else
+            {
+                return bodyAsString;
+            }
         }
 
         protected virtual ValueTask<object> DeserializeBody(Stream body)
