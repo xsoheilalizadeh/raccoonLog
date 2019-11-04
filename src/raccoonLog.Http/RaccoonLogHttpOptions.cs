@@ -11,13 +11,13 @@ namespace raccoonLog.Http
 
         public RaccoonLogHttpOptions()
         {
-            EnableConsoleLogging = true;
             TraceIdHeaderName = "X-RaccoonLog-Id";
             JsonSerializerOptions = new JsonSerializerOptions
             {
                 IgnoreNullValues = true,
             };
             JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            EnableConsoleLogging = true;
         }
 
         public string TraceIdHeaderName { get; set; }
