@@ -5,24 +5,10 @@ using System.Text.Json.Serialization;
 
 namespace raccoonLog.Http
 {
-    public class DefaultSensitiveData
-    {
-        public static IList<string> RequestHeaders = new List<string>
-        {
-            "Authorization",    
-            "Proxy-Authorization"
-        };
-
-
-        public static IList<string> Forms = new List<string>
-        {
-            "Password",
-            "ConfirmPassword"
-        };
-    }
-
     public class RaccoonLogHttpOptions
     {
+        private bool _enableConsoleLogging;
+
         public RaccoonLogHttpOptions()
         {
             TraceIdHeaderName = "X-RaccoonLog-Id";
@@ -36,16 +22,27 @@ namespace raccoonLog.Http
 
         public string TraceIdHeaderName { get; set; }
 
-        public bool EnableConsoleLogging { get; set; }
+        public bool EnableConsoleLogging
+        {
+            get => _enableConsoleLogging;
+            set
+            {
+                _enableConsoleLogging = value;
+                
+                if (value)
+                {
+                    JsonSerializerOptions.WriteIndented = true;
+                }
+            }
+        }
 
         public JsonSerializerOptions JsonSerializerOptions { get; }
-        
-        public HttpLogSensitiveDataOptions SensitiveData { get; } = new HttpLogSensitiveDataOptions();
-
 
         public RaccoonLogHttpRequestOptions Request { get; } = new RaccoonLogHttpRequestOptions();
 
         public RaccoonLogHttpResponseOptions Response { get; } = new RaccoonLogHttpResponseOptions();
+
+        public HttpLogSensitiveDataOptions SensitiveData { get; } = new HttpLogSensitiveDataOptions();
     }
 
 

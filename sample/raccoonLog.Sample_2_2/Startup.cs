@@ -34,8 +34,8 @@ namespace raccoonLog.Sample_2_2
             {
                 builder.AddHttpLogging(options =>
                 {
-                    options.JsonSerializerOptions.WriteIndented = true;
                     options.EnableConsoleLogging = true;
+                    
                     options.SensitiveData.Request.Cookies.Add("MyCookie", ProtectType.Truncate);
 
                     options.SensitiveData.Request.Cookies.Add("MyCooOnSet", ProtectType.Encrypt);
