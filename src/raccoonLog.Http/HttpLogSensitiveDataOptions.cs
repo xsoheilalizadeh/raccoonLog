@@ -17,7 +17,7 @@ namespace raccoonLog.Http
     {
         public Dictionary<string, ProtectType> Headers { get; set; } = new Dictionary<string, ProtectType>();
 
-        public HttpMessageLogBodySensitiveDataOptions Body { get; } = new HttpMessageLogBodySensitiveDataOptions();
+//        public HttpMessageLogBodySensitiveDataOptions Body { get; } = new HttpMessageLogBodySensitiveDataOptions();
     }
 
     public class HttpRequestLogSensitiveDataOptions : HttpMessageLogSensitiveDataOptions
