@@ -54,11 +54,15 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 
 ```
 
+### Blogs
+- [HTTP Request / Response Logging in ASP.NET Core][1]
+
+
 ### Contribution
 This library is young, as young as me and it needs to represent more abilities as a library therefore I need your help for bugs, features, performance improvement.
 
 _Feel free to open PR/issue._
 
 [doc]:https://github.com/xsoheilalizadeh/raccoonLog/wiki
-
+[1]:https://soheilalizadeh.com/blog/http-request-response-logging-in-asp-net-core/
 
