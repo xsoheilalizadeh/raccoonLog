@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace raccoonLog.Http
 {
     public interface IHttpLoggingProvider
     {
-        Task Log(HttpRequest request);
+        Task LogAsync(HttpRequest request, CancellationToken cancellationToken);
 
-        Task Log(HttpResponse response, Stream body);
+        Task LogAsync(HttpResponse response, Stream body, CancellationToken cancellationToken);
     }
-}   
+}

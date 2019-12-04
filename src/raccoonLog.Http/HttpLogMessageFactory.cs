@@ -5,6 +5,7 @@ using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using raccoonLog.Http.Handlers;
 
@@ -12,13 +13,10 @@ namespace raccoonLog.Http
 {
     public class HttpLogMessageFactory : IHttpLogMessageFactory
     {
-        private IHttpContextAccessor _httpContextAccessor;
-
-        private IOptions<RaccoonLogHttpOptions> _options;
-
-        private IHttpMessageLogTraceIdHandler _traceIdHandler;
-
-        private IDataProtector _dataProtector;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IOptions<RaccoonLogHttpOptions> _options;
+        private readonly IHttpMessageLogTraceIdHandler _traceIdHandler;
+        private readonly IDataProtector _dataProtector;
 
         public HttpLogMessageFactory(IHttpContextAccessor httpContextAccessor,
             IHttpMessageLogTraceIdHandler traceIdHandler,
@@ -31,7 +29,8 @@ namespace raccoonLog.Http
             _options = options;
         }
 
-        public async Task<THttpMessageLog> Create<THttpMessageLog>() where THttpMessageLog : HttpMessageLog, new()
+        public async Task<THttpMessageLog> Create<THttpMessageLog>(CancellationToken cancellationToken)
+            where THttpMessageLog : HttpMessageLog, new()
         {
             var context = _httpContextAccessor.HttpContext;
 
@@ -39,13 +38,14 @@ namespace raccoonLog.Http
 
             await _traceIdHandler.Handle(context, logMessage);
 
-            SetCommonLogProperties(logMessage);
+            SetCommonLogProperties(logMessage, cancellationToken);
 
             return logMessage;
         }
 
 
-        private void SetCommonLogProperties<THttpMessageLog>(THttpMessageLog logMessage) where THttpMessageLog : HttpMessageLog, new()
+        private void SetCommonLogProperties<THttpMessageLog>(THttpMessageLog logMessage,
+            CancellationToken cancellationToken) where THttpMessageLog : HttpMessageLog, new()
         {
             var context = _httpContextAccessor.HttpContext;
 
@@ -53,24 +53,26 @@ namespace raccoonLog.Http
 
             var options = _options.Value;
 
-            SetClaims(logMessage, user.Claims, options.SensitiveData.Claims);
+            SetClaims(logMessage, user.Claims, options.SensitiveData.Claims, cancellationToken);
 
             if (logMessage is HttpRequestLog requestLog)
             {
-                SetRequestLogProperties(requestLog, context, options);
+                SetRequestLogProperties(requestLog, context, options, cancellationToken);
             }
             else
             {
-                SetResponseLogProperties(logMessage, context, options);
+                SetResponseLogProperties(logMessage, context, options, cancellationToken);
             }
         }
 
 
         private void SetResponseLogProperties<THttpMessageLog>(THttpMessageLog logMessage,
             HttpContext context,
-            RaccoonLogHttpOptions options)
+            RaccoonLogHttpOptions options, CancellationToken cancellationToken)
             where THttpMessageLog : HttpMessageLog, new()
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var response = context.Response;
 
             var responseOptions = options.Response;
@@ -83,7 +85,7 @@ namespace raccoonLog.Http
 
             logMessage.ContentType = response.ContentType;
 
-            SetHeaders(logMessage, ignoreHeaders, sensitiveData, response.Headers);
+            SetHeaders(logMessage, ignoreHeaders, sensitiveData, response.Headers, cancellationToken);
 
             if (ignoreContentTypes.Contains(response.ContentType))
             {
@@ -94,8 +96,10 @@ namespace raccoonLog.Http
 
         private void SetRequestLogProperties(HttpRequestLog logMessage,
             HttpContext context,
-            RaccoonLogHttpOptions options)
+            RaccoonLogHttpOptions options, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var request = context.Request;
 
             var requestOptions = options.Request;
@@ -108,11 +112,11 @@ namespace raccoonLog.Http
 
             logMessage.ContentType = request.ContentType;
 
-            SetCookies(logMessage, sensitiveData.Cookies, request.Cookies);
+            SetCookies(logMessage, sensitiveData.Cookies, request.Cookies, cancellationToken);
 
-            SetHeaders(logMessage, ignoreHeaders, sensitiveData.Headers, request.Headers);
+            SetHeaders(logMessage, ignoreHeaders, sensitiveData.Headers, request.Headers, cancellationToken);
 
-            SetParameters(logMessage, sensitiveData.Parameters, request.Query);
+            SetParameters(logMessage, sensitiveData.Parameters, request.Query, cancellationToken);
 
             logMessage.SetUrl(request.GetEncodedUrl(), request.Protocol);
 
@@ -124,13 +128,15 @@ namespace raccoonLog.Http
 
 
         private void SetHeaders<THttpMessageLog>(THttpMessageLog logMessage,
-         IList<string> ignoreHeaders,
-         Dictionary<string, ProtectType> sensitiveData,
-         IHeaderDictionary headers)
-         where THttpMessageLog : HttpMessageLog, new()
+            IList<string> ignoreHeaders,
+            Dictionary<string, ProtectType> sensitiveData,
+            IHeaderDictionary headers, CancellationToken cancellationToken)
+            where THttpMessageLog : HttpMessageLog, new()
         {
             foreach (var header in headers)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 if (!ignoreHeaders.Contains(header.Key))
                 {
                     string headerValue;
@@ -151,11 +157,12 @@ namespace raccoonLog.Http
             RemoveSensitiveCookiesFromHeader(logMessage);
         }
 
-        private void RemoveSensitiveCookiesFromHeader<THttpMessageLog>(THttpMessageLog logMessage) where THttpMessageLog : HttpMessageLog, new()
+        private void RemoveSensitiveCookiesFromHeader<THttpMessageLog>(THttpMessageLog logMessage)
+            where THttpMessageLog : HttpMessageLog, new()
         {
             if (logMessage is HttpResponseLog)
             {
-                var option = _options.Value;    
+                var option = _options.Value;
 
                 var sensitiveCookies = option.SensitiveData.Request.Cookies;
 
@@ -182,12 +189,14 @@ namespace raccoonLog.Http
         }
 
         private void SetClaims<THttpMessageLog>(THttpMessageLog logMessage,
-         IEnumerable<Claim> claims,
-         Dictionary<string, ProtectType> senstiveData)
-         where THttpMessageLog : HttpMessageLog, new()
+            IEnumerable<Claim> claims,
+            Dictionary<string, ProtectType> senstiveData, CancellationToken cancellationToken)
+            where THttpMessageLog : HttpMessageLog, new()
         {
             foreach (var claim in claims)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 string claimValue;
 
                 if (senstiveData.TryGetValue(claim.Type, out var protectType))
@@ -204,11 +213,13 @@ namespace raccoonLog.Http
         }
 
         private void SetCookies(HttpRequestLog logMessage,
-        Dictionary<string, ProtectType> sensitiveData,
-        IRequestCookieCollection cookies)
+            Dictionary<string, ProtectType> sensitiveData,
+            IRequestCookieCollection cookies, CancellationToken cancellationToken)
         {
             foreach (var cookie in cookies)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 string cookieValue;
 
                 if (sensitiveData.TryGetValue(cookie.Key, out var protectType))
@@ -227,10 +238,12 @@ namespace raccoonLog.Http
 
         private void SetParameters(HttpRequestLog logMessage,
             Dictionary<string, ProtectType> sensitiveData,
-            IQueryCollection queries)
+            IQueryCollection queries, CancellationToken cancellationToken)
         {
             foreach (var query in queries)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 string queryValue;
 
                 if (sensitiveData.TryGetValue(query.Key, out var protectType))
@@ -245,6 +258,5 @@ namespace raccoonLog.Http
                 logMessage.Parameters.Add(query.Key, queryValue);
             }
         }
-
     }
 }

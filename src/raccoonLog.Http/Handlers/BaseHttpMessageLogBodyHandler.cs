@@ -4,6 +4,7 @@ using System.IO.Pipelines;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("raccoonLog.Tests")]
@@ -12,14 +13,14 @@ namespace raccoonLog.Http.Handlers
 {
     public class BaseHttpMessageLogBodyHandler<THttpMessageLog> where THttpMessageLog : HttpMessageLog
     {
-        internal protected bool Ignored { get; set; }
+        protected internal bool Ignored { get; set; }
 
-        public async Task Handle(Stream body, THttpMessageLog logMessage)
+        public async Task Handle(Stream body, THttpMessageLog logMessage, CancellationToken cancellationToken = default)
         {
             if (body == null)
             {
                 throw new NullReferenceException(nameof(body));
-            }
+            }    
 
             if (logMessage == null)
             {
@@ -36,21 +37,21 @@ namespace raccoonLog.Http.Handlers
 
             if (logMessage.IsJson())
             {
-                logMessage.Body = await DeserializeBody(body);
+                logMessage.Body = await DeserializeBody(body,cancellationToken);
             }
             else
             {
-                logMessage.Body = await ReadBodyAsString(body);
+                logMessage.Body = await ReadBodyAsString(body,cancellationToken);
             }
         }
 
-        protected virtual async ValueTask<object> ReadBodyAsString(Stream body)
+        protected virtual async ValueTask<object> ReadBodyAsString(Stream body, CancellationToken cancellationToken)
         {
             var reader = PipeReader.Create(body);
 
-            var result = await reader.ReadAsync();
+            var result = await reader.ReadAsync(cancellationToken);
 
-            string bodyAsString;
+            string bodyAsString = null;
 
 #if NETCOREAPP3_0
             bodyAsString = Encoding.UTF8.GetString(result.Buffer.FirstSpan);
@@ -63,15 +64,13 @@ namespace raccoonLog.Http.Handlers
             {
                 return null; // this ignores body in json output
             }
-            else
-            {
-                return bodyAsString;
-            }
+
+            return bodyAsString;
         }
 
-        protected virtual ValueTask<object> DeserializeBody(Stream body)
+        protected virtual ValueTask<object> DeserializeBody(Stream body, CancellationToken cancellationToken)
         {
-            return JsonSerializer.DeserializeAsync<object>(body);
+            return JsonSerializer.DeserializeAsync<object>(body, cancellationToken: cancellationToken);
         }
     }
 }

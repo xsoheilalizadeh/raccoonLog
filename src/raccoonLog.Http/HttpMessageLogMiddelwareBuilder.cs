@@ -1,6 +1,6 @@
 ﻿namespace raccoonLog.Http
 {
-    public class HttpMessageLogMiddelwareBuilder
+    public class HttpMessageLogMiddlewareBuilder
     {
         internal bool EnableHttpLogging { get; set; }
     }

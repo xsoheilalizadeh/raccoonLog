@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
@@ -19,9 +20,9 @@ namespace raccoonLog.Http.Handlers
             _bodyHandler = bodyHandler;
         }
 
-        public async Task<HttpResponseLog> Handle(HttpResponse response, Stream body)
+        public async Task<HttpResponseLog> Handle(HttpResponse response, Stream body,
+            CancellationToken cancellationToken = default)
         {
-
             if (response == null)
             {
                 throw new NullReferenceException();
@@ -33,7 +34,7 @@ namespace raccoonLog.Http.Handlers
             }
 
 
-            var logMessage = await CreateLogMessage();
+            var logMessage = await CreateLogMessage(cancellationToken);
 
             if (logMessage == null)
             {
@@ -42,16 +43,16 @@ namespace raccoonLog.Http.Handlers
 
             logMessage.StatusCode = response.StatusCode;
 
-            logMessage.Status = (HttpStatusCode)response.StatusCode;
+            logMessage.Status = (HttpStatusCode) response.StatusCode;
 
-            await _bodyHandler.Handle(response.Body, logMessage);
+            await _bodyHandler.Handle(response.Body, logMessage, cancellationToken);
 
             return logMessage;
-        }   
+        }
 
-        private Task<HttpResponseLog> CreateLogMessage()
+        private Task<HttpResponseLog> CreateLogMessage(CancellationToken cancellationToken)
         {
-            return _logMessageFactory.Create<HttpResponseLog>();
+            return _logMessageFactory.Create<HttpResponseLog>(cancellationToken);
         }
     }
 }

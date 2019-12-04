@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -29,36 +30,35 @@ namespace raccoonLog.Http
             _options = options;
             _responseHandler = responseHandler;
             _requestHandler = requestHandler;
-            
+
             _requestLogger = loggerFactory.CreateLogger<HttpRequest>();
             _responseLogger = loggerFactory.CreateLogger<HttpResponse>();
         }
 
-        public Task Log(HttpRequest request)
+        public Task LogAsync(HttpRequest request, CancellationToken cancellationToken)
         {
             if (request == null)
             {
                 throw new NullReferenceException(nameof(request));
             }
 
-            return LogRequest(request);
+            return LogRequest(request, cancellationToken);
         }
 
 
-        public Task Log(HttpResponse response, Stream body)
+        public Task LogAsync(HttpResponse response, Stream body, CancellationToken cancellationToken)
         {
-
             if (response == null)
             {
                 throw new NullReferenceException(nameof(response));
             }
 
-            return LogResponse(response, body);
+            return LogResponse(response, body, cancellationToken);
         }
 
-        private async Task LogResponse(HttpResponse response, Stream body)
+        private async Task LogResponse(HttpResponse response, Stream body, CancellationToken cancellationToken)
         {
-            var logMessage = await _responseHandler.Handle(response, body);
+            var logMessage = await _responseHandler.Handle(response, body, cancellationToken);
 
             var options = _options.Value;
 
@@ -72,9 +72,9 @@ namespace raccoonLog.Http
             // store log message
         }
 
-        private async Task LogRequest(HttpRequest request)
+        private async Task LogRequest(HttpRequest request, CancellationToken cancellationToken)
         {
-            var logMessage = await _requestHandler.Handle(request);
+            var logMessage = await _requestHandler.Handle(request, cancellationToken);
 
             var options = _options.Value;
 

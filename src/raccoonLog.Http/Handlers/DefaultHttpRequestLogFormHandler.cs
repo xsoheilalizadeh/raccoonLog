@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
@@ -17,7 +18,7 @@ namespace raccoonLog.Http.Handlers
             _dataProtector = dataProtector;
         }
 
-        public async Task Handle(HttpRequest request, HttpRequestLog logMessage)
+        public async Task Handle(HttpRequest request, HttpRequestLog logMessage, CancellationToken cancellationToken)
         {
             if (request == null)
             {
@@ -31,7 +32,7 @@ namespace raccoonLog.Http.Handlers
 
             var formLog = new FormLog();
 
-            var form = await request.ReadFormAsync();
+            var form = await request.ReadFormAsync(cancellationToken);
 
             var option = _options.Value;
 
@@ -39,6 +40,8 @@ namespace raccoonLog.Http.Handlers
 
             foreach (var item in form)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+                
                 string itemValue;
 
                 if (sensitiveData.TryGetValue(item.Key, out var protectType))

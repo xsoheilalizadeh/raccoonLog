@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -66,16 +67,16 @@ namespace raccoonLog.Tests.Handlers
                 }
             };
 
-            _logMessageFactory.Setup(s => s.Create<HttpRequestLog>())
+            _logMessageFactory.Setup(s => s.Create<HttpRequestLog>(CancellationToken.None))
             .ReturnsAsync(logMessage);
 
             // act 
             await handler.Handle(context.Request);
 
             // assert (verify) 
-            _formContentHandler.Verify(s => s.Handle(context.Request, logMessage), Times.Once);
+            _formContentHandler.Verify(s => s.Handle(context.Request, logMessage,CancellationToken.None), Times.Once);
 
-            _bodyHandler.Verify(s => s.Handle(context.Request.Body, logMessage), Times.Never);
+            _bodyHandler.Verify(s => s.Handle(context.Request.Body, logMessage,CancellationToken.None), Times.Never);
         }
 
 
@@ -95,16 +96,16 @@ namespace raccoonLog.Tests.Handlers
                 }
             };
 
-            _logMessageFactory.Setup(s => s.Create<HttpRequestLog>())
+            _logMessageFactory.Setup(s => s.Create<HttpRequestLog>(CancellationToken.None))
             .ReturnsAsync(logMessage);
 
             // act 
             await handler.Handle(context.Request);
 
             // assert (verify) 
-            _bodyHandler.Verify(s => s.Handle(context.Request.Body, logMessage), Times.Once);
+            _bodyHandler.Verify(s => s.Handle(context.Request.Body, logMessage,CancellationToken.None), Times.Once);
 
-            _formContentHandler.Verify(s => s.Handle(context.Request, logMessage), Times.Never);
+            _formContentHandler.Verify(s => s.Handle(context.Request, logMessage,CancellationToken.None), Times.Never);
         }
 
 
