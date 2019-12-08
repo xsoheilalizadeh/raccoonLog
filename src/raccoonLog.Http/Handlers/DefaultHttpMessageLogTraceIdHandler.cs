@@ -7,7 +7,7 @@ namespace raccoonLog.Http.Handlers
 {
     public class DefaultHttpMessageLogTraceIdHandler : IHttpMessageLogTraceIdHandler
     {
-        public IOptions<RaccoonLogHttpOptions> _options;
+        private readonly IOptions<RaccoonLogHttpOptions> _options;
 
         public DefaultHttpMessageLogTraceIdHandler(IOptions<RaccoonLogHttpOptions> options)
         {

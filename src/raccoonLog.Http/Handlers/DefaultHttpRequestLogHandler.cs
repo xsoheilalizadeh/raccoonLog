@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
@@ -25,7 +26,7 @@ namespace raccoonLog.Http.Handlers
             _bodyHandler = bodyHandler;
         }
 
-        public async Task<HttpRequestLog> Handle(HttpRequest request)
+        public async Task<HttpRequestLog> Handle(HttpRequest request, CancellationToken cancellationToken = default)
         {
             if (request == null)
             {
@@ -34,7 +35,7 @@ namespace raccoonLog.Http.Handlers
 
             request.EnableBuffering();
 
-            var logMessage = await CreateLogMessage();
+            var logMessage = await CreateLogMessage(cancellationToken);
 
             if (logMessage == null)
             {
@@ -45,19 +46,19 @@ namespace raccoonLog.Http.Handlers
 
             if (request.HasFormContentType)
             {
-                await _formContentHandler.Handle(request, logMessage);
+                await _formContentHandler.Handle(request, logMessage, cancellationToken);
             }
             else
             {
-                await _bodyHandler.Handle(request.Body, logMessage);
+                await _bodyHandler.Handle(request.Body, logMessage, cancellationToken);
             }
 
             return logMessage;
         }
 
-        private Task<HttpRequestLog> CreateLogMessage()
+        private Task<HttpRequestLog> CreateLogMessage(CancellationToken cancellationToken)
         {
-            return _logMessageFactory.Create<HttpRequestLog>();
+            return _logMessageFactory.Create<HttpRequestLog>(cancellationToken);
         }
     }
 }

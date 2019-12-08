@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
@@ -6,7 +7,7 @@ namespace raccoonLog.Http.Handlers
 {
     public interface IHttpResponseLogHandler
     {
-        Task<HttpResponseLog> Handle(HttpResponse response, Stream body);
+        Task<HttpResponseLog> Handle(HttpResponse response, Stream body, CancellationToken cancellationToken);
     }
 }
             

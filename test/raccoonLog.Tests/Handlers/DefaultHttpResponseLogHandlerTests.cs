@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -52,7 +53,7 @@ namespace raccoonLog.Tests.Handlers
             var context = new DefaultHttpContext();
             var body = new MemoryStream();
             var handler = CreateHandler();
-            _logMessageFactor.Setup(s => s.Create<HttpResponseLog>())
+            _logMessageFactor.Setup(s => s.Create<HttpResponseLog>(CancellationToken.None))
                 .Returns(() => null);
 
             // act and assert
