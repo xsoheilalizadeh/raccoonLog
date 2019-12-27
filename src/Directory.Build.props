@@ -21,8 +21,8 @@
   </PropertyGroup>
 
   <PropertyGroup Label="TargetFrameoworks">
-    <CoreLibTargetFramework>netcoreapp2.2;netcoreapp3.0</CoreLibTargetFramework>
-    <HttpLibTargetFramework>netcoreapp2.2;netcoreapp3.0</HttpLibTargetFramework>
+    <CoreLibTargetFramework>netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</CoreLibTargetFramework>
+    <HttpLibTargetFramework>netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</HttpLibTargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,6 +37,10 @@
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.0'">
     <AspNetCorePackagesVersion>3.0.0</AspNetCorePackagesVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <AspNetCorePackagesVersion>3.1.0</AspNetCorePackagesVersion>
   </PropertyGroup>
 
   <ItemGroup>
