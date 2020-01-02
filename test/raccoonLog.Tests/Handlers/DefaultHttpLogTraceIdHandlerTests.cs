@@ -21,7 +21,7 @@ namespace raccoonLog.Tests.Handlers
             var handler = new DefaultHttpMessageLogTraceIdHandler(options);
 
             // act and assert
-            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(null, null));
+            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(null, null).AsTask());
         }
 
         [Fact]
@@ -33,7 +33,7 @@ namespace raccoonLog.Tests.Handlers
             var handler = new DefaultHttpMessageLogTraceIdHandler(options);
 
             // act and assert
-            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(context, null));
+            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(context, null).AsTask());
         }
 
 

@@ -13,20 +13,16 @@ namespace raccoonLog.Http.Handlers
 
         private readonly IHttpRequestLogBodyHandler _bodyHandler;
 
-        private readonly IHttpRequestLogAgentHandler _logAgentHandler;
-
         public DefaultHttpRequestLogHandler(IHttpLogMessageFactory logMessageFactory,
             IHttpRequestLogFormHandler formContentHandler,
-            IHttpRequestLogBodyHandler bodyHandler,
-            IHttpRequestLogAgentHandler logAgentHandler)
+            IHttpRequestLogBodyHandler bodyHandler)
         {
             _formContentHandler = formContentHandler;
             _logMessageFactory = logMessageFactory;
-            _logAgentHandler = logAgentHandler;
             _bodyHandler = bodyHandler;
         }
 
-        public async Task<HttpRequestLog> Handle(HttpRequest request, CancellationToken cancellationToken = default)
+        public async ValueTask<HttpRequestLog> Handle(HttpRequest request, CancellationToken cancellationToken = default)
         {
             if (request == null)
             {
@@ -42,8 +38,6 @@ namespace raccoonLog.Http.Handlers
                 throw new NullReferenceException(nameof(logMessage));
             }
 
-            await _logAgentHandler.Handle(request, logMessage);
-
             if (request.HasFormContentType)
             {
                 await _formContentHandler.Handle(request, logMessage, cancellationToken);
@@ -56,7 +50,7 @@ namespace raccoonLog.Http.Handlers
             return logMessage;
         }
 
-        private Task<HttpRequestLog> CreateLogMessage(CancellationToken cancellationToken)
+        private ValueTask<HttpRequestLog> CreateLogMessage(CancellationToken cancellationToken)
         {
             return _logMessageFactory.Create<HttpRequestLog>(cancellationToken);
         }

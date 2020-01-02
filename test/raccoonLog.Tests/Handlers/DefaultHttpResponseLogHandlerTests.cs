@@ -30,7 +30,7 @@ namespace raccoonLog.Tests.Handlers
             var handler = CreateHandler();
 
             // act and assert
-            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(null, body));
+            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(null, body).AsTask());
         }
 
         
@@ -42,7 +42,7 @@ namespace raccoonLog.Tests.Handlers
             var handler = CreateHandler();
 
             // act and assert
-            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(context.Response,null));
+            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(context.Response,null).AsTask());
         }
 
 
@@ -54,10 +54,10 @@ namespace raccoonLog.Tests.Handlers
             var body = new MemoryStream();
             var handler = CreateHandler();
             _logMessageFactor.Setup(s => s.Create<HttpResponseLog>(CancellationToken.None))
-                .Returns(() => null);
+                .Returns(() => new ValueTask<HttpResponseLog>());
 
             // act and assert
-            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(context.Response, body));
+            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(context.Response, body).AsTask());
         }
 
 

@@ -5,6 +5,6 @@ namespace raccoonLog.Http
 {
     public interface IHttpLogMessageFactory
     {
-        Task<THttpMessageLog> Create<THttpMessageLog>(CancellationToken cancellationToken = default) where THttpMessageLog : HttpMessageLog, new();
+        ValueTask<THttpMessageLog> Create<THttpMessageLog>(CancellationToken cancellationToken = default) where THttpMessageLog : HttpMessageLog, new();
     }
 }

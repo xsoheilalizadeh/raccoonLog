@@ -6,6 +6,6 @@ namespace raccoonLog.Http.Handlers
 {
     public interface IHttpRequestLogHandler
     {
-        Task<HttpRequestLog> Handle(HttpRequest request, CancellationToken cancellationToken = default);
+        ValueTask<HttpRequestLog> Handle(HttpRequest request, CancellationToken cancellationToken = default);
     }
 }

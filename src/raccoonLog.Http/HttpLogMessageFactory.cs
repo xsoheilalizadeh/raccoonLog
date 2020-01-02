@@ -29,7 +29,7 @@ namespace raccoonLog.Http
             _options = options;
         }
 
-        public async Task<THttpMessageLog> Create<THttpMessageLog>(CancellationToken cancellationToken)
+        public async ValueTask<THttpMessageLog> Create<THttpMessageLog>(CancellationToken cancellationToken)
             where THttpMessageLog : HttpMessageLog, new()
         {
             var context = _httpContextAccessor.HttpContext;
