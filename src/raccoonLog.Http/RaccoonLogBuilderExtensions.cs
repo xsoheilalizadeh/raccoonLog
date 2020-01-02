@@ -21,7 +21,6 @@ namespace raccoonLog.Http
             // handlers 
 
             services.AddScoped<IHttpRequestLogFormHandler, DefaultHttpRequestLogFormHandler>();
-            services.AddScoped<IHttpRequestLogAgentHandler, DefaultHttpRequestLogAgentHandler>();
             services.AddScoped<IHttpMessageLogTraceIdHandler, DefaultHttpMessageLogTraceIdHandler>();
 
             services.AddScoped<IHttpRequestLogHandler, DefaultHttpRequestLogHandler>();
