@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.IO;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 
 namespace raccoonLog.Http
@@ -24,7 +25,9 @@ namespace raccoonLog.Http
 
             var originalBody = context.Response.Body;
 
-            using var bodyStream = _recyclableMemoryStreamManager.GetStream();
+            var bodyStream = _recyclableMemoryStreamManager.GetStream();
+
+            context.Response.RegisterForDispose(bodyStream);
 
             context.Response.Body = bodyStream;
 
