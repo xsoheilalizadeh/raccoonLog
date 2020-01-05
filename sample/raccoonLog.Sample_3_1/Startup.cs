@@ -26,7 +26,7 @@ namespace RaccoonLog.Sample
             services.AddRaccoonLog(builder =>
             {
                 builder.AddHttpLogging()
-                    .AddStore<PhysicalFileStore>();
+                    .AddFileStore();
             });
         }
 
