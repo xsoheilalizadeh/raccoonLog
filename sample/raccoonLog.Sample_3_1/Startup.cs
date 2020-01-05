@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using raccoonLog;
 using raccoonLog.Http;
+using raccoonLog.Http.Stores;
 
 namespace RaccoonLog.Sample
 {
@@ -24,7 +25,8 @@ namespace RaccoonLog.Sample
 
             services.AddRaccoonLog(builder =>
             {
-                builder.AddHttpLogging();
+                builder.AddHttpLogging()
+                    .AddStore<PhysicalFileStore>();
             });
         }
 

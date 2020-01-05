@@ -12,21 +12,23 @@ namespace raccoonLog.Http
 {
     public class HttpLoggingProvider : IHttpLoggingProvider
     {
+        private readonly IHttpRequestLogHandler _requestHandler;
         private readonly IHttpResponseLogHandler _responseHandler;
 
-        private readonly IHttpRequestLogHandler _requestHandler;
-
         private readonly ILogger<HttpRequest> _requestLogger;
-
         private readonly ILogger<HttpResponse> _responseLogger;
 
+        private readonly IHttpLoggingStore _store;
         private IOptions<RaccoonLogHttpOptions> _options;
+
 
         public HttpLoggingProvider(IHttpResponseLogHandler responseHandler,
             IHttpRequestLogHandler requestHandler,
             IOptions<RaccoonLogHttpOptions> options,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            IHttpLoggingStore store)
         {
+            _store = store;
             _options = options;
             _responseHandler = responseHandler;
             _requestHandler = requestHandler;
@@ -69,7 +71,7 @@ namespace raccoonLog.Http
                 _responseLogger.LogInformation(json);
             }
 
-            // store log message
+            await _store.StoreAsync(logMessage, cancellationToken);
         }
 
         private async ValueTask LogRequest(HttpRequest request, CancellationToken cancellationToken)
@@ -85,7 +87,7 @@ namespace raccoonLog.Http
                 _requestLogger.LogInformation(json);
             }
 
-            // store log Message
+            await _store.StoreAsync(logMessage, cancellationToken);
         }
     }
 }

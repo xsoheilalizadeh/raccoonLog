@@ -13,10 +13,13 @@ namespace raccoonLog.Http
 {
     public class HttpLogMessageFactory : IHttpLogMessageFactory
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IOptions<RaccoonLogHttpOptions> _options;
-        private readonly IHttpMessageLogTraceIdHandler _traceIdHandler;
         private readonly IDataProtector _dataProtector;
+
+        private readonly IOptions<RaccoonLogHttpOptions> _options;
+
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        private readonly IHttpMessageLogTraceIdHandler _traceIdHandler;
 
         public HttpLogMessageFactory(IHttpContextAccessor httpContextAccessor,
             IHttpMessageLogTraceIdHandler traceIdHandler,
