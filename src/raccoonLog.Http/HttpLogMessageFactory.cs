@@ -13,10 +13,13 @@ namespace raccoonLog.Http
 {
     public class HttpLogMessageFactory : IHttpLogMessageFactory
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IOptions<RaccoonLogHttpOptions> _options;
-        private readonly IHttpMessageLogTraceIdHandler _traceIdHandler;
         private readonly IDataProtector _dataProtector;
+
+        private readonly IOptions<RaccoonLogHttpOptions> _options;
+
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        private readonly IHttpMessageLogTraceIdHandler _traceIdHandler;
 
         public HttpLogMessageFactory(IHttpContextAccessor httpContextAccessor,
             IHttpMessageLogTraceIdHandler traceIdHandler,
@@ -29,7 +32,7 @@ namespace raccoonLog.Http
             _options = options;
         }
 
-        public async Task<THttpMessageLog> Create<THttpMessageLog>(CancellationToken cancellationToken)
+        public async ValueTask<THttpMessageLog> Create<THttpMessageLog>(CancellationToken cancellationToken)
             where THttpMessageLog : HttpMessageLog, new()
         {
             var context = _httpContextAccessor.HttpContext;

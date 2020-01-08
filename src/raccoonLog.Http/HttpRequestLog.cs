@@ -15,8 +15,6 @@ namespace raccoonLog.Http
 
         public UrlLog Url { get; set; }
 
-        public AgentLog Agent { get; set; }
-
         public string Method { get; set; }
 
         public Dictionary<string, string> Parameters { get; set; }

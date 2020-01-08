@@ -12,21 +12,23 @@ namespace raccoonLog.Http
 {
     public class HttpLoggingProvider : IHttpLoggingProvider
     {
+        private readonly IHttpRequestLogHandler _requestHandler;
         private readonly IHttpResponseLogHandler _responseHandler;
 
-        private readonly IHttpRequestLogHandler _requestHandler;
-
         private readonly ILogger<HttpRequest> _requestLogger;
-
         private readonly ILogger<HttpResponse> _responseLogger;
 
+        private readonly IHttpLoggingStore _store;
         private IOptions<RaccoonLogHttpOptions> _options;
+
 
         public HttpLoggingProvider(IHttpResponseLogHandler responseHandler,
             IHttpRequestLogHandler requestHandler,
             IOptions<RaccoonLogHttpOptions> options,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            IHttpLoggingStore store)
         {
+            _store = store;
             _options = options;
             _responseHandler = responseHandler;
             _requestHandler = requestHandler;
@@ -35,7 +37,7 @@ namespace raccoonLog.Http
             _responseLogger = loggerFactory.CreateLogger<HttpResponse>();
         }
 
-        public Task LogAsync(HttpRequest request, CancellationToken cancellationToken)
+        public ValueTask LogAsync(HttpRequest request, CancellationToken cancellationToken)
         {
             if (request == null)
             {
@@ -46,7 +48,7 @@ namespace raccoonLog.Http
         }
 
 
-        public Task LogAsync(HttpResponse response, Stream body, CancellationToken cancellationToken)
+        public ValueTask LogAsync(HttpResponse response, Stream body, CancellationToken cancellationToken)
         {
             if (response == null)
             {
@@ -56,7 +58,7 @@ namespace raccoonLog.Http
             return LogResponse(response, body, cancellationToken);
         }
 
-        private async Task LogResponse(HttpResponse response, Stream body, CancellationToken cancellationToken)
+        private async ValueTask LogResponse(HttpResponse response, Stream body, CancellationToken cancellationToken)
         {
             var logMessage = await _responseHandler.Handle(response, body, cancellationToken);
 
@@ -69,10 +71,10 @@ namespace raccoonLog.Http
                 _responseLogger.LogInformation(json);
             }
 
-            // store log message
+            await _store.StoreAsync(logMessage, cancellationToken);
         }
 
-        private async Task LogRequest(HttpRequest request, CancellationToken cancellationToken)
+        private async ValueTask LogRequest(HttpRequest request, CancellationToken cancellationToken)
         {
             var logMessage = await _requestHandler.Handle(request, cancellationToken);
 
@@ -85,7 +87,7 @@ namespace raccoonLog.Http
                 _requestLogger.LogInformation(json);
             }
 
-            // store log Message
+            await _store.StoreAsync(logMessage, cancellationToken);
         }
     }
 }

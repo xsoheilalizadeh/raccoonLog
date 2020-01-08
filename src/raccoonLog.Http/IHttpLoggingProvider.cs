@@ -7,8 +7,8 @@ namespace raccoonLog.Http
 {
     public interface IHttpLoggingProvider
     {
-        Task LogAsync(HttpRequest request, CancellationToken cancellationToken);
+        ValueTask LogAsync(HttpRequest request, CancellationToken cancellationToken);
 
-        Task LogAsync(HttpResponse response, Stream body, CancellationToken cancellationToken);
+        ValueTask LogAsync(HttpResponse response, Stream body, CancellationToken cancellationToken);
     }
 }

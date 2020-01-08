@@ -14,7 +14,7 @@ namespace raccoonLog.Http.Handlers
             _options = options;
         }
 
-        public Task Handle(HttpContext context, HttpMessageLog logMessage)
+        public ValueTask Handle(HttpContext context, HttpMessageLog logMessage)
         {
             if (context == null)
             {
@@ -40,7 +40,7 @@ namespace raccoonLog.Http.Handlers
                 }
             }
 
-            return Task.CompletedTask;  
+            return default;  
         }
     }
 }

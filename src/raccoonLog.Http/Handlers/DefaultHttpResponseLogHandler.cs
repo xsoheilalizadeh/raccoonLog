@@ -20,7 +20,7 @@ namespace raccoonLog.Http.Handlers
             _bodyHandler = bodyHandler;
         }
 
-        public async Task<HttpResponseLog> Handle(HttpResponse response, Stream body,
+        public async ValueTask<HttpResponseLog> Handle(HttpResponse response, Stream body,
             CancellationToken cancellationToken = default)
         {
             if (response == null)
@@ -50,7 +50,7 @@ namespace raccoonLog.Http.Handlers
             return logMessage;
         }
 
-        private Task<HttpResponseLog> CreateLogMessage(CancellationToken cancellationToken)
+        private ValueTask<HttpResponseLog> CreateLogMessage(CancellationToken cancellationToken)
         {
             return _logMessageFactory.Create<HttpResponseLog>(cancellationToken);
         }

@@ -5,6 +5,6 @@ namespace raccoonLog.Http.Handlers
 {
     public interface IHttpMessageLogTraceIdHandler
     {
-        Task Handle(HttpContext context, HttpMessageLog logMessage);
+        ValueTask Handle(HttpContext context, HttpMessageLog logMessage);
     }
 }

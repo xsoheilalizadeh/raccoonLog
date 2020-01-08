@@ -15,7 +15,7 @@ namespace raccoonLog.Http.Handlers
     {
         protected internal bool Ignored { get; set; }
 
-        public async Task Handle(Stream body, THttpMessageLog logMessage, CancellationToken cancellationToken = default)
+        public async ValueTask Handle(Stream body, THttpMessageLog logMessage, CancellationToken cancellationToken = default)
         {
             if (body == null)
             {

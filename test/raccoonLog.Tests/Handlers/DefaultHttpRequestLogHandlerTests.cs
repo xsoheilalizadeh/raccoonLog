@@ -19,12 +19,9 @@ namespace raccoonLog.Tests.Handlers
 
         private Mock<IHttpRequestLogBodyHandler> _bodyHandler;
 
-        private Mock<IHttpRequestLogAgentHandler> _agentHandler;
-
         public DefaultHttpRequestLogHandlerTests()
         {
             _bodyHandler = new Mock<IHttpRequestLogBodyHandler>();
-            _agentHandler = new Mock<IHttpRequestLogAgentHandler>();
             _formContentHandler = new Mock<IHttpRequestLogFormHandler>();
             _logMessageFactory = new Mock<IHttpLogMessageFactory>();
         }
@@ -37,7 +34,7 @@ namespace raccoonLog.Tests.Handlers
             var handler = CreateHandler();
 
             // act and assert
-            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(null));
+            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(null).AsTask());
         }
 
         [Fact]
@@ -48,7 +45,7 @@ namespace raccoonLog.Tests.Handlers
             var handler = CreateHandler();
 
             // act and assert
-            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(context.Request));
+            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(context.Request).AsTask());
         }
 
         [Fact]
@@ -142,8 +139,7 @@ namespace raccoonLog.Tests.Handlers
             return new DefaultHttpRequestLogHandler(
                 _logMessageFactory.Object,
                 _formContentHandler.Object,
-                _bodyHandler.Object,
-                _agentHandler.Object
+                _bodyHandler.Object
             );
         }
     }

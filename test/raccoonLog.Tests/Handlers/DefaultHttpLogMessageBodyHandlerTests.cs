@@ -29,7 +29,7 @@ namespace raccoonLog.Tests.Handlers
             var handler = new BaseHttpMessageLogBodyHandler<THttpMessageLog>();
             
             // act and assert
-            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(null, logMessage));
+            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(null, logMessage).AsTask());
         }
 
         [Fact]
@@ -40,7 +40,7 @@ namespace raccoonLog.Tests.Handlers
             var handler = new BaseHttpMessageLogBodyHandler<THttpMessageLog>();
 
             // act and assert
-            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(body, null));
+            await Assert.ThrowsAsync<NullReferenceException>(() => handler.Handle(body, null).AsTask());
         }
 
         [Fact]

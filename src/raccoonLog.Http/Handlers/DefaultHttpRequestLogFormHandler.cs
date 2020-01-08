@@ -18,7 +18,7 @@ namespace raccoonLog.Http.Handlers
             _dataProtector = dataProtector;
         }
 
-        public async Task Handle(HttpRequest request, HttpRequestLog logMessage, CancellationToken cancellationToken)
+        public async ValueTask Handle(HttpRequest request, HttpRequestLog logMessage, CancellationToken cancellationToken)
         {
             if (request == null)
             {
