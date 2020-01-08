@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "raccoonLog", "src\raccoonLo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "raccoonLog.Http", "src\raccoonLog.Http\raccoonLog.Http.csproj", "{61FD4468-E019-43F5-BF7C-653C964D8164}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "raccoonLog.Sample", "sample\RaccoonLog.Sample\raccoonLog.Sample.csproj", "{FEB1C7BC-15C7-4A81-9E10-11DC39BCE8CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "raccoonLog.Sample", "sample\raccoonLog.Sample\raccoonLog.Sample.csproj", "{FEB1C7BC-15C7-4A81-9E10-11DC39BCE8CC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{88F9305A-56B3-4F40-B57D-051659963650}"
 EndProject
