@@ -16,6 +16,8 @@ raccoonLog is a logging library that supports HTTP request/response logging in *
 - Use `System.Text.Json` as JSON API
 - Use `System.IO.Pipelines` as I/O API
 - Easy to configure
+- File data store
+- Custom data store 
 
 ### Packages
 
@@ -25,6 +27,7 @@ raccoonLog is a logging library that supports HTTP request/response logging in *
 
 
  ### Quick Start
+ 
  Use following startup codes to configure raccoonLog in you ASP.NET Core application
 
  _Learn more in [documentation][doc]_
@@ -34,7 +37,8 @@ public void ConfigureServices(IServiceCollection services)
 {
     services.AddRaccoonLog(builder =>
     {
-        builder.AddHttpLogging();
+        builder.AddHttpLogging()
+               .AddFileStore();
     });
 }
 
@@ -44,14 +48,7 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
     {
         builder.EnableHttpLogging();
     });
-    app.UseMvc(routes =>
-    {
-        routes.MapRoute(
-            name: "default",
-            template: "{controller=Home}/{action=Index}/{id?}");
-    });
 }
-
 ```
 
 ### Blogs
