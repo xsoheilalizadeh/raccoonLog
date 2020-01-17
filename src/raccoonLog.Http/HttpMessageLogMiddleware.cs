@@ -18,9 +18,7 @@ namespace raccoonLog.Http
 
         public async Task Invoke(HttpContext context, IHttpLoggingProvider httpLogging)
         {
-            var ct = context.RequestAborted;
-
-            await httpLogging.LogAsync(context.Request, ct);
+            await httpLogging.LogAsync(context.Request, context.RequestAborted);
 
             var originalBody = context.Response.Body;
 
@@ -32,11 +30,11 @@ namespace raccoonLog.Http
 
             await _next(context);
 
-            await httpLogging.LogAsync(context.Response, bodyStream, ct);
+            await httpLogging.LogAsync(context.Response, bodyStream, context.RequestAborted);
 
             bodyStream.Position = 0;
 
-            await bodyStream.CopyToAsync(originalBody, ct);
+            await bodyStream.CopyToAsync(originalBody, context.RequestAborted);
 
             context.Response.Body = originalBody;
         }
