@@ -43,29 +43,15 @@ namespace raccoonLog.Http.Handlers
             {
                 logMessage.Body = await ReadBodyAsString(body,cancellationToken);
             }
+
+            body.Position = 0;
         }
 
         protected virtual async ValueTask<object> ReadBodyAsString(Stream body, CancellationToken cancellationToken)
         {
-            var reader = PipeReader.Create(body);
+            var bodyAsString = await new StreamReader(body).ReadToEndAsync();
 
-            var result = await reader.ReadAsync(cancellationToken);
-
-            string bodyAsString = null;
-
-#if NETCOREAPP3_0
-            bodyAsString = Encoding.UTF8.GetString(result.Buffer.FirstSpan);
-
-#elif NETCOREAPP2_2
-
-            bodyAsString = Encoding.UTF8.GetString(result.Buffer.First.ToArray());
-#endif
-            if (string.IsNullOrEmpty(bodyAsString) || string.IsNullOrWhiteSpace(bodyAsString))
-            {
-                return null; // this ignores body in json output
-            }
-
-            return bodyAsString;
+            return string.IsNullOrEmpty(bodyAsString) ? null : bodyAsString;
         }
 
         protected virtual ValueTask<object> DeserializeBody(Stream body, CancellationToken cancellationToken)
