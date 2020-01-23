@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F0815AA7-1684-471E-8A38-B93FBB1EEBF7}"
 	ProjectSection(SolutionItems) = preProject
 		.travis.yml = .travis.yml
+		CHANGELOG.md = CHANGELOG.md
 		src\Directory.Build.props = src\Directory.Build.props
 		README.md = README.md
 		Versions.props = Versions.props
@@ -23,7 +24,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "raccoonLog.Tests", "test\ra
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{C5D71756-E0E5-4C0B-A22B-3DCC1C46C151}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpLoggingSample", "sample\HttpLoggingSample\HttpLoggingSample.csproj", "{37742C8A-64C2-4CF0-BCC3-653E0E4F8025}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpLoggingSample", "sample\HttpLoggingSample\HttpLoggingSample.csproj", "{37742C8A-64C2-4CF0-BCC3-653E0E4F8025}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

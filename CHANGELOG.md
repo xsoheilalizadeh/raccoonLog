@@ -1,3 +1,10 @@
+# 2.0.1 (2020-01-24)
+
+### Bug Fix
+
+* Resetting the request body stream position
+
+
 # 2.0.0 (2020-01-17)
 
 ### Features
