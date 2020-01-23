@@ -35,5 +35,18 @@ namespace HttpLoggingSample.Controllers
             })
             .ToArray();
         }
+
+        [HttpPost]
+        public ActionResult Post(XForm form)
+        {
+            return Ok(form);
+        }
+
+    }
+
+    public class XForm
+    {
+        public string Name { get; set; }
     }
 }
+
