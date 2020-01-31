@@ -10,10 +10,11 @@ namespace raccoonLog.Http.Stores
         {
             var services = builder.Services;
 
-            services.Configure(configureOptions);
-            
-            
             builder.AddStore<FileStore>();
+
+            services.Configure(configureOptions);
+
+            services.AddSingleton<IFileSystem, FileSystem>();
         }
     }
 }
