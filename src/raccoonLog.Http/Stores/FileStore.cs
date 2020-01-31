@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using Microsoft.Extensions.Options;
 using System.IO;
 using System.Text.Json;
@@ -20,22 +18,27 @@ namespace raccoonLog.Http.Stores
 
         private static bool HasLogDirectory;
 
-        private FileStream _fileStream;
+        private FileStream _logFileStream;
+
+        private IFileSystem _fileSystem;
 
         private readonly IOptions<FileStoreOptions> _options;
         private readonly IOptions<RaccoonLogHttpOptions> _logHttpOptions;
 
-        private static readonly byte[] UTF8EndBracket = {(byte) ']'};
-        private static readonly byte[] UTF8StartBracket = {(byte) '['};
-        private static readonly byte[] UTF8Enter = {(byte) '\r', (byte) '\n', (byte) ','};
+        private static readonly byte[] UTF8EndBracket = { (byte)']' };
+        private static readonly byte[] UTF8StartBracket = { (byte)'[' };
+        private static readonly byte[] UTF8Enter = { (byte)',', (byte)'\r', (byte)'\n' };
 
+        private bool responseStored = false;
 
         internal FileStore(
             IOptions<RaccoonLogHttpOptions> logHttpOptions,
-            IOptions<FileStoreOptions> options
+            IOptions<FileStoreOptions> options,
+            IFileSystem fileSystem
         )
         {
             _options = options;
+            _fileSystem = fileSystem;
             _logHttpOptions = logHttpOptions;
         }
 
@@ -43,8 +46,9 @@ namespace raccoonLog.Http.Stores
 #if NETCOREAPP2_2
         public FileStore(IHostingEnvironment environment,
             IOptions<RaccoonLogHttpOptions> logHttpOptions,
-            IOptions<FileStoreOptions> options
-        ) : this(logHttpOptions, options)
+            IOptions<FileStoreOptions> options,
+            IFileSystem fileSystem
+        ) : this(logHttpOptions, options, fileSystem)
         {
             _environment = environment;
         }
@@ -52,8 +56,9 @@ namespace raccoonLog.Http.Stores
 #elif NETCOREAPP3_0 || NETCOREAPP3_1
         public FileStore(IHostEnvironment environment,
             IOptions<RaccoonLogHttpOptions> logHttpOptions,
-            IOptions<FileStoreOptions> options
-        ) : this(logHttpOptions, options)
+            IOptions<FileStoreOptions> options,
+            IFileSystem fileSystem
+        ) : this(logHttpOptions, options,fileSystem)
         {
             _environment = environment;
         }
@@ -79,30 +84,31 @@ namespace raccoonLog.Http.Stores
 
             var filePath = GetSavePath(messageLog, ref path);
 
-
-            if (_fileStream is null)
+            if (_logFileStream is null)
             {
-                _fileStream = File.Open(filePath, FileMode.Append, FileAccess.Write, FileShare.Read);
+                _logFileStream = _fileSystem.Open(filePath, FileMode.Append, FileAccess.Write, FileShare.Read);
             }
 
             var logAsBytes = JsonSerializer.SerializeToUtf8Bytes(messageLog, options.JsonSerializerOptions);
 
-            var isEmpty = _fileStream.Length == 0;
+            var isRequest = messageLog is HttpRequestLog;
 
-            if (isEmpty)
+            if (isRequest)
             {
-                await _fileStream.WriteAsync(UTF8StartBracket, cancellationToken);
-            }
-
-            await _fileStream.WriteAsync(logAsBytes, cancellationToken);
-
-            if (!isEmpty)
-            {
-                await _fileStream.WriteAsync(UTF8EndBracket, cancellationToken);
+                await _logFileStream.WriteAsync(UTF8StartBracket, cancellationToken);
             }
             else
             {
-                await _fileStream.WriteAsync(UTF8Enter, cancellationToken);
+                await _logFileStream.WriteAsync(UTF8Enter, cancellationToken);
+            }
+
+            await _logFileStream.WriteAsync(logAsBytes, cancellationToken);
+
+            if (!isRequest)
+            {
+                responseStored = true;
+
+                await _logFileStream.WriteAsync(UTF8EndBracket, cancellationToken);
             }
         }
 
@@ -133,9 +139,15 @@ namespace raccoonLog.Http.Stores
             return Path.Combine(_environment.ContentRootPath, options.SavePath);
         }
 
+
         public void Dispose()
         {
-            _fileStream?.Dispose();
+            if (!responseStored)
+            {
+                _logFileStream.Write(UTF8EndBracket);
+            }
+
+            _logFileStream?.Dispose();
         }
     }
 }
