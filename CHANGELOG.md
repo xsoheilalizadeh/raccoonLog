@@ -1,6 +1,13 @@
+# 2.0.2 (2020-01-31)
+
+### Bug Fixes
+
+* FileStore - Append correct log format when exception occurred ([#15][pr-15])
+
+
 # 2.0.1 (2020-01-24)
 
-### Bug Fix
+### Bug Fixes
 
 * Resetting the request body stream position
 
@@ -22,3 +29,6 @@
 ### Breaking Changes
 
 * Drop user agent parser support
+
+
+[pr-15]:https://github.com/xsoheilalizadeh/raccoonLog/pull/15
