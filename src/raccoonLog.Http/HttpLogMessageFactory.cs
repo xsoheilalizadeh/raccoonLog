@@ -211,7 +211,7 @@ namespace raccoonLog.Http
                     claimValue = claim.Value;
                 }
 
-                logMessage.Claims.Add(claim.Type, claimValue);
+                logMessage.Claims.TryAdd(claim.Type, claimValue);
             }
         }
 
