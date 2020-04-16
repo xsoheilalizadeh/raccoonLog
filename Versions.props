@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup Label="InternalPackagesVersions">
-    <CoreLibVersion>2.0.3</CoreLibVersion>
-    <HttpLibVersion>2.0.3</HttpLibVersion>
+    <CoreLibVersion>2.0.4</CoreLibVersion>
+    <HttpLibVersion>2.0.4</HttpLibVersion>
   </PropertyGroup>
 
   <PropertyGroup Label="ExternalPackagesVersions">
