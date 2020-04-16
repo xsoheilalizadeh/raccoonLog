@@ -122,6 +122,26 @@ namespace raccoonLog.Tests.Handlers
 
             Assert.Equal(text, json.GetRawText());
         }
+
+        [Fact]
+        public async Task HandleSetEmptyBodyWhenItIsJsonAndEmpty()
+        {
+            // arrange
+            var handler = new BaseHttpMessageLogBodyHandler<THttpMessageLog>();
+            var logMessage = new THttpMessageLog();
+            var body = new MemoryStream();
+            var text = string.Empty;
+            var textAsBytes = Encoding.UTF8.GetBytes(text);
+
+            await body.WriteAsync(textAsBytes);
+
+            logMessage.ContentType = MediaTypeNames.Application.Json;
+
+            // act
+            await handler.Handle(body, logMessage);
+
+            Assert.Null(logMessage.Body);
+        }
     }
 
 }

@@ -31,6 +31,11 @@ namespace raccoonLog.Http.Handlers
                 return;
             }
 
+            if(body.Length <= 0)
+            {
+                return;
+            }
+
             body.Position = 0;
 
             if (logMessage.IsJson())
