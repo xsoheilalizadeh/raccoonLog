@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="ExternalPackagesVersions">
-    <SystemTextJson>4.6.0</SystemTextJson>
+    <SystemTextJson>4.7.1</SystemTextJson>
   </PropertyGroup>
 
 </Project>

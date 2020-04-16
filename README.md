@@ -14,7 +14,6 @@ raccoonLog is a logging library that supports HTTP request/response logging in *
 - Sensitive data protection in request/response (body limitation)
 - Ignoring content types and headers in request/response
 - Use `System.Text.Json` as JSON API
-- Use `System.IO.Pipelines` as I/O API
 - Easy to configure
 - File data store
 - Custom data store 
