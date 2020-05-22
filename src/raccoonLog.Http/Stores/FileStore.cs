@@ -74,7 +74,7 @@ namespace raccoonLog.Http.Stores
             return SaveLogMessageAsync(responseLog, cancellationToken);
         }
 
-        private async ValueTask SaveLogMessageAsync(HttpMessageLog messageLog, CancellationToken cancellationToken)
+        private async ValueTask SaveLogMessageAsync(HttpMessageLog messageLog, CancellationToken cancellationToken = default)
         {
             var path = GetPath();
 
