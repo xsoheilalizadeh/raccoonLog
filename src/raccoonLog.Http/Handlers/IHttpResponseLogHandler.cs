@@ -7,7 +7,7 @@ namespace raccoonLog.Http.Handlers
 {
     public interface IHttpResponseLogHandler
     {
-        ValueTask<HttpResponseLog> Handle(HttpResponse response, Stream body, CancellationToken cancellationToken);
+        ValueTask<HttpResponseLog> Handle(HttpResponse response, Stream body, CancellationToken cancellationToken = default);
     }
 }
             
