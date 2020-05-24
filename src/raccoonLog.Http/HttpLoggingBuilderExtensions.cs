@@ -5,6 +5,26 @@ using raccoonLog.Http.Handlers;
 
 namespace raccoonLog.Http
 {
+    public class RaccoonLogBuilder
+    {
+        public RaccoonLogBuilder(IServiceCollection services)
+        {
+            Services = services;
+        }
+
+        public IServiceCollection Services { get; set; }
+
+
+    }
+    public static class RaccoonLogServiceCollectionExtensions
+    {
+        public static void AddRaccoonLog(this IServiceCollection services, Action<RaccoonLogBuilder> builder)
+        {
+            var logBuilder = new RaccoonLogBuilder(services);
+
+            builder(logBuilder);
+        }
+    }
     public static class HttpLoggingBuilderExtensions
     {
         public static HttpLoggingBuilder AddHttpLogging(this RaccoonLogBuilder builder,
@@ -26,12 +46,9 @@ namespace raccoonLog.Http
             // handlers 
 
             services.AddScoped<IHttpRequestLogFormHandler, DefaultHttpRequestLogFormHandler>();
-            services.AddScoped<IHttpMessageLogTraceIdHandler, DefaultHttpMessageLogTraceIdHandler>();
 
             services.AddScoped<IHttpRequestLogHandler, DefaultHttpRequestLogHandler>();
             services.AddScoped<IHttpResponseLogHandler, DefaultHttpResponseLogHandler>();
-            services.AddScoped<IHttpRequestLogBodyHandler, DefaultHttpRequestLogBodyHandler>();
-            services.AddScoped<IHttpResponseLogBodyHandler, DefaultHttpResponseLogBodyHandler>();
 
             return new HttpLoggingBuilder(services);
         }

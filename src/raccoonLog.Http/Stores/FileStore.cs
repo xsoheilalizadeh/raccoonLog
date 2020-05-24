@@ -10,11 +10,7 @@ namespace raccoonLog.Http.Stores
 {
     public class FileStore : IHttpLoggingStore, IDisposable
     {
-#if NETCOREAPP2_2
-        private readonly IHostingEnvironment _environment;
-#elif NETCOREAPP3_0 || NETCOREAPP3_1
         private readonly IHostEnvironment _environment;
-#endif
 
         private static bool HasLogDirectory;
 
@@ -22,14 +18,9 @@ namespace raccoonLog.Http.Stores
 
         private IFileSystem _fileSystem;
 
-        private readonly IOptions<FileStoreOptions> _options;
-        private readonly IOptions<RaccoonLogHttpOptions> _logHttpOptions;
+        private readonly FileStoreOptions _storeOptions;
 
-        private static readonly byte[] UTF8EndBracket = { (byte)']' };
-        private static readonly byte[] UTF8StartBracket = { (byte)'[' };
-        private static readonly byte[] UTF8Enter = { (byte)',', (byte)'\r', (byte)'\n' };
-
-        private bool responseStored = false;
+        private readonly RaccoonLogHttpOptions _options;
 
         internal FileStore(
             IOptions<RaccoonLogHttpOptions> logHttpOptions,
@@ -37,14 +28,13 @@ namespace raccoonLog.Http.Stores
             IFileSystem fileSystem
         )
         {
-            _options = options;
+            _storeOptions = options.Value;
             _fileSystem = fileSystem;
-            _logHttpOptions = logHttpOptions;
+            _options = logHttpOptions.Value;
         }
 
 
-#if NETCOREAPP2_2
-        public FileStore(IHostingEnvironment environment,
+        public FileStore(IHostEnvironment environment,
             IOptions<RaccoonLogHttpOptions> logHttpOptions,
             IOptions<FileStoreOptions> options,
             IFileSystem fileSystem
@@ -53,100 +43,49 @@ namespace raccoonLog.Http.Stores
             _environment = environment;
         }
 
-#elif NETCOREAPP3_0 || NETCOREAPP3_1
-        public FileStore(IHostEnvironment environment,
-            IOptions<RaccoonLogHttpOptions> logHttpOptions,
-            IOptions<FileStoreOptions> options,
-            IFileSystem fileSystem
-        ) : this(logHttpOptions, options,fileSystem)
+        public string DirectoryPath => Path.Combine(_environment.ContentRootPath, _storeOptions.SavePath);
+
+        public async ValueTask StoreAsync(LogContext logContext, CancellationToken cancellationToken = default)
         {
-            _environment = environment;
-        }
-#endif
+            TryCreateLogDirectory();
 
-        public ValueTask StoreAsync(HttpRequestLog requestLog, CancellationToken cancellationToken = default)
-        {
-            return SaveLogMessageAsync(requestLog, cancellationToken);
-        }
-
-        public ValueTask StoreAsync(HttpResponseLog responseLog, CancellationToken cancellationToken = default)
-        {
-            return SaveLogMessageAsync(responseLog, cancellationToken);
-        }
-
-        private async ValueTask SaveLogMessageAsync(HttpMessageLog messageLog, CancellationToken cancellationToken = default)
-        {
-            var path = GetPath();
-
-            var options = _logHttpOptions.Value;
-
-            TryCreateLogDirectory(path);
-
-            var filePath = GetSavePath(messageLog, ref path);
+            var filePath = GetSavePath(logContext.TraceId);
 
             if (_logFileStream is null)
             {
                 _logFileStream = _fileSystem.Open(filePath, FileMode.Append, FileAccess.Write, FileShare.Read);
             }
 
-            var logAsBytes = JsonSerializer.SerializeToUtf8Bytes(messageLog, options.JsonSerializerOptions);
-
-            var isRequest = messageLog is HttpRequestLog;
-
-            if (isRequest)
-            {
-                await _logFileStream.WriteAsync(UTF8StartBracket, cancellationToken);
-            }
-            else
-            {
-                await _logFileStream.WriteAsync(UTF8Enter, cancellationToken);
-            }
+            var logAsBytes = JsonSerializer.SerializeToUtf8Bytes(logContext, _options.JsonSerializerOptions);
 
             await _logFileStream.WriteAsync(logAsBytes, cancellationToken);
-
-            if (!isRequest)
-            {
-                responseStored = true;
-
-                await _logFileStream.WriteAsync(UTF8EndBracket, cancellationToken);
-            }
         }
 
-        private void TryCreateLogDirectory(string path)
+
+        private void TryCreateLogDirectory()
         {
             if (!HasLogDirectory)
             {
-                if (!Directory.Exists(path))
+                if (!Directory.Exists(DirectoryPath))
                 {
-                    Directory.CreateDirectory(path);
+                    Directory.CreateDirectory(DirectoryPath);
                 }
 
                 HasLogDirectory = true;
             }
         }
 
-        private string GetSavePath(HttpMessageLog messageLog, ref string path)
+        private string GetSavePath(string traceId)
         {
-            var traceId = messageLog.TraceId.Replace(":", "");
+            _ = traceId ?? throw new ArgumentNullException(nameof(traceId));
 
-            return Path.Combine(path, $"log-{traceId}.json");
+            traceId = traceId.Replace(":", "");
+
+            return Path.Combine(DirectoryPath, $"log-{traceId}.json");
         }
-
-        private string GetPath()
-        {
-            var options = _options.Value;
-
-            return Path.Combine(_environment.ContentRootPath, options.SavePath);
-        }
-
 
         public void Dispose()
         {
-            if (!responseStored)
-            {
-                _logFileStream.Write(UTF8EndBracket);
-            }
-
             _logFileStream?.Dispose();
         }
     }

@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace raccoonLog.Http.Handlers
 {
@@ -11,48 +12,45 @@ namespace raccoonLog.Http.Handlers
     {
         private readonly IHttpLogMessageFactory _logMessageFactory;
 
-        private readonly IHttpResponseLogBodyHandler _bodyHandler;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        private readonly RaccoonLogHttpOptions _options;
 
         public DefaultHttpResponseLogHandler(IHttpLogMessageFactory logMessageFactory,
-            IHttpResponseLogBodyHandler bodyHandler)
+             IHttpContextAccessor httpContextAccessor,
+             IOptions<RaccoonLogHttpOptions> options)
         {
+            _options = options.Value;
             _logMessageFactory = logMessageFactory;
-            _bodyHandler = bodyHandler;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        public async ValueTask<HttpResponseLog> Handle(HttpResponse response, Stream body,
-            CancellationToken cancellationToken = default)
+        public async ValueTask<HttpResponseLog> Handle(HttpResponse response, CancellationToken cancellationToken = default)
         {
             if (response == null)
             {
                 throw new NullReferenceException();
             }
 
-            if (body == null)
-            {
-                throw new NullReferenceException(nameof(body));
-            }
-
-
-            var logMessage = await CreateLogMessage(cancellationToken);
+            var logMessage = _logMessageFactory.Create(response);
 
             if (logMessage == null)
             {
                 throw new NullReferenceException(nameof(logMessage));
             }
 
-            logMessage.StatusCode = response.StatusCode;
+            var context = _httpContextAccessor.HttpContext;
 
-            logMessage.Status = (HttpStatusCode) response.StatusCode;
+            var bodyFeature = context.Features.Get<ReadResponseBodyFeature>();
 
-            await _bodyHandler.Handle(response.Body, logMessage, cancellationToken);
+            var reader = new HttpMessageLogBodyReader(_options.Response.IgnoreContentTypes);
+
+            var body = await reader.ReadAsync(bodyFeature.Body, response.ContentType);
+
+            logMessage.SetBody(body);
 
             return logMessage;
         }
 
-        private ValueTask<HttpResponseLog> CreateLogMessage(CancellationToken cancellationToken)
-        {
-            return _logMessageFactory.Create<HttpResponseLog>(cancellationToken);
-        }
     }
 }

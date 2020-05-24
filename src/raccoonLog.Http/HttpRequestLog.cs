@@ -1,32 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Primitives;
 
 namespace raccoonLog.Http
 {
-    public class HttpRequestLog : HttpMessageLog
+    public class HttpRequestLog
     {
-        public HttpRequestLog()
+        public HttpRequestLog(UrlLog url, string method,
+           List<KeyValuePair<string, StringValues>> parameters,
+           List<KeyValuePair<string, StringValues>> headers,
+           List<KeyValuePair<string, string>> cookies,
+           string? contentType = null
+           )
         {
-            Parameters = new Dictionary<string, string>();
-            Cookies = new Dictionary<string, string>();
-            Type = HttpMessageLogType.Request;
+            Url = url;
+            Method = method;
+            Cookies = cookies;
+            Headers = headers;
+            Parameters = parameters;
         }
-        public string Issuer { get; set; }
 
-        public UrlLog Url { get; set; }
+        public UrlLog Url { get; private set; }
 
-        public string Method { get; set; }
+        public string Method { get; private set; }
 
-        public Dictionary<string, string> Parameters { get; set; }
+        public object? Body { get; private set; }
 
-        public Dictionary<string, string> Cookies { get; set; }
+        public string? ContentType { get; private set; }
 
-        public void SetUrl(string url, string protocol)
-        {
-            var uri = new Uri(url);
+        public IReadOnlyList<KeyValuePair<string, StringValues>> Headers { get; set; }
 
-            Url = new UrlLog(uri, protocol);
-        }
+        public IReadOnlyList<KeyValuePair<string, StringValues>> Parameters { get; private set; }
+
+        public IReadOnlyList<KeyValuePair<string, string>> Cookies { get; private set; }
+
+        internal void SetBody(object? body) => Body = body;
     }
 }
 

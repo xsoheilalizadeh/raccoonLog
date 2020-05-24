@@ -1,53 +1,45 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net.Mime;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-[assembly: InternalsVisibleTo("raccoonLog.Tests")]
-
 namespace raccoonLog.Http.Handlers
 {
-    public class BaseHttpMessageLogBodyHandler<THttpMessageLog> where THttpMessageLog : HttpMessageLog
+    public class HttpMessageLogBodyReader
     {
-        protected internal bool Ignored { get; set; }
+        private readonly List<string> ignoredContentTypes;
 
-        public async ValueTask Handle(Stream body, THttpMessageLog logMessage, CancellationToken cancellationToken = default)
+        public HttpMessageLogBodyReader(List<string> ignoredContentTypes)
+        {
+            this.ignoredContentTypes = ignoredContentTypes;
+        }
+
+        public  ValueTask<object> ReadAsync(Stream body, string contentType, CancellationToken cancellationToken = default)
         {
             if (body == null)
             {
                 throw new NullReferenceException(nameof(body));
             }    
 
-            if (logMessage == null)
-            {
-                throw new NullReferenceException(nameof(logMessage));
-            }
-
-            if (logMessage.HasBody() || logMessage.IsBodyIgnored())
-            {
-                Ignored = true;
-                return;
-            }
-
             if(body.Length <= 0)
             {
-                return;
+                return default;
             }
 
             body.Position = 0;
 
-            if (logMessage.IsJson())
+            if (contentType.Equals("application/json; charset=utf-8"))
             {
-                logMessage.Body = await DeserializeBody(body,cancellationToken);
+                return DeserializeBody(body,cancellationToken);
             }
             else
             {
-                logMessage.Body = await ReadBodyAsString(body,cancellationToken);
+                return ReadBodyAsString(body,cancellationToken);
             }
-
-            body.Position = 0;
         }
 
         protected virtual async ValueTask<object> ReadBodyAsString(Stream body, CancellationToken cancellationToken)

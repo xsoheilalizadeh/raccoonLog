@@ -5,15 +5,15 @@ namespace raccoonLog.Http
 {
     public class FormLog
     {
-        public FormLog()
+        public FormLog(List<KeyValuePair<string, string>> form, List<FileLog> files)
         {
-            Form = new Dictionary<string, string>();
-            Files = new List<FileLog>();
+            Form = form;
+            Files = files;
         }
 
-        public Dictionary<string, string> Form { get; set; }
+        public List<KeyValuePair<string, string>> Form { get; private set; }
 
-        public List<FileLog> Files { get; set; }
+        public IReadOnlyList<FileLog> Files { get; private set; }
     }
 
     public class FileLog
@@ -27,14 +27,14 @@ namespace raccoonLog.Http
             ContentDisposition = file.ContentDisposition;
         }
 
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
-        public string FileName { get; set; }
+        public string FileName { get; private set; }
 
-        public string ContentType { get; set; }
+        public string ContentType { get; private set; }
 
-        public long ContentLength { get; set; }
+        public long ContentLength { get; private set; }
 
-        public string ContentDisposition { get; set; }
+        public string ContentDisposition { get; private set; }
     }
 }

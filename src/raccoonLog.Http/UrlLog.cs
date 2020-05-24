@@ -4,21 +4,21 @@ namespace raccoonLog.Http
 {
     public class UrlLog
     {
-        public UrlLog(Uri uri, string protocol)
+        public UrlLog(Uri uri)
         {
             Host = uri.Host;
-            Protocol = protocol;
             Scheme = uri.Scheme;
             Path = uri.AbsolutePath;
+            Port = uri.Port;
         }
 
-        public string Path { get; set; }
+        public int Port { get; private set; }
 
-        public string Host { get; set; }
+        public string Path { get; private set; }
 
-        public string Scheme { get; set; }
+        public string Host { get; private set; }
 
-        public string Protocol { get; set; }
+        public string Scheme { get; private set; }
     }
 }
 

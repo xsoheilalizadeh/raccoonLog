@@ -1,5 +1,6 @@
 ﻿using Microsoft.Net.Http.Headers;
 using System.Collections.Generic;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -15,6 +16,7 @@ namespace raccoonLog.Http
             JsonSerializerOptions = new JsonSerializerOptions
             {
                 IgnoreNullValues = true,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             };
             JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             EnableConsoleLogging = true;
@@ -41,16 +43,13 @@ namespace raccoonLog.Http
         public RaccoonLogHttpRequestOptions Request { get; } = new RaccoonLogHttpRequestOptions();
 
         public RaccoonLogHttpResponseOptions Response { get; } = new RaccoonLogHttpResponseOptions();
-
-        public HttpLogSensitiveDataOptions SensitiveData { get; } = new HttpLogSensitiveDataOptions();
     }
-
 
     public abstract class RaccoonLogHttpMessageOptions
     {
-        public IList<string> IgnoreHeaders { get; set; } = new List<string>();
+        public List<string> IgnoreHeaders { get; set; } = new List<string>();
 
-        public IList<string> IgnoreContentTypes { get; set; } = new List<string>();
+        public List<string> IgnoreContentTypes { get; set; } = new List<string>();
     }
 
     public class RaccoonLogHttpResponseOptions : RaccoonLogHttpMessageOptions
@@ -59,6 +58,8 @@ namespace raccoonLog.Http
         {
             IgnoreContentTypes.Add("text/html; charset=utf-8");
         }
+
+        public HttpResponseLogSensitiveDataOptions SensitiveData { get; } = new HttpResponseLogSensitiveDataOptions();
     }
 
     public class RaccoonLogHttpRequestOptions : RaccoonLogHttpMessageOptions
@@ -67,5 +68,7 @@ namespace raccoonLog.Http
         {
             IgnoreHeaders.Add(HeaderNames.Cookie);
         }
+
+        public HttpRequestLogSensitiveDataOptions SensitiveData { get; } = new HttpRequestLogSensitiveDataOptions();
     }
 }

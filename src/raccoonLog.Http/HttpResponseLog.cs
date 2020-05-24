@@ -1,17 +1,28 @@
-﻿using System.Net;
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
+using Microsoft.Extensions.Primitives;
 
 namespace raccoonLog.Http
 {
-    public class HttpResponseLog : HttpMessageLog
+    public class HttpResponseLog
     {
-        public HttpResponseLog()
+        public HttpResponseLog(int statusCode, string contenType, List<KeyValuePair<string, StringValues>> headers)
         {
-            Type = HttpMessageLogType.Response;
+            StatusCode = statusCode;
+            ContenType = contenType;
+            Headers = headers;
         }
 
-        public int StatusCode { get; set; }
+        public int StatusCode { get; private set; }
 
-        public HttpStatusCode Status { get; set; }
+        public object? Body { get; private set; }
+
+        public string? ContenType { get; private set; }
+
+        public  List<KeyValuePair<string, StringValues>> Headers { get; private set; }
+
+        internal void SetBody(object? body) => Body = body; 
     }
 }
 
