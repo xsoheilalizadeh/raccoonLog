@@ -42,10 +42,6 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 }
 ```
 
-### Blogs
-- [HTTP Logging in ASP.NET Core][1]
-
-
 ### Contribution
 This library is young, as young as me and it needs to represent more abilities as a library therefore I need your help for bugs, features, performance improvement.
 
