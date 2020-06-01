@@ -1,5 +1,9 @@
-﻿using Microsoft.Net.Http.Headers;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
+using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -8,35 +12,47 @@ namespace raccoonLog.Http
 {
     public class RaccoonLogHttpOptions
     {
-        private bool _enableConsoleLogging;
-
         public RaccoonLogHttpOptions()
         {
-            TraceIdHeaderName = "X-RaccoonLog-Id";
+            Level = LogLevel.Information;
+
             JsonSerializerOptions = new JsonSerializerOptions
             {
                 IgnoreNullValues = true,
                 Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             };
+
             JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            EnableConsoleLogging = true;
-        }
 
-        public string TraceIdHeaderName { get; set; }
-
-        public bool EnableConsoleLogging
-        {
-            get => _enableConsoleLogging;
-            set
+            Formatter = (state, exception) =>
             {
-                _enableConsoleLogging = value;
-                
-                if (value)
+                var log = new StringBuilder();
+
+                log.Append("* TraceId: ").Append(state.TraceId)
+                   .AppendFormat("\r\n> {0} ", state.Request.Method.ToUpper()).Append(state.Request.Url);
+
+                foreach (var (key, value) in state.Request.Headers)
                 {
-                    JsonSerializerOptions.WriteIndented = true;
+                    log.AppendFormat("\r\n> {0}: {1}", key, value);
                 }
-            }
+
+                log.Append("\r\n");
+
+                log
+                   .AppendFormat("\r\n< {0} {1} {2}", state.Protocol, state.Response.StatusCode, (HttpStatusCode)state.Response.StatusCode);
+
+                foreach (var (key, value) in state.Response.Headers)
+                {
+                    log.AppendFormat("\r\n< {0}: {1}", key, value);
+                }
+
+                return log.ToString();
+            };
         }
+
+        public LogLevel Level { get; set; }
+
+        public Func<LogContext, Exception, string> Formatter { get; internal set; }
 
         public JsonSerializerOptions JsonSerializerOptions { get; }
 
