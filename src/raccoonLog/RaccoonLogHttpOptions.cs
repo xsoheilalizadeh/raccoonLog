@@ -28,7 +28,7 @@ namespace raccoonLog
             {
                 var log = new StringBuilder();
 
-                log.Append("* TraceId: ").Append(state.TraceId)
+                log.Append("\r\n* TraceId: ").Append(state.TraceId)
                    .AppendFormat("\r\n> {0} ", state.Request.Method.ToUpper()).Append(state.Request.Url);
 
                 foreach (var (key, value) in state.Request.Headers)
