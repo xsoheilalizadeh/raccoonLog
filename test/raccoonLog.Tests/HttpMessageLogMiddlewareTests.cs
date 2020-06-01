@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using raccoonLog.Http;
+using raccoonLog;
 using Xunit;
 
 namespace raccoonLog.Tests

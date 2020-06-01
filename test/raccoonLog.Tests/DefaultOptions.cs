@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
-using raccoonLog.Http;
+using raccoonLog;
 
 namespace raccoonLog.Tests
 {

@@ -1,4 +1,4 @@
-﻿using raccoonLog.Http;
+﻿using raccoonLog;
 
 namespace raccoonLog.Tests
 {

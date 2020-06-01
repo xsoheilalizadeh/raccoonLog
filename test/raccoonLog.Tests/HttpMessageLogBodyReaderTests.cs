@@ -3,7 +3,7 @@ using System.IO;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
-using raccoonLog.Http.Handlers;
+using raccoonLog.Handlers;
 using Xunit;
 
 namespace raccoonLog.Tests

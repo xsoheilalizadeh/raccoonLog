@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Options;
 using Moq;
-using raccoonLog.Http;
-using raccoonLog.Http.Handlers;
+using raccoonLog;
+using raccoonLog.Handlers;
 using Xunit;
 
 namespace raccoonLog.Tests

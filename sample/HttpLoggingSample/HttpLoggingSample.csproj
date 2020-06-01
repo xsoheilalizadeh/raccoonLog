@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\raccoonLog.Http\raccoonLog.Http.csproj" />
+    <ProjectReference Include="..\..\src\raccoonLog\raccoonLog.csproj" />
     <ProjectReference Include="..\..\src\raccoonLog.Stores.File\raccoonLog.Stores.File.csproj" />
   </ItemGroup>
 

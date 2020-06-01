@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace raccoonLog.Http.Stores
+namespace raccoonLog.Stores
 {
     public class FileStore : IHttpLoggingStore
     {

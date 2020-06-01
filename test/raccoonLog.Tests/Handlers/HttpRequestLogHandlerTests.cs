@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Moq;
-using raccoonLog.Http;
-using raccoonLog.Http.Handlers;
+using raccoonLog;
+using raccoonLog.Handlers;
 using Xunit;
 
 namespace raccoonLog.Tests.Handlers
