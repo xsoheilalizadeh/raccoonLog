@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Diagnostics;
@@ -22,19 +18,22 @@ namespace raccoonLog.Http
 
         private readonly IHttpLoggingStore _store;
 
+        private readonly IStoreQueue _storeQueue;
+
         private RaccoonLogHttpOptions _options;
 
         public HttpLoggingProvider(IHttpResponseLogHandler responseHandler,
             IHttpRequestLogHandler requestHandler,
             IOptions<RaccoonLogHttpOptions> options,
             ILogger<HttpLoggingProvider> logger,
-            IHttpLoggingStore store)
+            IHttpLoggingStore store, IStoreQueue storeQueue)
         {
             _store = store;
             _options = options.Value;
             _responseHandler = responseHandler;
             _requestHandler = requestHandler;
             _logger = logger;
+            _storeQueue = storeQueue;
         }
 
         public async ValueTask LogAsync(HttpContext context, CancellationToken cancellationToken = default)
@@ -52,14 +51,9 @@ namespace raccoonLog.Http
                 logContext.SetError(error);
             }
 
-            if (_options.EnableConsoleLogging)
-            {
-                var json = JsonSerializer.Serialize(logContext, _options.JsonSerializerOptions);
+            _logger.Log(_options.Level, default, logContext, logContext.Error, _options.Formatter);
 
-                _logger.LogInformation(json);
-            }
-
-            await _store.StoreAsync(logContext, cancellationToken);
+            _storeQueue.Enqueue(() => _store.StoreAsync(logContext, CancellationToken.None));
         }
     }
 }

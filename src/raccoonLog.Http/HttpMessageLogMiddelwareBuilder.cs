@@ -4,4 +4,4 @@
     {
         internal bool EnableHttpLogging { get; set; }
     }
-}       
+}

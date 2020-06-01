@@ -42,6 +42,9 @@ namespace raccoonLog.Http
             services.AddScoped<IHttpLogMessageFactory, HttpLogMessageFactory>();
 
             services.AddScoped<IHttpLoggingStore, DefaultHttpLoggingStore>();
+            services.AddSingleton<IStoreQueue, StoreQueue>();
+
+            services.AddHostedService<StoreQueueConsumer>();
 
             // handlers 
 
