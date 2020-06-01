@@ -19,6 +19,11 @@ namespace raccoonLog.Http
         public string Host { get; private set; }
 
         public string Scheme { get; private set; }
+
+        public override string ToString()
+        {
+            return new UriBuilder(Scheme, Host, Port, Path).Uri.ToString();
+        }
     }
 }
 

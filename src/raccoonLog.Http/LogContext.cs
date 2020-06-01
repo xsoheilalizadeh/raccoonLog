@@ -1,14 +1,14 @@
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Net;
 
 namespace raccoonLog.Http
 {
     public class LogContext
     {
-        public LogContext(string traceId, HttpRequestLog requestLog, HttpResponseLog responseLog,  string protocol)
+        public LogContext(string traceId, HttpRequestLog requestLog, HttpResponseLog responseLog, string protocol)
         {
             TraceId = traceId ?? throw new ArgumentNullException(nameof(traceId));
-            Protocol = protocol ?? throw new ArgumentNullException(nameof(protocol));;
+            Protocol = protocol ?? throw new ArgumentNullException(nameof(protocol));
             Request = requestLog ?? throw new ArgumentNullException(nameof(requestLog));
             Response = responseLog ?? throw new ArgumentNullException(nameof(responseLog));
         }
@@ -24,5 +24,11 @@ namespace raccoonLog.Http
         public string Protocol { get; set; }
 
         public void SetError(Exception error) => Error = error;
+
+
+        public override string ToString()
+        {
+            return string.Format("{0} {1} - {2} {3}", Request.Method, Request.Url, Response.StatusCode, (HttpStatusCode)Response.StatusCode);
+        }
     }
 }
