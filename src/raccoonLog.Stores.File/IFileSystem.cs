@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace raccoonLog.Http.Stores
+namespace raccoonLog.Stores
 {
     public interface IFileSystem
     {

@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Version>$(HttpLibVersion)</Version>
+    <PackageId>raccoonLog</PackageId>
+    <TargetFrameworks>$(HttpLibTargetFramework)</TargetFrameworks>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="1.3.4" />
+  </ItemGroup>
+
+</Project>

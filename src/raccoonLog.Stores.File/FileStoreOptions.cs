@@ -1,4 +1,4 @@
-﻿namespace raccoonLog.Http.Stores
+﻿namespace raccoonLog.Stores
 {
     public class FileStoreOptions
     {

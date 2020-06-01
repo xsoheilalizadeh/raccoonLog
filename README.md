@@ -22,7 +22,7 @@ raccoonLog is a logging library that supports HTTP request/response logging in *
 
  Package name                              | Version                      
 -------------------------------------------|-----------------------------
- `raccoonLog.Http` | [![NuGet](https://img.shields.io/nuget/v/raccoonLog.Http.svg?style=flat-square&label=nuget)](https://www.nuget.org/packages/raccoonLog.Http/) 
+ `raccoonLog` | [![NuGet](https://img.shields.io/nuget/v/raccoonLog.svg?style=flat-square&label=nuget)](https://www.nuget.org/packages/raccoonLog/) 
 
 
  ### Quick Start

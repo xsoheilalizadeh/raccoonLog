@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace raccoonLog.Http.Stores
+namespace raccoonLog.Stores
 {
     public static class FileStoreExtensions
     {
