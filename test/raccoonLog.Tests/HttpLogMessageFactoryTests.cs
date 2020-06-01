@@ -1,139 +1,102 @@
-﻿// using Microsoft.AspNetCore.Http;
-// using Microsoft.AspNetCore.Http.Features;
-// using Microsoft.Extensions.DependencyInjection;
-// using raccoonLog.Http;
-// using System.Threading.Tasks;
-// using Xunit;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.Extensions.Options;
+using Moq;
+using raccoonLog.Http;
+using Xunit;
 
-// namespace raccoonLog.Tests
-// {
-//     public class HttpLogMessageFactoryTests
-//     {
-//         [Fact]
-//         public async Task CreateInitializeMessageLogOnHttpRequestFormContent()
-//         {
-//             var context = new DefaultHttpContext();
-//             var request = context.Request;
-//             var logMessageFactory = new ServiceCollection()
-//                 .SetHttpContext(context)
-//                 .AddHttpLogging()
-//                 .BuildServiceProvider()
-//                 .GetService<IHttpLogMessageFactory>();
+namespace raccoonLog.Tests
+{
+    public class HttpLogMessageFactoryTests
+    {
+        private Mock<IOptions<RaccoonLogHttpOptions>> options = new Mock<IOptions<RaccoonLogHttpOptions>>();
 
-//             request.ContentType = "application/x-www-form-urlencoded";
-//             context.Features.Set<IHttpRequestFeature>(new RequestFeatureStub());
+        [Fact]
+        public void CreateRequestLogMatchsWithHttpRequest()
+        {
+            options.Setup(o => o.Value).Returns(new RaccoonLogHttpOptions());
 
-//             var logMessage = await logMessageFactory.Create<HttpRequestLog>();
+            var factory = new HttpLogMessageFactory(options.Object, NullProtector.Value);
+            var context = new DefaultHttpContext();
+            var request = new FakeHttpRequest();
+            var cookies = new FakeRequestCookies();
 
-//             Assert.NotNull(logMessage.ContentType);
+            context.Features.Set<IHttpRequestFeature>(request);
+            context.Features.Set<IRequestCookiesFeature>(cookies);
 
-//             Assert.Equal(logMessage.ContentType, request.ContentType);
+            var requestLog = factory.Create(context.Request);
 
-//             Assert.Equal(logMessage.Headers.Count, request.Headers.Count);
-//         }    
+            Assert.Equal(context.Request.Method, requestLog.Method);
+            Assert.Equal(context.Request.Headers, requestLog.Headers);
+            Assert.Equal(context.Request.Query, requestLog.Parameters);
+            Assert.Equal(context.Request.Cookies, requestLog.Cookies);
+            Assert.Equal(context.Request.Scheme, requestLog.Url.Scheme);
+            Assert.Equal(context.Request.Host.Port, requestLog.Url.Port);
+            Assert.Equal(context.Request.Host.Host, requestLog.Url.Host);
+            Assert.Equal($"{context.Request.PathBase}{context.Request.Path}", requestLog.Url.Path);
+        }
 
-//         [Fact]
-//         public async Task CreateInitializeMessageLogOnHttpResponse()
-//         {
-//             var context = new DefaultHttpContext();    
-//             var response = context.Response;
-//             var logMessageFactory = new ServiceCollection() 
-//                 .SetHttpContext(context)
-//                 .AddHttpLogging()
-//                 .BuildServiceProvider()
-//                 .GetService<IHttpLogMessageFactory>();
+        [Fact]
+        public void CreateResponseLogMatchsWithHttpRequest()
+        {
+            var factory = new HttpLogMessageFactory(DefaultOptions.Default, NullProtector.Value);
+            var context = new DefaultHttpContext();
+            var response = new FakeHttpResponse();
 
-//             context.Features.Set<IHttpResponseFeature>(new IResponseFeatureStub());
+            context.Features.Set<IHttpResponseFeature>(response);
 
-//             var logMessage = await logMessageFactory.Create<HttpResponseLog>();
+            var responseLog = factory.Create(context.Response);
 
-//             Assert.NotNull(logMessage.ContentType);
+            Assert.Equal(context.Response.Headers, responseLog.Headers);
+            Assert.Equal(context.Response.StatusCode, responseLog.StatusCode);
+            Assert.Equal(context.Response.ContentType, responseLog.ContentType);
+        }
 
-//             Assert.Equal(logMessage.ContentType, response.ContentType);
+        [Fact]
+        public void CreateRequestLogProtectsHttpRequestSensitiveData()
+        {
+            var option = new RaccoonLogHttpOptions();
 
-//             Assert.Equal(logMessage.Headers.Count, response.Headers.Count);
-//         }
+            option.Request.SensitiveData.Parameters.Add("name");
+            option.Request.SensitiveData.Headers.Add("X-Custom");
+            option.Request.SensitiveData.Cookies.Add("auth_token");
 
+            options.Setup(o => o.Value).Returns(option);
 
-//         [Fact]
-//         public async Task CreateIgnoresRequestBodyWhenContentTypeIsIgnored()
-//         {
-//             var context = new DefaultHttpContext();
-//             var request = context.Request;
-//             var requestContentType = "application/json";
-//             var logMessageFactory = new ServiceCollection()
-//                 .SetHttpContext(context)
-//                 .AddHttpLogging(o => o.Request.IgnoreContentTypes.Add(requestContentType))
-//                 .BuildServiceProvider()
-//                 .GetService<IHttpLogMessageFactory>();
+            var factory = new HttpLogMessageFactory(options.Object, NullProtector.Value);
+            var context = new DefaultHttpContext();
+            var request = new FakeHttpRequest();
+            var cookies = new FakeRequestCookies();
 
-//             request.ContentType = requestContentType;
-//             context.Features.Set<IHttpRequestFeature>(new RequestFeatureStub());
+            context.Features.Set<IHttpRequestFeature>(request);
+            context.Features.Set<IRequestCookiesFeature>(cookies);
 
-//             var logMessage = await logMessageFactory.Create<HttpRequestLog>();
+            var requestLog = factory.Create(context.Request);
 
-//             Assert.True(logMessage.IsBodyIgnored());
-//         }
+            Assert.NotEqual(requestLog.Headers.First(h => h.Key == "X-Custom").Value, context.Request.Headers["X-Custom"]);
+            Assert.NotEqual(requestLog.Parameters.First(h => h.Key == "name").Value, context.Request.Query["name"]);
+            Assert.NotEqual(requestLog.Cookies.First(h => h.Key == "auth_token").Value, context.Request.Cookies["auth_token"]);
+        }
 
-//         [Fact]
-//         public async Task CreateIgnoresResponseBodyWhenContentTypeIsIgnored()
-//         {
-//             var context = new DefaultHttpContext();
-//             var response = context.Response;  
-//             var requestContentType = "application/json";
-//             var logMessageFactory = new ServiceCollection()
-//                 .SetHttpContext(context)
-//                 .AddHttpLogging(o => o.Response.IgnoreContentTypes.Add(requestContentType))
-//                 .BuildServiceProvider()
-//                 .GetService<IHttpLogMessageFactory>();
+        [Fact]
+        public void CreateResponseLogProtectsHttpResponseSensitiveData()
+        {
+            var option = new RaccoonLogHttpOptions();
 
-//             response.ContentType = requestContentType;
-//             context.Features.Set<IHttpResponseFeature>(new IResponseFeatureStub());
+            option.Response.SensitiveData.Headers.Add("X-Custom");
 
-//             var logMessage = await logMessageFactory.Create<HttpResponseLog>();
+            options.Setup(o => o.Value).Returns(option);
 
-//             Assert.True(logMessage.IsBodyIgnored());
-//         }
+            var factory = new HttpLogMessageFactory(options.Object, NullProtector.Value);
+            var context = new DefaultHttpContext();
+            var response = new FakeHttpResponse();
 
-//         [Fact]
-//         public async Task CreateIgnoresRequestBodyWhenContentTypeIsNotIgnored()
-//         {
-//             var context = new DefaultHttpContext();
-//             var request = context.Request;
-//             var requestContentType = "application/json";
-//             var logMessageFactory = new ServiceCollection() 
-//                 .SetHttpContext(context)
-//                 .AddHttpLogging()
-//                 .BuildServiceProvider()
-//                 .GetService<IHttpLogMessageFactory>();
+            context.Features.Set<IHttpResponseFeature>(response);
 
-//             request.ContentType = requestContentType;
-//             context.Features.Set<IHttpRequestFeature>(new RequestFeatureStub());
+            var responseLog = factory.Create(context.Response);
 
-//             var logMessage = await logMessageFactory.Create<HttpRequestLog>();
-
-//             Assert.False(logMessage.IsBodyIgnored());
-//         }
-
-//         [Fact]
-//         public async Task CreateIgnoresResponseBodyWhenContentTypeIsNotIgnored()
-//         {
-//             var context = new DefaultHttpContext();
-//             var response = context.Response;
-//             var requestContentType = "application/json";
-//             var logMessageFactory = new ServiceCollection()
-//                 .SetHttpContext(context)
-//                 .AddHttpLogging()
-//                 .BuildServiceProvider()
-//                 .GetService<IHttpLogMessageFactory>();
-
-//             response.ContentType = requestContentType;
-//             context.Features.Set<IHttpResponseFeature>(new IResponseFeatureStub());
-
-//             var logMessage = await logMessageFactory.Create<HttpResponseLog>();
-
-//             Assert.False(logMessage.IsBodyIgnored());
-//         }
-//     }
-
-// }
+            Assert.NotEqual(responseLog.Headers.First(h => h.Key == "X-Custom").Value, context.Response.Headers["X-Custom"]);
+        }
+    }
+}
