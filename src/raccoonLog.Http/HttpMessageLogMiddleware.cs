@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.IO;
-using System;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace raccoonLog.Http
@@ -27,9 +24,9 @@ namespace raccoonLog.Http
 
             context.Response.Body = bodyStream;
 
-            var feature = new ReadResponseBodyFeature(bodyStream);
+            var responseBodyWrapper = new HttpResponseBodyWrapper(bodyStream);
 
-            context.Features.Set(feature);
+            context.Features.Set(responseBodyWrapper);
 
             try
             {
@@ -39,33 +36,12 @@ namespace raccoonLog.Http
             {
                 await httpLogging.LogAsync(context, context.RequestAborted);
 
-                await feature.Body.CopyToAsync(originalBody, context.RequestAborted);
+                await responseBodyWrapper.Body.CopyToAsync(originalBody, context.RequestAborted);
 
                 context.Response.Body = originalBody;
 
-                feature.Dispose();
+                responseBodyWrapper.Dispose();
             }
-        }
-    }
-
-    public class ReadResponseBodyFeature : IDisposable
-    {
-
-        private Stream _innerStream;
-
-        public Stream Body
-        {
-            get { _innerStream.Position = 0; return _innerStream; }
-        }
-
-        public ReadResponseBodyFeature(Stream body)
-        {
-            _innerStream = body;
-        }
-
-        public void Dispose()
-        {
-            _innerStream?.Dispose();
         }
     }
 }

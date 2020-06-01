@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Mime;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,40 +18,37 @@ namespace raccoonLog.Http.Handlers
             this.ignoredContentTypes = ignoredContentTypes;
         }
 
-        public  ValueTask<object> ReadAsync(Stream body, string contentType, CancellationToken cancellationToken = default)
+        public async ValueTask<object?> ReadAsync(Stream body, string contentType, CancellationToken cancellationToken = default)
         {
             if (body == null)
             {
                 throw new NullReferenceException(nameof(body));
-            }    
+            }
 
-            if(body.Length <= 0)
+            if (ignoredContentTypes.Any(t => !string.IsNullOrEmpty(contentType) && t.IndexOf(contentType) > -1))
             {
                 return default;
             }
 
+            if (body.Length <= 0)
+            {
+                return default;
+            }
+
+            bool isJson() => contentType.IndexOf(MediaTypeNames.Application.Json) > -1;
+
             body.Position = 0;
 
-            if (contentType.Equals("application/json; charset=utf-8"))
+            if (contentType is object && isJson())
             {
-                return DeserializeBody(body,cancellationToken);
+                return await JsonSerializer.DeserializeAsync<object>(body, cancellationToken: cancellationToken);
             }
             else
             {
-                return ReadBodyAsString(body,cancellationToken);
+                using var reader = new StreamReader(body);
+            
+                return await reader.ReadToEndAsync();
             }
-        }
-
-        protected virtual async ValueTask<object> ReadBodyAsString(Stream body, CancellationToken cancellationToken)
-        {
-            var bodyAsString = await new StreamReader(body).ReadToEndAsync();
-
-            return string.IsNullOrEmpty(bodyAsString) ? null : bodyAsString;
-        }
-
-        protected virtual ValueTask<object> DeserializeBody(Stream body, CancellationToken cancellationToken)
-        {
-            return JsonSerializer.DeserializeAsync<object>(body, cancellationToken: cancellationToken);
         }
     }
 }

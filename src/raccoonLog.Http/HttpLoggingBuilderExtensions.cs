@@ -12,26 +12,14 @@ namespace raccoonLog.Http
             Services = services;
         }
 
-        public IServiceCollection Services { get; set; }
-
-
+        internal IServiceCollection Services { get; set; }
     }
+
     public static class RaccoonLogServiceCollectionExtensions
     {
-        public static void AddRaccoonLog(this IServiceCollection services, Action<RaccoonLogBuilder> builder)
-        {
-            var logBuilder = new RaccoonLogBuilder(services);
-
-            builder(logBuilder);
-        }
-    }
-    public static class HttpLoggingBuilderExtensions
-    {
-        public static HttpLoggingBuilder AddHttpLogging(this RaccoonLogBuilder builder,
+        public static HttpLoggingBuilder AddHttpLogging(this IServiceCollection services,
             Action<RaccoonLogHttpOptions> configureOptions)
         {
-            var services = builder.Services;
-
             services.Configure(configureOptions);
 
             services.AddHttpContextAccessor();
@@ -56,13 +44,13 @@ namespace raccoonLog.Http
             return new HttpLoggingBuilder(services);
         }
 
-        public static HttpLoggingBuilder AddHttpLogging(this RaccoonLogBuilder builder)
+        public static HttpLoggingBuilder AddHttpLogging(this IServiceCollection services)
         {
-            return builder.AddHttpLogging(o => { });
-        }
+            return services.AddHttpLogging(o => { });
+        }   
 
         public static void AddStore<TStore>(this HttpLoggingBuilder builder,
-            ServiceLifetime lifetime = ServiceLifetime.Scoped) where TStore : class, IHttpLoggingStore
+         ServiceLifetime lifetime = ServiceLifetime.Scoped) where TStore : class, IHttpLoggingStore
         {
             var services = builder.Services;
 

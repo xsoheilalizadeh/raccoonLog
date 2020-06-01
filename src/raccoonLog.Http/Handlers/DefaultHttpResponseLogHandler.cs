@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -34,18 +32,13 @@ namespace raccoonLog.Http.Handlers
 
             var logMessage = _logMessageFactory.Create(response);
 
-            if (logMessage == null)
-            {
-                throw new NullReferenceException(nameof(logMessage));
-            }
-
             var context = _httpContextAccessor.HttpContext;
 
-            var bodyFeature = context.Features.Get<ReadResponseBodyFeature>();
+            var bodyWrapper = context.Features.Get<HttpResponseBodyWrapper>();
 
             var reader = new HttpMessageLogBodyReader(_options.Response.IgnoreContentTypes);
 
-            var body = await reader.ReadAsync(bodyFeature.Body, response.ContentType);
+            var body = await reader.ReadAsync(bodyWrapper.Body, response.ContentType);
 
             logMessage.SetBody(body);
 

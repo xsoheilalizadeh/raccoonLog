@@ -1,9 +1,8 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using raccoonLog;
 using raccoonLog.Http;
 using raccoonLog.Http.Stores;
 
@@ -23,11 +22,7 @@ namespace HttpLoggingSample
         {
             services.AddControllers();
 
-            services.AddRaccoonLog(builder =>
-            {
-                builder.AddHttpLogging()
-                       .AddFileStore();
-            });
+            services.AddHttpLogging().AddFileStore();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,10 +37,7 @@ namespace HttpLoggingSample
 
             app.UseAuthorization();
 
-            app.UseRaccoonLog(builder =>
-            {
-                builder.EnableHttpLogging();
-            });
+            app.UseHttpLogging();
 
             app.UseEndpoints(endpoints =>
             {

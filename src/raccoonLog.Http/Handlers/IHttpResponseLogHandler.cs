@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
@@ -10,4 +9,3 @@ namespace raccoonLog.Http.Handlers
         ValueTask<HttpResponseLog> Handle(HttpResponse response, CancellationToken cancellationToken = default);
     }
 }
-            

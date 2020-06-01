@@ -12,7 +12,6 @@
                 "${workspaceFolder}/raccoonLog.sln",
                 "--no-restore"
             ],
-            "dependsOn":"test",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -26,8 +25,16 @@
             "label": "test",
             "command": "dotnet",
             "type": "process",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
             "group": {
-                "kind": "test",
+                "kind": "build",
                 "isDefault": true
             },
             "args": [
@@ -35,11 +42,9 @@
                 "/p:CollectCoverage=true",
                 "/p:CoverletOutputFormat=\"opencover,lcov\"",
                 "/p:CoverletOutput=../../.cov/cov",
-                "--no-build",
                 "--no-restore"
             ],
             "problemMatcher": "$msCompile",
-           
         }
     ]
 }

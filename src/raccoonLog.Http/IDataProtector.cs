@@ -1,9 +1,4 @@
-﻿using Microsoft.Extensions.Primitives;
-using System;
-using System.Security.Cryptography;
-using System.Text;
-
-namespace raccoonLog.Http
+﻿namespace raccoonLog.Http
 {
     public interface IDataProtector
     {

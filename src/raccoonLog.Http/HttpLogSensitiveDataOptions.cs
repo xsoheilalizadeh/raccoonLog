@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Net.Http.Headers;
 
 namespace raccoonLog.Http
@@ -16,7 +15,7 @@ namespace raccoonLog.Http
         {
             Forms.Add("Password");
             Forms.Add("ConfirmPassword");
-            
+
             Headers.Add(HeaderNames.Authorization);
             Headers.Add(HeaderNames.ProxyAuthorization);
         }

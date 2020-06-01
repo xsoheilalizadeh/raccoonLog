@@ -34,11 +34,6 @@ namespace raccoonLog.Http.Handlers
 
             var logMessage = _logMessageFactory.Create(request);
 
-            if (logMessage == null)
-            {
-                throw new NullReferenceException(nameof(logMessage));
-            }
-
             if (request.HasFormContentType)
             {
                 await _formContentHandler.Handle(request, logMessage, cancellationToken);

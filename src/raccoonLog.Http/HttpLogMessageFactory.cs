@@ -44,23 +44,23 @@ namespace raccoonLog.Http
                     return new KeyValuePair<string, string>(item.Key, _dataProtector.Protect(item.Value));
                 }
 
-                return new KeyValuePair<string, string>(item.Key, item.Value );
+                return new KeyValuePair<string, string>(item.Key, item.Value);
             }).ToList();
 
             return new HttpRequestLog(url, request.Method, parameters, headers, cookies, request.ContentType);
         }
 
 
-        public HttpResponseLog Create(HttpResponse request)
+        public HttpResponseLog Create(HttpResponse response)
         {
             var sensitiveData = _options.Response.SensitiveData;
 
-            var headers = request.Headers
+            var headers = response.Headers
                .Where(q => !_options.Response.IgnoreHeaders.Any(q.Key.Equals))
                .Select(ApplyProtection(sensitiveData.Headers))
                .ToList();
 
-            return new HttpResponseLog(request.StatusCode, request.ContentType, headers);
+            return new HttpResponseLog(response.StatusCode, response.ContentType, headers);
         }
 
         private Func<KeyValuePair<string, StringValues>, KeyValuePair<string, StringValues>> ApplyProtection(List<string> sensitiveData)

@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Runtime.CompilerServices;
+using Microsoft.Extensions.DependencyInjection;
 
+[assembly:InternalsVisibleTo("raccoonLog.Stores.File")]
 namespace raccoonLog.Http
 {
     public class HttpLoggingBuilder
@@ -9,6 +11,6 @@ namespace raccoonLog.Http
             Services = services;
         }
 
-        internal IServiceCollection Services { get; set; }
+        protected internal IServiceCollection Services { get; set; }
     }
 }

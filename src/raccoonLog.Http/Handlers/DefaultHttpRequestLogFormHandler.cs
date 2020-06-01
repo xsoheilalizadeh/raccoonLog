@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 namespace raccoonLog.Http.Handlers
 {
@@ -20,7 +21,7 @@ namespace raccoonLog.Http.Handlers
             _dataProtector = dataProtector;
         }
 
-        public async ValueTask Handle(HttpRequest request, HttpRequestLog logMessage, CancellationToken cancellationToken)
+        public async ValueTask Handle(HttpRequest request, HttpRequestLog logMessage, CancellationToken cancellationToken = default)
         {
             if (request == null)
             {
@@ -40,11 +41,11 @@ namespace raccoonLog.Http.Handlers
             {
                 if (sensitiveData.Contains(item.Key))
                 {
-                    return new KeyValuePair<string, string>(item.Key, _dataProtector.Protect(item.Value));
+                    return new KeyValuePair<string, StringValues>(item.Key, _dataProtector.Protect(item.Value));
                 }
                 else
                 {
-                    return new KeyValuePair<string, string>(item.Key, item.Value);
+                    return new KeyValuePair<string, StringValues>(item.Key, item.Value);
                 }
             }).ToList();
 
