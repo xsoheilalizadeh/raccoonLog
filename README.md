@@ -1,29 +1,30 @@
 
-## raccoonLog
-> The library development is in progress.
+## raccoonLog 🦝 
 
 [![codecov](https://codecov.io/gh/xsoheilalizadeh/raccoonLog/branch/master/graph/badge.svg)](https://codecov.io/gh/xsoheilalizadeh/raccoonLog)
 [![Build Status](https://travis-ci.org/xsoheilalizadeh/raccoonLog.svg?branch=master)](https://travis-ci.org/xsoheilalizadeh/raccoonLog)
 
 ## What is raccoonLog?
-raccoonLog is a logging library that supports HTTP request/response logging in **ASP.NET Core 2.2+**
+It's a HTTP logging library that represents request and response logging for ASP.NET Core applications. 
 
 ### Features
-- Log request/response in console
+- HTTP Request and Response Logging
 - Custom form content requests logging  
-- Sensitive data protection in request/response (body limitation)
-- Ignoring content types and headers in request/response
+- Data protection (body limitation)
 - Use `System.Text.Json` as JSON API
 - Easy to configure
 - File data store
-- Custom data store 
+- ElasticSearch data store
+- Custom data store implementation
+- High Performance
 
 ### Packages
 
  Package name                              | Version                      
 -------------------------------------------|-----------------------------
  `raccoonLog` | [![NuGet](https://img.shields.io/nuget/v/raccoonLog.svg?style=flat-square&label=nuget)](https://www.nuget.org/packages/raccoonLog/) 
-
+ `raccoonLog.Stores.File` | [![NuGet](https://img.shields.io/nuget/v/raccoonLog.svg?style=flat-square&label=nuget)](https://www.nuget.org/packages/raccoonLog.Stores.File/) 
+`raccoonLog.Stores.ElasticSearch` | [![NuGet](https://img.shields.io/nuget/v/raccoonLog.svg?style=flat-square&label=nuget)](https://www.nuget.org/packages/raccoonLog.Stores.ElasticSearch/) 
 
  ### Quick Start
  
@@ -34,19 +35,12 @@ raccoonLog is a logging library that supports HTTP request/response logging in *
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddRaccoonLog(builder =>
-    {
-        builder.AddHttpLogging()
-               .AddFileStore();
-    });
+    services.AddHttpLogging().AddFileStore();
 }
 
 public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 {
-    app.UseRaccoonLog(builder =>
-    {
-        builder.EnableHttpLogging();
-    });
+   app.UseHttpLogging();
 }
 ```
 
