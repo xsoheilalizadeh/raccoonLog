@@ -30,8 +30,6 @@ It's a HTTP logging library that represents request and response logging for ASP
  
  Use following startup codes to configure raccoonLog in you ASP.NET Core application
 
- _Learn more in [documentation][doc]_
-
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
