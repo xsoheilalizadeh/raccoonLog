@@ -5,13 +5,21 @@ using raccoonLog.Http.Handlers;
 
 namespace raccoonLog.Http
 {
-    public static class HttpLoggingBuilderExtensions
+    public class RaccoonLogBuilder
     {
-        public static HttpLoggingBuilder AddHttpLogging(this RaccoonLogBuilder builder,
+        public RaccoonLogBuilder(IServiceCollection services)
+        {
+            Services = services;
+        }
+
+        internal IServiceCollection Services { get; set; }
+    }
+
+    public static class RaccoonLogServiceCollectionExtensions
+    {
+        public static HttpLoggingBuilder AddHttpLogging(this IServiceCollection services,
             Action<RaccoonLogHttpOptions> configureOptions)
         {
-            var services = builder.Services;
-
             services.Configure(configureOptions);
 
             services.AddHttpContextAccessor();
@@ -22,27 +30,27 @@ namespace raccoonLog.Http
             services.AddScoped<IHttpLogMessageFactory, HttpLogMessageFactory>();
 
             services.AddScoped<IHttpLoggingStore, DefaultHttpLoggingStore>();
+            services.AddSingleton<IStoreQueue, StoreQueue>();
+
+            services.AddHostedService<StoreQueueConsumer>();
 
             // handlers 
 
             services.AddScoped<IHttpRequestLogFormHandler, DefaultHttpRequestLogFormHandler>();
-            services.AddScoped<IHttpMessageLogTraceIdHandler, DefaultHttpMessageLogTraceIdHandler>();
 
             services.AddScoped<IHttpRequestLogHandler, DefaultHttpRequestLogHandler>();
             services.AddScoped<IHttpResponseLogHandler, DefaultHttpResponseLogHandler>();
-            services.AddScoped<IHttpRequestLogBodyHandler, DefaultHttpRequestLogBodyHandler>();
-            services.AddScoped<IHttpResponseLogBodyHandler, DefaultHttpResponseLogBodyHandler>();
 
             return new HttpLoggingBuilder(services);
         }
 
-        public static HttpLoggingBuilder AddHttpLogging(this RaccoonLogBuilder builder)
+        public static HttpLoggingBuilder AddHttpLogging(this IServiceCollection services)
         {
-            return builder.AddHttpLogging(o => { });
-        }
+            return services.AddHttpLogging(o => { });
+        }   
 
         public static void AddStore<TStore>(this HttpLoggingBuilder builder,
-            ServiceLifetime lifetime = ServiceLifetime.Scoped) where TStore : class, IHttpLoggingStore
+         ServiceLifetime lifetime = ServiceLifetime.Scoped) where TStore : class, IHttpLoggingStore
         {
             var services = builder.Services;
 

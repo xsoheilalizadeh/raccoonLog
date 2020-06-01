@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/sample/RaccoonLog.Sample/bin/Debug/netcoreapp3.0/RaccoonLog.Sample.dll",
+            "program": "${workspaceFolder}/sample/HttpLoggingSample/bin/Debug/netcoreapp3.1/HttpLoggingSample.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/sample/RaccoonLog.Sample",
+            "cwd": "${workspaceFolder}/sample/HttpLoggingSample",
             "stopAtEntry": false,
             // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
             "serverReadyAction": {

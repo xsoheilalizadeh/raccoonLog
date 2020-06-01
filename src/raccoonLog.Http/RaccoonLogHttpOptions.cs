@@ -1,5 +1,10 @@
-﻿using Microsoft.Net.Http.Headers;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
+using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -7,50 +12,60 @@ namespace raccoonLog.Http
 {
     public class RaccoonLogHttpOptions
     {
-        private bool _enableConsoleLogging;
-
         public RaccoonLogHttpOptions()
         {
-            TraceIdHeaderName = "X-RaccoonLog-Id";
+            Level = LogLevel.Information;
+
             JsonSerializerOptions = new JsonSerializerOptions
             {
                 IgnoreNullValues = true,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
             };
+
             JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            EnableConsoleLogging = true;
-        }
 
-        public string TraceIdHeaderName { get; set; }
-
-        public bool EnableConsoleLogging
-        {
-            get => _enableConsoleLogging;
-            set
+            Formatter = (state, exception) =>
             {
-                _enableConsoleLogging = value;
-                
-                if (value)
+                var log = new StringBuilder();
+
+                log.Append("* TraceId: ").Append(state.TraceId)
+                   .AppendFormat("\r\n> {0} ", state.Request.Method.ToUpper()).Append(state.Request.Url);
+
+                foreach (var (key, value) in state.Request.Headers)
                 {
-                    JsonSerializerOptions.WriteIndented = true;
+                    log.AppendFormat("\r\n> {0}: {1}", key, value);
                 }
-            }
+
+                log.Append("\r\n");
+
+                log
+                   .AppendFormat("\r\n< {0} {1} {2}", state.Protocol, state.Response.StatusCode, (HttpStatusCode)state.Response.StatusCode);
+
+                foreach (var (key, value) in state.Response.Headers)
+                {
+                    log.AppendFormat("\r\n< {0}: {1}", key, value);
+                }
+
+                return log.ToString();
+            };
         }
+
+        public LogLevel Level { get; set; }
+
+        public Func<LogContext, Exception, string> Formatter { get; internal set; }
 
         public JsonSerializerOptions JsonSerializerOptions { get; }
 
         public RaccoonLogHttpRequestOptions Request { get; } = new RaccoonLogHttpRequestOptions();
 
         public RaccoonLogHttpResponseOptions Response { get; } = new RaccoonLogHttpResponseOptions();
-
-        public HttpLogSensitiveDataOptions SensitiveData { get; } = new HttpLogSensitiveDataOptions();
     }
-
 
     public abstract class RaccoonLogHttpMessageOptions
     {
-        public IList<string> IgnoreHeaders { get; set; } = new List<string>();
+        public List<string> IgnoreHeaders { get; set; } = new List<string>();
 
-        public IList<string> IgnoreContentTypes { get; set; } = new List<string>();
+        public List<string> IgnoreContentTypes { get; set; } = new List<string>();
     }
 
     public class RaccoonLogHttpResponseOptions : RaccoonLogHttpMessageOptions
@@ -59,6 +74,8 @@ namespace raccoonLog.Http
         {
             IgnoreContentTypes.Add("text/html; charset=utf-8");
         }
+
+        public HttpResponseLogSensitiveDataOptions SensitiveData { get; } = new HttpResponseLogSensitiveDataOptions();
     }
 
     public class RaccoonLogHttpRequestOptions : RaccoonLogHttpMessageOptions
@@ -67,5 +84,7 @@ namespace raccoonLog.Http
         {
             IgnoreHeaders.Add(HeaderNames.Cookie);
         }
+
+        public HttpRequestLogSensitiveDataOptions SensitiveData { get; } = new HttpRequestLogSensitiveDataOptions();
     }
 }

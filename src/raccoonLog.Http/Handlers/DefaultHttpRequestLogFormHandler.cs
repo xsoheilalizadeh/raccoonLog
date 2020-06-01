@@ -1,67 +1,59 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 
 namespace raccoonLog.Http.Handlers
 {
     public class DefaultHttpRequestLogFormHandler : IHttpRequestLogFormHandler
     {
-        private readonly IOptions<RaccoonLogHttpOptions> _options;
+        private readonly RaccoonLogHttpOptions _options;
 
         private readonly IDataProtector _dataProtector;
 
         public DefaultHttpRequestLogFormHandler(IOptions<RaccoonLogHttpOptions> options, IDataProtector dataProtector)
         {
-            _options = options;
+            _options = options.Value;
             _dataProtector = dataProtector;
         }
 
-        public async ValueTask Handle(HttpRequest request, HttpRequestLog logMessage, CancellationToken cancellationToken)
+        public async ValueTask Handle(HttpRequest request, HttpRequestLog logMessage, CancellationToken cancellationToken = default)
         {
             if (request == null)
             {
                 throw new NullReferenceException(nameof(request));
             }
-                
+
             if (logMessage == null)
             {
                 throw new NullReferenceException(nameof(logMessage));
             }
 
-            var formLog = new FormLog();
-
             var form = await request.ReadFormAsync(cancellationToken);
 
-            var option = _options.Value;
+            var sensitiveData = _options.Request.SensitiveData.Forms;
 
-            var sensitiveData = option.SensitiveData.Request.Forms;
-
-            foreach (var item in form)
+            var forms = form.Select(item =>
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                
-                string itemValue;
-
-                if (sensitiveData.TryGetValue(item.Key, out var protectType))
+                if (sensitiveData.Contains(item.Key))
                 {
-                    itemValue = _dataProtector.Protect(item.Value, protectType);
+                    return new KeyValuePair<string, StringValues>(item.Key, _dataProtector.Protect(item.Value));
                 }
                 else
                 {
-                    itemValue = item.Value;
+                    return new KeyValuePair<string, StringValues>(item.Key, item.Value);
                 }
+            }).ToList();
 
-                formLog.Form.Add(item.Key, itemValue);
-            }
+            var files = form.Files.Select(file => new FileLog(file)).ToList();
 
-            foreach (var file in form.Files)
-            {
-                formLog.Files.Add(new FileLog(file));
-            }
+            var formLog = new FormLog(forms, files);
 
-            logMessage.Body = formLog;
+            logMessage.SetBody(formLog);
         }
     }
 }

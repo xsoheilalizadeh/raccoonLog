@@ -1,7 +1,0 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <PackageId>raccoonLog</PackageId>
-    <Version>$(CoreLibVersion)</Version>
-    <TargetFrameworks>$(CoreLibTargetFramework)</TargetFrameworks>
-  </PropertyGroup>
-</Project>

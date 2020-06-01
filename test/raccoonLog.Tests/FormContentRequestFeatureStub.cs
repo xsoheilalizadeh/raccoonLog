@@ -104,7 +104,7 @@ namespace raccoonLog.Tests
                     },
                 new FormFileCollection
                 {
-                        new FormFile(Stream.Null, 0, 100, "image", "photo.png")
+                        new FormFile(Stream.Null, 0, 100, "document", "doc.txt")
                         {
                             Headers = new HeaderDictionary
                             {

@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace raccoonLog.Http.Handlers
 {
@@ -11,15 +12,15 @@ namespace raccoonLog.Http.Handlers
 
         private readonly IHttpLogMessageFactory _logMessageFactory;
 
-        private readonly IHttpRequestLogBodyHandler _bodyHandler;
+        private readonly RaccoonLogHttpOptions _options;
 
         public DefaultHttpRequestLogHandler(IHttpLogMessageFactory logMessageFactory,
             IHttpRequestLogFormHandler formContentHandler,
-            IHttpRequestLogBodyHandler bodyHandler)
+            IOptions<RaccoonLogHttpOptions> options)
         {
+            _options = options.Value;
             _formContentHandler = formContentHandler;
             _logMessageFactory = logMessageFactory;
-            _bodyHandler = bodyHandler;
         }
 
         public async ValueTask<HttpRequestLog> Handle(HttpRequest request, CancellationToken cancellationToken = default)
@@ -31,12 +32,7 @@ namespace raccoonLog.Http.Handlers
 
             request.EnableBuffering();
 
-            var logMessage = await CreateLogMessage(cancellationToken);
-
-            if (logMessage == null)
-            {
-                throw new NullReferenceException(nameof(logMessage));
-            }
+            var logMessage = _logMessageFactory.Create(request);
 
             if (request.HasFormContentType)
             {
@@ -44,15 +40,14 @@ namespace raccoonLog.Http.Handlers
             }
             else
             {
-                await _bodyHandler.Handle(request.Body, logMessage, cancellationToken);
+                var reader = new HttpMessageLogBodyReader(_options.Request.IgnoreContentTypes);
+
+                var body = await reader.ReadAsync(request.Body, request.ContentType);
+
+                logMessage.SetBody(body);
             }
 
             return logMessage;
-        }
-
-        private ValueTask<HttpRequestLog> CreateLogMessage(CancellationToken cancellationToken)
-        {
-            return _logMessageFactory.Create<HttpRequestLog>(cancellationToken);
         }
     }
 }

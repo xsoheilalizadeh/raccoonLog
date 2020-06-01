@@ -1,8 +1,7 @@
 ﻿using System;
-using System.IO;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -15,79 +14,46 @@ namespace raccoonLog.Http
         private readonly IHttpRequestLogHandler _requestHandler;
         private readonly IHttpResponseLogHandler _responseHandler;
 
-        private readonly ILogger<HttpRequest> _requestLogger;
-        private readonly ILogger<HttpResponse> _responseLogger;
+        private readonly ILogger<HttpLoggingProvider> _logger;
 
         private readonly IHttpLoggingStore _store;
-        private IOptions<RaccoonLogHttpOptions> _options;
 
+        private readonly IStoreQueue _storeQueue;
+
+        private RaccoonLogHttpOptions _options;
 
         public HttpLoggingProvider(IHttpResponseLogHandler responseHandler,
             IHttpRequestLogHandler requestHandler,
             IOptions<RaccoonLogHttpOptions> options,
-            ILoggerFactory loggerFactory,
-            IHttpLoggingStore store)
+            ILogger<HttpLoggingProvider> logger,
+            IHttpLoggingStore store, IStoreQueue storeQueue)
         {
             _store = store;
-            _options = options;
+            _options = options.Value;
             _responseHandler = responseHandler;
             _requestHandler = requestHandler;
-
-            _requestLogger = loggerFactory.CreateLogger<HttpRequest>();
-            _responseLogger = loggerFactory.CreateLogger<HttpResponse>();
+            _logger = logger;
+            _storeQueue = storeQueue;
         }
 
-        public ValueTask LogAsync(HttpRequest request, CancellationToken cancellationToken = default)
+        public async ValueTask LogAsync(HttpContext context, CancellationToken cancellationToken = default)
         {
-            if (request == null)
+            var requestLog = await _requestHandler.Handle(context.Request, cancellationToken);
+
+            var responseLog = await _responseHandler.Handle(context.Response, cancellationToken);
+
+            var logContext = new LogContext(context.TraceIdentifier, requestLog, responseLog, context.Request.Protocol);
+
+            var exceptionFeature = context.Features.Get<IExceptionHandlerFeature>();
+
+            if (exceptionFeature?.Error is Exception error)
             {
-                throw new NullReferenceException(nameof(request));
+                logContext.SetError(error);
             }
 
-            return LogRequest(request, cancellationToken);
-        }
+            _logger.Log(_options.Level, default, logContext, logContext.Error, _options.Formatter);
 
-
-        public ValueTask LogAsync(HttpResponse response, Stream body, CancellationToken cancellationToken = default)
-        {
-            if (response == null)
-            {
-                throw new NullReferenceException(nameof(response));
-            }
-
-            return LogResponse(response, body, cancellationToken);
-        }
-
-        private async ValueTask LogResponse(HttpResponse response, Stream body, CancellationToken cancellationToken = default)
-        {
-            var logMessage = await _responseHandler.Handle(response, body, cancellationToken);
-
-            var options = _options.Value;
-
-            if (options.EnableConsoleLogging)
-            {
-                var json = JsonSerializer.Serialize(logMessage, options.JsonSerializerOptions);
-
-                _responseLogger.LogInformation(json);
-            }
-
-            await _store.StoreAsync(logMessage, cancellationToken);
-        }
-
-        private async ValueTask LogRequest(HttpRequest request, CancellationToken cancellationToken = default)
-        {
-            var logMessage = await _requestHandler.Handle(request, cancellationToken);
-
-            var options = _options.Value;
-
-            if (options.EnableConsoleLogging)
-            {
-                var json = JsonSerializer.Serialize(logMessage, options.JsonSerializerOptions);
-
-                _requestLogger.LogInformation(json);
-            }
-
-            await _store.StoreAsync(logMessage, cancellationToken);
+            _storeQueue.Enqueue(() => _store.StoreAsync(logContext, CancellationToken.None));
         }
     }
 }
