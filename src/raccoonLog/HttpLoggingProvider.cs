@@ -54,7 +54,7 @@ namespace raccoonLog
                 logContext.SetError(exceptionFeature.Error);
             }
 
-            _logger.Log(_options.Level, default, logContext, logContext.Error, _options.Formatter);
+            _logger.Log(_options.Level, default, logContext, exceptionFeature?.Error, _options.Formatter);
 
             _storeQueue.Enqueue(() => _store.StoreAsync(logContext, CancellationToken.None));
         }

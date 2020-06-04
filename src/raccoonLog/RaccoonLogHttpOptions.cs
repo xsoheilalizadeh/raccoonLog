@@ -53,7 +53,7 @@ namespace raccoonLog
         
         public LogLevel Level { get; set; }
 
-        public Func<LogContext, Exception, string> Formatter { get; internal set; }
+        public Func<LogContext, Exception, string> Formatter { get; set; }
 
         public JsonSerializerOptions JsonSerializerOptions { get; }
 

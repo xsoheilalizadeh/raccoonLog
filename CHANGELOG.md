@@ -1,4 +1,15 @@
 
+# 2.1.0 (2020-06-4)
+This version has a lot of breaking changes, if you had any problems please make a new issue for that.
+
+* ElasticSearch DataStore
+* Update System.Text.Json
+* Drop .NET Core 2.2 Support
+* New Console logging format
+* More Configurable logging
+* Storing logs in queue for reducing network latency 
+* Error Logging
+
 # 2.0.4 (2020-04-16)
 
 ### Improvements
