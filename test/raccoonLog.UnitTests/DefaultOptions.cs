@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
-using raccoonLog;
 
-namespace raccoonLog.Tests
+namespace raccoonLog.UnitTests
 {
     public class DefaultOptions : IOptions<RaccoonLogHttpOptions>
     {

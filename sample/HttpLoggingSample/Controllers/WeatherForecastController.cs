@@ -21,6 +21,19 @@ namespace HttpLoggingSample.Controllers
         {
             _logger = logger;
         }
+
+        [HttpGet("single")]
+        public WeatherForecast GetSingle()
+        {
+            var rng = new Random();
+            return new WeatherForecast
+            {
+                Date = DateTime.Now,
+                TemperatureC = rng.Next(-20, 55),
+                Summary = Summaries[rng.Next(Summaries.Length)]
+            };
+        }
+
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {

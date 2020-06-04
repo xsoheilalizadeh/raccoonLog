@@ -4,15 +4,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Moq;
-using raccoonLog;
 using Xunit;
 
-namespace raccoonLog.Tests
+namespace raccoonLog.UnitTests
 {
     public class HttpMessageLogMiddlewareTests
     {
         [Fact]
-        public async Task InvokeReturnsBackOrginalResponseBodyAfterLog()
+        public async Task InvokeReturnsBackOriginalResponseBodyAfterLog()
         {
             var httpLoggingProvider = new Mock<IHttpLoggingProvider>();
             var context = new DefaultHttpContext();

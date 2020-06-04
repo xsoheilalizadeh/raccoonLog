@@ -38,7 +38,7 @@ namespace raccoonLog.Handlers
 
             var reader = new HttpMessageLogBodyReader(_options.Response.IgnoreContentTypes);
 
-            var body = await reader.ReadAsync(bodyWrapper.Body, response.ContentType);
+            var body = await reader.ReadAsync(bodyWrapper.Body, response.ContentType,response.ContentLength);
 
             logMessage.SetBody(body);
 

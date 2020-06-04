@@ -1,4 +1,4 @@
-﻿namespace raccoonLog.Stores
+﻿namespace raccoonLog.Stores.File
 {
     public class FileStoreOptions
     {

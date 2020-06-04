@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Mime;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +17,7 @@ namespace raccoonLog.Handlers
             this.ignoredContentTypes = ignoredContentTypes;
         }
 
-        public async ValueTask<object?> ReadAsync(Stream body, string contentType, CancellationToken cancellationToken = default)
+        public async ValueTask<object?> ReadAsync(Stream body, string contentType,long? contentLength, CancellationToken cancellationToken = default)
         {
             if (body == null)
             {
@@ -35,7 +34,7 @@ namespace raccoonLog.Handlers
                 return default;
             }
 
-            bool isJson() => contentType.IndexOf(MediaTypeNames.Application.Json) > -1;
+            bool isJson() => contentType.IndexOf("json") > -1;
 
             body.Position = 0;
 
@@ -45,7 +44,7 @@ namespace raccoonLog.Handlers
             }
             else
             {
-                using var reader = new StreamReader(body);
+                var reader = new StreamReader(body);
             
                 return await reader.ReadToEndAsync();
             }

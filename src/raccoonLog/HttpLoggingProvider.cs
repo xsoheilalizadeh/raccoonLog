@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Diagnostics;
@@ -42,7 +43,7 @@ namespace raccoonLog
 
             var responseLog = await _responseHandler.Handle(context.Response, cancellationToken);
 
-            var logContext = new LogContext(context.TraceIdentifier, requestLog, responseLog, context.Request.Protocol);
+            var logContext = new LogContext(Activity.Current?.Id ?? context.TraceIdentifier, requestLog, responseLog, context.Request.Protocol);
 
             var exceptionFeature = context.Features.Get<IExceptionHandlerFeature>();
 

@@ -1,35 +1,28 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Extensions.Primitives;
 
 namespace raccoonLog
 {
     public class HttpRequestLog
     {
-        public HttpRequestLog(UrlLog url, string method,
-           List<KeyValuePair<string, StringValues>> parameters,
-           List<KeyValuePair<string, StringValues>> headers,
-           List<KeyValuePair<string, string>> cookies,
-           string? contentType = null
-           )
+        public HttpRequestLog(UrlLog url, string method, string? contentType, IReadOnlyList<KeyValuePair<string, string>> headers, IReadOnlyList<KeyValuePair<string, string>> cookies)
         {
             Url = url;
             Method = method;
-            Cookies = cookies;
+            ContentType = contentType;
             Headers = headers;
-            Parameters = parameters;
-        }
-
+            Cookies = cookies;
+        }        
+        
         public UrlLog Url { get; private set; }
 
         public string Method { get; private set; }
 
-        public object? Body { get; private set; }
+        public object? Body { get; set; }
 
         public string? ContentType { get; private set; }
 
-        public IReadOnlyList<KeyValuePair<string, StringValues>> Headers { get; set; }
+        public IReadOnlyList<KeyValuePair<string, string>> Headers { get; set; }
 
-        public IReadOnlyList<KeyValuePair<string, StringValues>> Parameters { get; private set; }
 
         public IReadOnlyList<KeyValuePair<string, string>> Cookies { get; private set; }
 

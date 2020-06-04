@@ -11,15 +11,15 @@ namespace raccoonLog
     {
         private readonly IStoreQueue _storeQueue;
 
-        private ILogger<StoreQueueConsumer> _logger;
+        private readonly ILogger<StoreQueueConsumer> _logger;
 
-        private Timer _timer;
+        private readonly Timer _timer;
 
         public StoreQueueConsumer(IStoreQueue storeQueue, ILogger<StoreQueueConsumer> logger)
         {
             _storeQueue = storeQueue;
             _logger = logger;
-            _timer = new Timer(500);
+            _timer = new Timer(100);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
