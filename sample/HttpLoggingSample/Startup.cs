@@ -26,12 +26,12 @@ namespace HttpLoggingSample
 
             // services.AddHttpLogging().AddFileStore();
 
-                services.AddHttpLogging().AddElasticSearchStore(options =>
-                {
-                    options.Index = "raccoon-elk";
-                    options.Url = "http://localhost:9200";
-                });
-            }
+            services.AddHttpLogging().AddElasticSearchStore(options =>
+            {
+                options.Index = "raccoon-elk";
+                options.Url = "http://localhost:9200";
+            });
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

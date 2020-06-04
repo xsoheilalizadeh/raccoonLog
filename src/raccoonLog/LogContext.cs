@@ -78,10 +78,10 @@ namespace raccoonLog
             }
         }
 
-        public override string ToString()
-        {
-            return string.Format("{0} {1} - {2} {3}", Request.Method, Request.Url, Response.StatusCode,
-                (HttpStatusCode) Response.StatusCode);
-        }
+        // public override string ToString()
+        // {
+        //     return string.Format("{0} {1} - {2} {3}", Request.Method, Request.Url, Response.StatusCode,
+        //         (HttpStatusCode) Response.StatusCode);
+        // }
     }
 }
