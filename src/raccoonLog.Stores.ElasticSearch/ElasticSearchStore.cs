@@ -2,23 +2,11 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Elasticsearch.Net;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace raccoonLog.Stores.ElasticSearch
 {
-    public static class ElasticSearchStoreExtensions
-    {
-        public static void AddElasticSearchStore(this HttpLoggingBuilder builder, Action<ElasticSearchStoreOptions> configureOptions)
-        {
-            var services = builder.Services;
-
-            builder.AddStore<ElasticSearchStore>(ServiceLifetime.Singleton);
-
-            services.Configure(configureOptions);
-        }
-    }
 
     public class ElasticSearchStore : IHttpLoggingStore
     {
@@ -28,18 +16,24 @@ namespace raccoonLog.Stores.ElasticSearch
 
         private readonly ILogger<ElasticSearchStore> _logger;
 
-        public ElasticSearchStore(IOptions<ElasticSearchStoreOptions> options)
+        public ElasticSearchStore(IOptions<ElasticSearchStoreOptions> options, ILogger<ElasticSearchStore> logger)
         {
             _options = options.Value;
+            _logger = logger;
 
-            _client = new ElasticLowLevelClient(_options.Configuration);
+            var pool = new SingleNodeConnectionPool(new Uri(_options.Url));
+
+            var connection = new HttpConnection();
+
+            var connectionConfiguration =
+                new ConnectionConfiguration(pool, connection, new ElasticSearchSerializer());
+
+            _client = new ElasticLowLevelClient(connectionConfiguration);
         }
 
         public async Task StoreAsync(LogContext logContext, CancellationToken cancellationToken = default)
         {
-            var client = new ElasticLowLevelClient(_options.Configuration);
-
-            var response = await client.IndexAsync<BytesResponse>(_options.Index, "1", PostData.Serializable(logContext));
+            var response = await _client.IndexAsync<BytesResponse>(_options.Index, logContext.TraceId, PostData.Serializable(new ElasticLogContext(logContext)), ctx: cancellationToken);
 
             if (!response.Success)
             {
