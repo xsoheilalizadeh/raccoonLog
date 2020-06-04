@@ -1,13 +1,13 @@
 ﻿using System;
-using Microsoft.Extensions.Options;
 using System.IO;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
-namespace raccoonLog.Stores
+namespace raccoonLog.Stores.File
 {
     public class FileStore : IHttpLoggingStore
     {
@@ -15,17 +15,17 @@ namespace raccoonLog.Stores
 
         private readonly ILogger<FileStore> _logger;
 
-        private IFileSystem _fileSystem;
+        private readonly IFileSystem _fileSystem;
 
         private readonly FileStoreOptions _storeOptions;
 
         private readonly RaccoonLogHttpOptions _options;
 
-        private static readonly byte[] UTF8EndBracket = { (byte)']' };
-        private static readonly byte[] UTF8StartBracket = { (byte)'[' };
-        private static readonly byte[] UTF8Comma = { (byte)',' };
+        private static readonly byte[] Utf8EndBracket = { (byte)']' };
+        private static readonly byte[] Utf8StartBracket = { (byte)'[' };
+        private static readonly byte[] Utf8Comma = { (byte)',' };
 
-        private static readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1);
+        private static readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1);
 
         public FileStore(IHostEnvironment environment,
             IOptions<RaccoonLogHttpOptions> logHttpOptions,
@@ -51,36 +51,36 @@ namespace raccoonLog.Stores
 
             var filePath = Path.Combine(DirectoryPath, $"{_storeOptions.FileName}");
 
-            await _semaphoreSlim.WaitAsync();
+            await SemaphoreSlim.WaitAsync();
 
             try
             {
-                using var _fileStream = _fileSystem.Open(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+                await using var fileStream = _fileSystem.Open(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
 
-                bool isBegin = false;
+                bool isBegin = false;    
 
-                if (_fileStream.Length == 0)
+                if (fileStream.Length == 0)
                 {
                     isBegin = true;
-                    await _fileStream.WriteAsync(UTF8StartBracket, cancellationToken);
+                    await fileStream.WriteAsync(Utf8StartBracket, cancellationToken);
                 }
 
-                _fileStream.Seek(isBegin ? 0 : -1, SeekOrigin.End);
+                fileStream.Seek(isBegin ? 0 : -1, SeekOrigin.End);
 
-                var lastCharecter = (char)_fileStream.ReadByte();
+                var lastCharecter = (char)fileStream.ReadByte();
 
                 if (lastCharecter == ']')
                 {
-                    _fileStream.Seek(-1, SeekOrigin.End);
+                    fileStream.Seek(-1, SeekOrigin.End);
 
-                    await _fileStream.WriteAsync(UTF8Comma);
+                    await fileStream.WriteAsync(Utf8Comma);
                 }
 
                 var logAsBytes = JsonSerializer.SerializeToUtf8Bytes(logContext, _options.JsonSerializerOptions);
 
-                await _fileStream.WriteAsync(logAsBytes, cancellationToken);
+                await fileStream.WriteAsync(logAsBytes, cancellationToken);
 
-                await _fileStream.WriteAsync(UTF8EndBracket, cancellationToken);
+                await fileStream.WriteAsync(Utf8EndBracket, cancellationToken);
             }
             catch (Exception e)
             {
@@ -88,7 +88,7 @@ namespace raccoonLog.Stores
             }
             finally
             {
-                _semaphoreSlim.Release();
+                SemaphoreSlim.Release();
             }
         }
     }

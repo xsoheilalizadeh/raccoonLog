@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using raccoonLog.Handlers;
 using Xunit;
 
-namespace raccoonLog.Tests
+namespace raccoonLog.UnitTests
 {
 
     public class HttpMessageLogBodyReaderTests
@@ -20,7 +20,7 @@ namespace raccoonLog.Tests
 
             bodyStream.Write(Encoding.UTF8.GetBytes(json));
 
-            var body = await reader.ReadAsync(bodyStream, MediaTypeNames.Application.Json);
+            var body = await reader.ReadAsync(bodyStream, MediaTypeNames.Application.Json, json.Length);
 
             Assert.Equal(body.ToString(), json);
         }
@@ -32,7 +32,7 @@ namespace raccoonLog.Tests
 
             var reader = new HttpMessageLogBodyReader(new List<string>());
 
-            var body = await reader.ReadAsync(bodyStream, MediaTypeNames.Application.Json);
+            var body = await reader.ReadAsync(bodyStream, MediaTypeNames.Application.Json, 0);
 
             Assert.Null(body);
         }
@@ -46,7 +46,7 @@ namespace raccoonLog.Tests
 
             var reader = new HttpMessageLogBodyReader(ignoredContents);
 
-            var body = await reader.ReadAsync(bodyStream, MediaTypeNames.Text.Plain);
+            var body = await reader.ReadAsync(bodyStream, MediaTypeNames.Text.Plain, 0);
 
             Assert.Null(body);
         }

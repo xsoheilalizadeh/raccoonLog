@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 
-namespace raccoonLog.Tests
+namespace raccoonLog.UnitTests
 {
     public class FakeForm : IFormFeature
     {

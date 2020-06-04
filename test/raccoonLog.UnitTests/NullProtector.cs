@@ -1,10 +1,8 @@
-﻿using raccoonLog;
-
-namespace raccoonLog.Tests
+﻿namespace raccoonLog.UnitTests
 {
     public class NullProtector : IDataProtector
     {
-        public static IDataProtector Value = new NullProtector();
+        public static readonly IDataProtector Value = new NullProtector();
 
         public string Protect(string value)
         {

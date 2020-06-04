@@ -2,22 +2,22 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Primitives;
 using Moq;
-using raccoonLog;
 using Xunit;
 
-namespace raccoonLog.Tests
+namespace raccoonLog.UnitTests
 {
     public class HttpLogMessageFactoryTests
     {
-        private Mock<IOptions<RaccoonLogHttpOptions>> options = new Mock<IOptions<RaccoonLogHttpOptions>>();
+        private readonly Mock<IOptions<RaccoonLogHttpOptions>> _options = new Mock<IOptions<RaccoonLogHttpOptions>>();
 
         [Fact]
         public void CreateRequestLogMatchsWithHttpRequest()
         {
-            options.Setup(o => o.Value).Returns(new RaccoonLogHttpOptions());
+            _options.Setup(o => o.Value).Returns(new RaccoonLogHttpOptions());
 
-            var factory = new HttpLogMessageFactory(options.Object, NullProtector.Value);
+            var factory = new HttpLogMessageFactory(_options.Object, NullProtector.Value);
             var context = new DefaultHttpContext();
             var request = new FakeHttpRequest();
             var cookies = new FakeRequestCookies();
@@ -28,8 +28,7 @@ namespace raccoonLog.Tests
             var requestLog = factory.Create(context.Request);
 
             Assert.Equal(context.Request.Method, requestLog.Method);
-            Assert.Equal(context.Request.Headers, requestLog.Headers);
-            Assert.Equal(context.Request.Query, requestLog.Parameters);
+            Assert.Equal(context.Request.Headers.Keys, requestLog.Headers.Select(h => h.Key).ToList());
             Assert.Equal(context.Request.Cookies, requestLog.Cookies);
             Assert.Equal(context.Request.Scheme, requestLog.Url.Scheme);
             Assert.Equal(context.Request.Host.Port, requestLog.Url.Port);
@@ -48,7 +47,9 @@ namespace raccoonLog.Tests
 
             var responseLog = factory.Create(context.Response);
 
-            Assert.Equal(context.Response.Headers, responseLog.Headers);
+            Assert.Equal(context.Response.Headers.Keys, responseLog.Headers.Select(h => h.Key).ToList());
+            Assert.Equal(context.Response.Headers.Values, responseLog.Headers.Select(h => (StringValues)h.Value).ToList());
+
             Assert.Equal(context.Response.StatusCode, responseLog.StatusCode);
             Assert.Equal(context.Response.ContentType, responseLog.ContentType);
         }
@@ -62,9 +63,9 @@ namespace raccoonLog.Tests
             option.Request.SensitiveData.Headers.Add("X-Custom");
             option.Request.SensitiveData.Cookies.Add("auth_token");
 
-            options.Setup(o => o.Value).Returns(option);
+            _options.Setup(o => o.Value).Returns(option);
 
-            var factory = new HttpLogMessageFactory(options.Object, NullProtector.Value);
+            var factory = new HttpLogMessageFactory(_options.Object, NullProtector.Value);
             var context = new DefaultHttpContext();
             var request = new FakeHttpRequest();
             var cookies = new FakeRequestCookies();
@@ -74,8 +75,7 @@ namespace raccoonLog.Tests
 
             var requestLog = factory.Create(context.Request);
 
-            Assert.NotEqual(requestLog.Headers.First(h => h.Key == "X-Custom").Value, context.Request.Headers["X-Custom"]);
-            Assert.NotEqual(requestLog.Parameters.First(h => h.Key == "name").Value, context.Request.Query["name"]);
+            Assert.NotEqual(requestLog.Headers.First(h => h.Key == "X-Custom").Value, context.Request.Headers["X-Custom"].ToString());
             Assert.NotEqual(requestLog.Cookies.First(h => h.Key == "auth_token").Value, context.Request.Cookies["auth_token"]);
         }
 
@@ -86,9 +86,9 @@ namespace raccoonLog.Tests
 
             option.Response.SensitiveData.Headers.Add("X-Custom");
 
-            options.Setup(o => o.Value).Returns(option);
+            _options.Setup(o => o.Value).Returns(option);
 
-            var factory = new HttpLogMessageFactory(options.Object, NullProtector.Value);
+            var factory = new HttpLogMessageFactory(_options.Object, NullProtector.Value);
             var context = new DefaultHttpContext();
             var response = new FakeHttpResponse();
 
@@ -96,7 +96,7 @@ namespace raccoonLog.Tests
 
             var responseLog = factory.Create(context.Response);
 
-            Assert.NotEqual(responseLog.Headers.First(h => h.Key == "X-Custom").Value, context.Response.Headers["X-Custom"]);
+            Assert.NotEqual(responseLog.Headers.First(h => h.Key == "X-Custom").Value, context.Response.Headers["X-Custom"].ToString());
         }
     }
 }

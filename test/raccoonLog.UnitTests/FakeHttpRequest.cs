@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 
-namespace raccoonLog.Tests
+namespace raccoonLog.UnitTests
 {
     public class FakeHttpRequest : IHttpRequestFeature
     {

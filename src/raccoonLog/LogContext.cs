@@ -5,12 +5,12 @@ namespace raccoonLog
 {
     public class LogContext
     {
-        public LogContext(string traceId, HttpRequestLog requestLog, HttpResponseLog responseLog, string protocol)
+        public LogContext(string traceId, HttpRequestLog request, HttpResponseLog response, string protocol)
         {
             TraceId = traceId ?? throw new ArgumentNullException(nameof(traceId));
             Protocol = protocol ?? throw new ArgumentNullException(nameof(protocol));
-            Request = requestLog ?? throw new ArgumentNullException(nameof(requestLog));
-            Response = responseLog ?? throw new ArgumentNullException(nameof(responseLog));
+            Request = request ?? throw new ArgumentNullException(nameof(request));
+            Response = response ?? throw new ArgumentNullException(nameof(response));
         }
 
         public string TraceId { get; private set; }

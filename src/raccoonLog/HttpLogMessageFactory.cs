@@ -24,18 +24,16 @@ namespace raccoonLog
 
         public HttpRequestLog Create(HttpRequest request)
         {
-            var url = new UrlLog(new Uri(request.GetDisplayUrl()));
-
             var sensitiveData = _options.Request.SensitiveData;
 
             var parameters = request.Query
-                    .Select(ApplyProtection(sensitiveData.Parameters))
-                    .ToList();
+                .Select(ApplyProtection(sensitiveData.Parameters))
+                .ToList();
 
             var headers = request.Headers
-                    .Where(q => !_options.Request.IgnoreHeaders.Any(q.Key.Equals))
-                    .Select(ApplyProtection(sensitiveData.Headers))
-                    .ToList();
+                .Where(q => !_options.Request.IgnoreHeaders.Any(q.Key.Equals))
+                .Select(ApplyProtection(sensitiveData.Headers))
+                .ToList();
 
             var cookies = request.Cookies.Select(item =>
             {
@@ -47,7 +45,11 @@ namespace raccoonLog
                 return new KeyValuePair<string, string>(item.Key, item.Value);
             }).ToList();
 
-            return new HttpRequestLog(url, request.Method, parameters, headers, cookies, request.ContentType);
+            var uri = new Uri(request.GetDisplayUrl());
+
+            var url = new UrlLog(uri.Port, uri.AbsolutePath, uri.Host, uri.Scheme, parameters);
+
+            return new HttpRequestLog(url, request.Method, request.ContentType, headers, cookies);
         }
 
 
@@ -56,22 +58,24 @@ namespace raccoonLog
             var sensitiveData = _options.Response.SensitiveData;
 
             var headers = response.Headers
-               .Where(q => !_options.Response.IgnoreHeaders.Any(q.Key.Equals))
-               .Select(ApplyProtection(sensitiveData.Headers))
-               .ToList();
+                .Where(q => !_options.Response.IgnoreHeaders.Any(q.Key.Equals))
+                .Select(ApplyProtection(sensitiveData.Headers))
+                .ToList();
 
             return new HttpResponseLog(response.StatusCode, response.ContentType, headers);
         }
 
-        private Func<KeyValuePair<string, StringValues>, KeyValuePair<string, StringValues>> ApplyProtection(List<string> sensitiveData)
+        private Func<KeyValuePair<string, StringValues>, KeyValuePair<string, string>> ApplyProtection(
+            List<string> sensitiveData)
         {
             return item =>
             {
                 if (sensitiveData.Contains(item.Key))
                 {
-                    return new KeyValuePair<string, StringValues>(item.Key, _dataProtector.Protect(item.Value));
+                    return new KeyValuePair<string, string>(item.Key, _dataProtector.Protect(item.Value));
                 }
-                return new KeyValuePair<string, StringValues>(item.Key, item.Value);
+
+                return new KeyValuePair<string, string>(item.Key, item.Value);
             };
         }
     }

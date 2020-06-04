@@ -18,6 +18,8 @@ namespace raccoonLog
 
         public async Task Invoke(HttpContext context, IHttpLoggingProvider httpLogging)
         {
+            context.Request.EnableBuffering();
+   
             var originalBody = context.Response.Body;
 
             var bodyStream = _recyclableMemoryStreamManager.GetStream();

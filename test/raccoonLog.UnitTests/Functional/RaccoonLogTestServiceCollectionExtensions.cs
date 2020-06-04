@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace raccoonLog.Tests.Functional
+namespace raccoonLog.UnitTests.Functional
 {
     public static class RaccoonLogTestServiceCollectionExtensions
     {

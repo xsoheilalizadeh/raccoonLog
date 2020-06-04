@@ -30,8 +30,6 @@ namespace raccoonLog.Handlers
                 throw new NullReferenceException(nameof(request));
             }
 
-            request.EnableBuffering();
-
             var logMessage = _logMessageFactory.Create(request);
 
             if (request.HasFormContentType)
@@ -42,7 +40,7 @@ namespace raccoonLog.Handlers
             {
                 var reader = new HttpMessageLogBodyReader(_options.Request.IgnoreContentTypes);
 
-                var body = await reader.ReadAsync(request.Body, request.ContentType);
+                var body = await reader.ReadAsync(request.Body, request.ContentType, request.ContentLength, cancellationToken);
 
                 logMessage.SetBody(body);
             }

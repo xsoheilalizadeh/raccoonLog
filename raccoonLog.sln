@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{88F9305A-56B
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{8C9919E9-D1EB-483C-92DF-299F3279CA5B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "raccoonLog.Tests", "test\raccoonLog.Tests\raccoonLog.Tests.csproj", "{906D071A-5900-4DE5-A55A-21C635D6D4F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "raccoonLog.UnitTests", "test\raccoonLog.UnitTests\raccoonLog.UnitTests.csproj", "{906D071A-5900-4DE5-A55A-21C635D6D4F0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{C5D71756-E0E5-4C0B-A22B-3DCC1C46C151}"
 EndProject
@@ -27,6 +27,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "raccoonLog.Stores.ElasticSearch", "src\raccoonLog.Stores.ElasticSearch\raccoonLog.Stores.ElasticSearch.csproj", "{CE03670C-7926-415F-80FA-899C0703DB9D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "raccoonLog.Stores.File", "src\raccoonLog.Stores.File\raccoonLog.Stores.File.csproj", "{62CED164-DF25-4DBD-92E2-32D3C288DA2E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "raccoonLog.IntegrationTests", "test\raccoonLog.IntegrationTests\raccoonLog.IntegrationTests.csproj", "{68DAF899-0D24-4DC7-9710-D1891D2903BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +56,10 @@ Global
 		{62CED164-DF25-4DBD-92E2-32D3C288DA2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62CED164-DF25-4DBD-92E2-32D3C288DA2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62CED164-DF25-4DBD-92E2-32D3C288DA2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68DAF899-0D24-4DC7-9710-D1891D2903BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68DAF899-0D24-4DC7-9710-D1891D2903BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68DAF899-0D24-4DC7-9710-D1891D2903BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68DAF899-0D24-4DC7-9710-D1891D2903BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -64,6 +70,7 @@ Global
 		{37742C8A-64C2-4CF0-BCC3-653E0E4F8025} = {C5D71756-E0E5-4C0B-A22B-3DCC1C46C151}
 		{CE03670C-7926-415F-80FA-899C0703DB9D} = {88F9305A-56B3-4F40-B57D-051659963650}
 		{62CED164-DF25-4DBD-92E2-32D3C288DA2E} = {88F9305A-56B3-4F40-B57D-051659963650}
+		{68DAF899-0D24-4DC7-9710-D1891D2903BC} = {8C9919E9-D1EB-483C-92DF-299F3279CA5B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DD751939-CA3E-406E-BFE0-20C0E1CD5770}
