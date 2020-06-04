@@ -25,8 +25,8 @@ It's a HTTP logging library that represents request and response logging for ASP
  Package name                              | Version                      
 -------------------------------------------|-----------------------------
  `raccoonLog` | [![NuGet](https://img.shields.io/nuget/v/raccoonLog.svg?style=flat-square&label=nuget)](https://www.nuget.org/packages/raccoonLog/) 
- `raccoonLog.Stores.File` | [![NuGet](https://img.shields.io/nuget/v/raccoonLog.svg?style=flat-square&label=nuget)](https://www.nuget.org/packages/raccoonLog.Stores.File/) 
-`raccoonLog.Stores.ElasticSearch` | [![NuGet](https://img.shields.io/nuget/v/raccoonLog.svg?style=flat-square&label=nuget)](https://www.nuget.org/packages/raccoonLog.Stores.ElasticSearch/) 
+ `raccoonLog.Stores.File` | [![NuGet](https://img.shields.io/nuget/v/raccoonLog.Stores.File.svg?style=flat-square&label=nuget)](https://www.nuget.org/packages/raccoonLog.Stores.File/) 
+ `raccoonLog.Stores.ElasticSearch` | [![NuGet](https://img.shields.io/nuget/v/raccoonLog.Stores.ElasticSearch.svg?style=flat-square&label=nuget)](https://www.nuget.org/packages/raccoonLog.Stores.ElasticSearch/) 
 
  ### Quick Start
  
