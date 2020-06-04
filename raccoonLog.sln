@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		src\Directory.Build.props = src\Directory.Build.props
 		README.md = README.md
 		Versions.props = Versions.props
+		global.json = global.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "raccoonLog", "src\raccoonLog\raccoonLog.csproj", "{61FD4468-E019-43F5-BF7C-653C964D8164}"

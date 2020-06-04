@@ -1,4 +1,5 @@
 using System;
+using Elasticsearch.Net;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace raccoonLog.Stores.ElasticSearch
@@ -8,6 +9,8 @@ namespace raccoonLog.Stores.ElasticSearch
         public static void AddElasticSearchStore(this HttpLoggingBuilder builder, Action<ElasticSearchStoreOptions> configureOptions)
         {
             var services = builder.Services;
+
+            services.AddSingleton<IElasticsearchSerializer, ElasticSearchSerializer>();
 
             builder.AddStore<ElasticSearchStore>(ServiceLifetime.Singleton);
 

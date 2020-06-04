@@ -1,9 +1,5 @@
 <Project>
-  <PropertyGroup Label="InternalPackagesVersions">
-    <CoreLibVersion>2.0.4</CoreLibVersion>
-    <HttpLibVersion>2.0.4</HttpLibVersion>
-  </PropertyGroup>
-
+ 
   <PropertyGroup Label="ExternalPackagesVersions">
     <SystemTextJson>5.0.0-preview.4.20251.6</SystemTextJson>
   </PropertyGroup>
