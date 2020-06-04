@@ -43,13 +43,15 @@ namespace raccoonLog
 
             var responseLog = await _responseHandler.Handle(context.Response, cancellationToken);
 
-            var logContext = new LogContext(Activity.Current?.Id ?? context.TraceIdentifier, requestLog, responseLog, context.Request.Protocol);
+            var exceptionFeature = context.Features.Get<IExceptionHandlerPathFeature>();
 
-            var exceptionFeature = context.Features.Get<IExceptionHandlerFeature>();
+            var logContext = new LogContext(Activity.Current?.Id ?? context.TraceIdentifier, 
+                requestLog, responseLog,
+                context.Request.Protocol, _options.HandleTimestamp());
 
-            if (exceptionFeature?.Error is Exception error)
+            if (exceptionFeature?.Error != null)
             {
-                logContext.SetError(error);
+                logContext.SetError(exceptionFeature.Error);
             }
 
             _logger.Log(_options.Level, default, logContext, logContext.Error, _options.Formatter);

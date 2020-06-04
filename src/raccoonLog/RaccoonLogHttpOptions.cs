@@ -15,7 +15,7 @@ namespace raccoonLog
         public RaccoonLogHttpOptions()
         {
             Level = LogLevel.Information;
-
+            HandleTimestamp = () => DateTime.UtcNow;
             JsonSerializerOptions = new JsonSerializerOptions
             {
                 IgnoreNullValues = true,
@@ -23,12 +23,11 @@ namespace raccoonLog
             };
 
             JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-
             Formatter = (state, exception) =>
             {
                 var log = new StringBuilder();
 
-                log.Append("\r\n* TraceId: ").Append(state.TraceId)
+                log.Append("* TraceId: ").Append(state.TraceId)
                    .AppendFormat("\r\n> {0} ", state.Request.Method.ToUpper()).Append(state.Request.Url);
 
                 foreach (var (key, value) in state.Request.Headers)
@@ -50,6 +49,8 @@ namespace raccoonLog
             };
         }
 
+        public Func<DateTime> HandleTimestamp { get; set; }
+        
         public LogLevel Level { get; set; }
 
         public Func<LogContext, Exception, string> Formatter { get; internal set; }

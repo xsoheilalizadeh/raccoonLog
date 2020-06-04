@@ -10,11 +10,11 @@ namespace raccoonLog.Handlers
 {
     public class HttpMessageLogBodyReader
     {
-        private readonly List<string> ignoredContentTypes;
+        private readonly List<string> _ignoredContentTypes;
 
         public HttpMessageLogBodyReader(List<string> ignoredContentTypes)
         {
-            this.ignoredContentTypes = ignoredContentTypes;
+            _ignoredContentTypes = ignoredContentTypes;
         }
 
         public async ValueTask<object?> ReadAsync(Stream body, string contentType,long? contentLength, CancellationToken cancellationToken = default)
@@ -24,7 +24,7 @@ namespace raccoonLog.Handlers
                 throw new NullReferenceException(nameof(body));
             }
 
-            if (ignoredContentTypes.Any(t => !string.IsNullOrEmpty(contentType) && t.IndexOf(contentType) > -1))
+            if (_ignoredContentTypes.Any(t => !string.IsNullOrEmpty(contentType) && t.IndexOf(contentType, StringComparison.Ordinal) > -1))
             {
                 return default;
             }
@@ -34,11 +34,11 @@ namespace raccoonLog.Handlers
                 return default;
             }
 
-            bool isJson() => contentType.IndexOf("json") > -1;
+            bool IsJson() => contentType.IndexOf("json", StringComparison.Ordinal) > -1;
 
             body.Position = 0;
 
-            if (contentType is object && isJson())
+            if (contentType is object && IsJson())
             {
                 return await JsonSerializer.DeserializeAsync<object>(body, cancellationToken: cancellationToken);
             }

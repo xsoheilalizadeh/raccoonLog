@@ -3,14 +3,42 @@ using System.Net;
 
 namespace raccoonLog
 {
+    public class ExceptionLog
+    {
+        public ExceptionLog(string message, ExceptionLog innerError, string? strackTrace, string? source,
+            string? helpLink)
+        {
+            Message = message;
+            InnerError = innerError;
+            StrackTrace = strackTrace;
+            Source = source;
+            HelpLink = helpLink;
+        }
+
+        public string Message { get; private set; }
+
+        public ExceptionLog InnerError { get; private set; }
+
+        public string? StrackTrace { get; set; }
+
+        public string? Source { get; set; }
+
+        public string? HelpLink { get; set; }
+
+        public void SetInnerError(ExceptionLog error) => InnerError = error;
+    }
+
     public class LogContext
     {
-        public LogContext(string traceId, HttpRequestLog request, HttpResponseLog response, string protocol)
+        public LogContext(string traceId, HttpRequestLog request, HttpResponseLog response,
+            string protocol, DateTime timestamp, ExceptionLog? error = null)
         {
-            TraceId = traceId ?? throw new ArgumentNullException(nameof(traceId));
-            Protocol = protocol ?? throw new ArgumentNullException(nameof(protocol));
-            Request = request ?? throw new ArgumentNullException(nameof(request));
-            Response = response ?? throw new ArgumentNullException(nameof(response));
+            TraceId = traceId;
+            Request = request;
+            Response = response;
+            Error = error;
+            Protocol = protocol;
+            Timestamp = timestamp;
         }
 
         public string TraceId { get; private set; }
@@ -19,16 +47,41 @@ namespace raccoonLog
 
         public HttpResponseLog Response { get; private set; }
 
-        public Exception? Error { get; private set; }
+        public ExceptionLog? Error { get; private set; }
 
         public string Protocol { get; set; }
+        
+        public DateTime Timestamp { get; private set; }
 
-        public void SetError(Exception error) => Error = error;
+        public void SetError(Exception exception)
+        {
+            var error = new ExceptionLog(exception.Message, null, exception.StackTrace, exception.Source,
+                exception.HelpLink);
 
+            if (Error is null)
+            {
+                Error = error;
+            }
+            else if (Error.InnerError is null)
+            {
+                Error.SetInnerError(error);
+            }
+            else
+            {
+                Error.InnerError.SetInnerError(error);
+            }
+
+            while (exception.InnerException != null)
+            {
+                SetError(exception.InnerException);
+                exception = exception.InnerException;
+            }
+        }
 
         public override string ToString()
         {
-            return string.Format("{0} {1} - {2} {3}", Request.Method, Request.Url, Response.StatusCode, (HttpStatusCode)Response.StatusCode);
+            return string.Format("{0} {1} - {2} {3}", Request.Method, Request.Url, Response.StatusCode,
+                (HttpStatusCode) Response.StatusCode);
         }
     }
 }

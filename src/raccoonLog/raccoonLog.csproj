@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>$(HttpLibVersion)</Version>
+    <Version>2.1.0</Version>
     <PackageId>raccoonLog</PackageId>
     <TargetFrameworks>$(HttpLibTargetFramework)</TargetFrameworks>
     <Nullable>enable</Nullable>

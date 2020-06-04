@@ -1,5 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <Version>2.1.0</Version>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\raccoonLog\raccoonLog.csproj" />
   </ItemGroup>
@@ -7,9 +12,5 @@
   <ItemGroup>
     <PackageReference Include="NEST" Version="7.7.1" />
   </ItemGroup>
-
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
 
 </Project>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -25,6 +26,8 @@ namespace HttpLoggingSample.Controllers
         [HttpGet("single")]
         public WeatherForecast GetSingle()
         {
+            throw new NullReferenceException("1",new InvalidOperationException("2",new InvalidDataException("3")));
+            
             var rng = new Random();
             return new WeatherForecast
             {
