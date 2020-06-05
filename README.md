@@ -18,7 +18,6 @@ It's a HTTP logging library that represents request and response logging for ASP
 - File data store
 - ElasticSearch data store
 - Custom data store implementation
-- High Performance
 
 ### Packages
 
