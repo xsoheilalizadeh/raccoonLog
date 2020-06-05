@@ -5,7 +5,7 @@ namespace raccoonLog
 {
     public class HttpMessageLogSensitiveDataOptions
     {
-        public List<string> Headers { get; set; } = new List<string>();
+        public HashSet<string> Headers { get; set; } = new HashSet<string>();
 
     }
 
@@ -20,11 +20,11 @@ namespace raccoonLog
             Headers.Add(HeaderNames.ProxyAuthorization);
         }
 
-        public List<string> Parameters { get; set; } = new List<string>();
+        public HashSet<string> Parameters { get; set; } = new HashSet<string>();
 
-        public List<string> Cookies { get; set; } = new List<string>();
+        public HashSet<string> Cookies { get; set; } = new HashSet<string>();
 
-        public List<string> Forms { get; set; } = new List<string>();
+        public HashSet<string> Forms { get; set; } = new HashSet<string>();
     }
 
     public class HttpResponseLogSensitiveDataOptions : HttpMessageLogSensitiveDataOptions

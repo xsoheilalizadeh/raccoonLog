@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using raccoonLog.IntegrationTests.Domain;
 using raccoonLog.Stores.File;
 using Xunit;
 using JsonSerializer = System.Text.Json.JsonSerializer;

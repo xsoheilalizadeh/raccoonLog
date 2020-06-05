@@ -6,6 +6,8 @@ namespace raccoonLog
 {
     public class UrlLog
     {
+        public static UrlLog Default => new UrlLog(80,"/","localhost","http",new List<KeyValuePair<string, string>>());
+        
         public UrlLog(int port, string path, string host, string scheme,
             IReadOnlyList<KeyValuePair<string, string>> parameters)
         {
@@ -15,6 +17,7 @@ namespace raccoonLog
             Scheme = scheme;
             Parameters = parameters;
         }
+        
 
         public int Port { get; private set; }
 
@@ -30,7 +33,9 @@ namespace raccoonLog
 
         public override string ToString()
         {
-            return new UriBuilder(Scheme, Host, Port, Path, QueryString.Create(Parameters).Value).Uri.ToString();
+            var query = QueryString.Create(Parameters).Value;
+            
+            return new UriBuilder(Scheme, Host, Port, Path, query).Uri.ToString();
         }
     }
 }

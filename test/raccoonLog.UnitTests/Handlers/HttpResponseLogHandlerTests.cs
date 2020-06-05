@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Moq;
 using raccoonLog.Handlers;
+using raccoonLog.Mocking;
 using Xunit;
 
 namespace raccoonLog.UnitTests.Handlers

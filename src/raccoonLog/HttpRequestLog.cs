@@ -13,6 +13,7 @@ namespace raccoonLog
             Cookies = cookies;
         }        
         
+        
         public UrlLog Url { get; private set; }
 
         public string Method { get; private set; }
@@ -22,7 +23,6 @@ namespace raccoonLog
         public string? ContentType { get; private set; }
 
         public IReadOnlyList<KeyValuePair<string, string>> Headers { get; set; }
-
 
         public IReadOnlyList<KeyValuePair<string, string>> Cookies { get; private set; }
 

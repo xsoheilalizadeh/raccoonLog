@@ -1,4 +1,4 @@
-﻿namespace raccoonLog.IntegrationTests
+﻿namespace raccoonLog.IntegrationTests.Domain
 {
     public enum Gender
     {

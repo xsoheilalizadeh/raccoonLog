@@ -16,7 +16,7 @@ namespace raccoonLog.UnitTests
         {
             var bodyStream = new MemoryStream();
             var json = "{\"name\":\"my_name\"}";
-            var reader = new HttpMessageLogBodyReader(new List<string>());
+            var reader = new HttpMessageLogBodyReader(new HashSet<string>());
 
             bodyStream.Write(Encoding.UTF8.GetBytes(json));
 
@@ -30,7 +30,7 @@ namespace raccoonLog.UnitTests
         {
             var bodyStream = new MemoryStream();
 
-            var reader = new HttpMessageLogBodyReader(new List<string>());
+            var reader = new HttpMessageLogBodyReader(new HashSet<string>());
 
             var body = await reader.ReadAsync(bodyStream, MediaTypeNames.Application.Json, 0);
 
@@ -42,7 +42,7 @@ namespace raccoonLog.UnitTests
         {
             var bodyStream = new MemoryStream();
 
-            var ignoredContents = new List<string>() { MediaTypeNames.Text.Plain };
+            var ignoredContents = new HashSet<string>() { MediaTypeNames.Text.Plain };
 
             var reader = new HttpMessageLogBodyReader(ignoredContents);
 
