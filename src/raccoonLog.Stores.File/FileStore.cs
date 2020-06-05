@@ -67,9 +67,9 @@ namespace raccoonLog.Stores.File
 
                 fileStream.Seek(isBegin ? 0 : -1, SeekOrigin.End);
 
-                var lastCharecter = (char)fileStream.ReadByte();
+                var lastCharacter = (char)fileStream.ReadByte();
 
-                if (lastCharecter == ']')
+                if (lastCharacter == ']')
                 {
                     fileStream.Seek(-1, SeekOrigin.End);
 

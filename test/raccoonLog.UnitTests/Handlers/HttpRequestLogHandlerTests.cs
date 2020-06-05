@@ -18,7 +18,7 @@ namespace raccoonLog.UnitTests.Handlers
             var handler = new DefaultHttpRequestLogHandler(factory.Object, formContentHandler.Object, DefaultOptions.Default);
             var context = new DefaultHttpContext();
 
-            factory.Setup(f => f.Create(context.Request)).Returns(new HttpRequestLog(null, null, null, null, null));
+            factory.Setup(f => f.Create(context.Request)).Returns(new HttpRequestLog(null!, null!, null, null!, null!));
 
             context.Features.Set<IFormFeature>(new FakeForm());
             context.Features.Set<IHttpRequestFeature>(new FakeHttpRequest());

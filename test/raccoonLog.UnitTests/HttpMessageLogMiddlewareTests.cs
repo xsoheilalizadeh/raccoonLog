@@ -20,9 +20,7 @@ namespace raccoonLog.UnitTests
             context.Response.Body = new MemoryStream();
             context.Response.Body.Write(Encoding.UTF8.GetBytes(content));
 
-            var middleware = new HttpMessageLogMiddleware(async (ctx) =>
-            {
-            });
+            var middleware = new HttpMessageLogMiddleware( (ctx) => Task.CompletedTask);
 
             await middleware.Invoke(context, httpLoggingProvider.Object);
 
@@ -36,7 +34,7 @@ namespace raccoonLog.UnitTests
         }
 
         [Fact]
-        public async Task InvokeReturnsBackOrginalResponseBodyWhenNextThrowsException()
+        public async Task InvokeReturnsBackOriginalResponseBodyWhenNextThrowsException()
         {
             var httpLoggingProvider = new Mock<IHttpLoggingProvider>();
             var context = new DefaultHttpContext();
@@ -45,10 +43,7 @@ namespace raccoonLog.UnitTests
             context.Response.Body = new MemoryStream();
             context.Response.Body.Write(Encoding.UTF8.GetBytes(content));
 
-            var middleware = new HttpMessageLogMiddleware(async (ctx) =>
-            {
-                throw new InvalidOperationException();
-            });
+            var middleware = new HttpMessageLogMiddleware((ctx) => throw new InvalidOperationException());
 
             try
             {
@@ -56,6 +51,7 @@ namespace raccoonLog.UnitTests
             }
             catch
             {
+                // ignored
             }
 
             context.Response.Body.Position = 0;

@@ -24,7 +24,7 @@ namespace raccoonLog.UnitTests
 
             context.Features.Set<IFormFeature>(FakeForm.Value);
 
-            var requestLog = new HttpRequestLog(null, null, null, null, null);
+            var requestLog = new HttpRequestLog(null!, null!, null, null!, null!);
 
             await handler.Handle(context.Request, requestLog);
 

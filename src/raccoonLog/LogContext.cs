@@ -5,12 +5,12 @@ namespace raccoonLog
 {
     public class ExceptionLog
     {
-        public ExceptionLog(string message, ExceptionLog innerError, string? strackTrace, string? source,
+        public ExceptionLog(string message, ExceptionLog innerError, string? stackTrace, string? source,
             string? helpLink)
         {
             Message = message;
             InnerError = innerError;
-            StrackTrace = strackTrace;
+            StackTrace = stackTrace;
             Source = source;
             HelpLink = helpLink;
         }
@@ -19,7 +19,7 @@ namespace raccoonLog
 
         public ExceptionLog InnerError { get; private set; }
 
-        public string? StrackTrace { get; set; }
+        public string? StackTrace { get; set; }
 
         public string? Source { get; set; }
 

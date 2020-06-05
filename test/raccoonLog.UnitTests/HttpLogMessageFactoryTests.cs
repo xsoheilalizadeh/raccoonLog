@@ -13,7 +13,7 @@ namespace raccoonLog.UnitTests
         private readonly Mock<IOptions<RaccoonLogHttpOptions>> _options = new Mock<IOptions<RaccoonLogHttpOptions>>();
 
         [Fact]
-        public void CreateRequestLogMatchsWithHttpRequest()
+        public void CreateRequestLogMatchesWithHttpRequest()
         {
             _options.Setup(o => o.Value).Returns(new RaccoonLogHttpOptions());
 
@@ -37,7 +37,7 @@ namespace raccoonLog.UnitTests
         }
 
         [Fact]
-        public void CreateResponseLogMatchsWithHttpRequest()
+        public void CreateResponseLogMatchesWithHttpRequest()
         {
             var factory = new HttpLogMessageFactory(DefaultOptions.Default, NullProtector.Value);
             var context = new DefaultHttpContext();
