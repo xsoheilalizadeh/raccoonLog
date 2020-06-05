@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\raccoonLog\raccoonLog.csproj" />
+    <ProjectReference Include="..\raccoonLog.Mocking\raccoonLog.Mocking.csproj" />
   </ItemGroup>
 
 </Project>
