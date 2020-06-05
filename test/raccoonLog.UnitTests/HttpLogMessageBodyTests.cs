@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Options;
 using Moq;
 using raccoonLog.Handlers;
+using raccoonLog.Mocking;
 using Xunit;
 
 namespace raccoonLog.UnitTests
@@ -24,7 +25,7 @@ namespace raccoonLog.UnitTests
 
             context.Features.Set<IFormFeature>(FakeForm.Value);
 
-            var requestLog = new HttpRequestLog(null!, null!, null, null!, null!);
+            var requestLog = new HttpRequestLog(UrlLog.Default, null!, null, null!, null!);
 
             await handler.Handle(context.Request, requestLog);
 
@@ -52,7 +53,7 @@ namespace raccoonLog.UnitTests
 
             context.Features.Set<IFormFeature>(FakeForm.Value);
 
-            var requestLog = new HttpRequestLog(null, null, null, null, null);
+            var requestLog = new HttpRequestLog(UrlLog.Default, null, null, null, null);
 
             await handler.Handle(context.Request, requestLog);
 

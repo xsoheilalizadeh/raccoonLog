@@ -21,7 +21,7 @@ namespace raccoonLog
             Action<RaccoonLogHttpOptions> configureOptions)
         {
             services.Configure(configureOptions);
-
+            
             services.AddHttpContextAccessor();
 
             services.AddScoped<IDataProtector, DataProtector>();

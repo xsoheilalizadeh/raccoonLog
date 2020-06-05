@@ -10,9 +10,9 @@ namespace raccoonLog.Handlers
 {
     public class HttpMessageLogBodyReader
     {
-        private readonly List<string> _ignoredContentTypes;
+        private readonly HashSet<string> _ignoredContentTypes;
 
-        public HttpMessageLogBodyReader(List<string> ignoredContentTypes)
+        public HttpMessageLogBodyReader(HashSet<string> ignoredContentTypes)
         {
             _ignoredContentTypes = ignoredContentTypes;
         }

@@ -64,9 +64,9 @@ namespace raccoonLog
 
     public abstract class RaccoonLogHttpMessageOptions
     {
-        public List<string> IgnoreHeaders { get; set; } = new List<string>();
+        public HashSet<string> IgnoreHeaders { get; set; } = new HashSet<string>();
 
-        public List<string> IgnoreContentTypes { get; set; } = new List<string>();
+        public HashSet<string> IgnoreContentTypes { get; set; } = new HashSet<string>();
     }
 
     public class RaccoonLogHttpResponseOptions : RaccoonLogHttpMessageOptions

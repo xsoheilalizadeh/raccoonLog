@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Moq;
+using raccoonLog.Mocking;
 using Xunit;
 
 namespace raccoonLog.UnitTests
@@ -77,6 +78,8 @@ namespace raccoonLog.UnitTests
 
             Assert.NotEqual(requestLog.Headers.First(h => h.Key == "X-Custom").Value, context.Request.Headers["X-Custom"].ToString());
             Assert.NotEqual(requestLog.Cookies.First(h => h.Key == "auth_token").Value, context.Request.Cookies["auth_token"]);
+            Assert.NotEqual(requestLog.Url.Parameters.First(h => h.Key == "name").Value, context.Request.Query["name"].ToString());
+
         }
 
         [Fact]

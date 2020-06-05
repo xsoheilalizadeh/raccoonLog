@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
+using raccoonLog.Mocking;
 using Xunit;
 
 namespace raccoonLog.UnitTests.Functional

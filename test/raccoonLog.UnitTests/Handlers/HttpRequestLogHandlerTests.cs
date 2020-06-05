@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Moq;
 using raccoonLog.Handlers;
+using raccoonLog.Mocking;
 using Xunit;
 
 namespace raccoonLog.UnitTests.Handlers
@@ -18,7 +19,7 @@ namespace raccoonLog.UnitTests.Handlers
             var handler = new DefaultHttpRequestLogHandler(factory.Object, formContentHandler.Object, DefaultOptions.Default);
             var context = new DefaultHttpContext();
 
-            factory.Setup(f => f.Create(context.Request)).Returns(new HttpRequestLog(null!, null!, null, null!, null!));
+            factory.Setup(f => f.Create(context.Request)).Returns(new HttpRequestLog(UrlLog.Default, null!, null, null!, null!));
 
             context.Features.Set<IFormFeature>(new FakeForm());
             context.Features.Set<IHttpRequestFeature>(new FakeHttpRequest());
@@ -36,7 +37,7 @@ namespace raccoonLog.UnitTests.Handlers
             var formContentHandler = new Mock<IHttpRequestLogFormHandler>();
             var handler = new DefaultHttpRequestLogHandler(factory.Object, formContentHandler.Object, DefaultOptions.Default);
             var context = new DefaultHttpContext();
-            var logMessage = new HttpRequestLog(null, null, null, null, null);
+            var logMessage = new HttpRequestLog(UrlLog.Default, null, null, null, null);
             var content = "The Request Body Content!";
 
             factory.Setup(f => f.Create(context.Request)).Returns(logMessage);

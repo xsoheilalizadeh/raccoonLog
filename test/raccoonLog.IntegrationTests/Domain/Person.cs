@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace raccoonLog.IntegrationTests
+namespace raccoonLog.IntegrationTests.Domain
 {
     public class Person
     {

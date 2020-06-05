@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Extensions.Primitives;
 
 namespace raccoonLog
 {
@@ -24,26 +22,16 @@ namespace raccoonLog
 
         public HttpRequestLog Create(HttpRequest request)
         {
-            var sensitiveData = _options.Request.SensitiveData;
+            var parameters = Map(request.Query, _dataProtector,
+                _options.Request.SensitiveData.Parameters,
+                null);
 
-            var parameters = request.Query
-                .Select(ApplyProtection(sensitiveData.Parameters))
-                .ToList();
+            var headers = Map(request.Headers, _dataProtector,
+                _options.Request.SensitiveData.Headers,
+                _options.Request.IgnoreHeaders);
 
-            var headers = request.Headers
-                .Where(q => !_options.Request.IgnoreHeaders.Any(q.Key.Equals))
-                .Select(ApplyProtection(sensitiveData.Headers))
-                .ToList();
-
-            var cookies = request.Cookies.Select(item =>
-            {
-                if (sensitiveData.Cookies.Contains(item.Key))
-                {
-                    return new KeyValuePair<string, string>(item.Key, _dataProtector.Protect(item.Value));
-                }
-
-                return new KeyValuePair<string, string>(item.Key, item.Value);
-            }).ToList();
+            var cookies = Map(request.Cookies, _dataProtector,
+                _options.Request.SensitiveData.Cookies, null);
 
             var uri = new Uri(request.GetDisplayUrl());
 
@@ -55,28 +43,33 @@ namespace raccoonLog
 
         public HttpResponseLog Create(HttpResponse response)
         {
-            var sensitiveData = _options.Response.SensitiveData;
-
-            var headers = response.Headers
-                .Where(q => !_options.Response.IgnoreHeaders.Any(q.Key.Equals))
-                .Select(ApplyProtection(sensitiveData.Headers))
-                .ToList();
+            var headers = Map(response.Headers, _dataProtector,
+                _options.Response.SensitiveData.Headers,
+                _options.Response.IgnoreHeaders);
 
             return new HttpResponseLog(response.StatusCode, response.ContentType, headers);
         }
 
-        private Func<KeyValuePair<string, StringValues>, KeyValuePair<string, string>> ApplyProtection(
-            List<string> sensitiveData)
+        public static List<KeyValuePair<string, string>> Map<TValue>(IEnumerable<KeyValuePair<string, TValue>> collection,
+            IDataProtector protector, HashSet<string> protectedData, HashSet<string>? ignoredData)
         {
-            return item =>
+            var items = new List<KeyValuePair<string, string>>();
+
+            foreach (var item in collection)
             {
-                if (sensitiveData.Contains(item.Key))
+                if (ignoredData is object && ignoredData.Contains(item.Key))
                 {
-                    return new KeyValuePair<string, string>(item.Key, _dataProtector.Protect(item.Value));
+                    continue;
                 }
 
-                return new KeyValuePair<string, string>(item.Key, item.Value);
-            };
+                var value = item.Value.ToString();
+
+                items.Add(protectedData.Contains(item.Key)
+                    ? new KeyValuePair<string, string>(item.Key, protector.Protect(value))
+                    : new KeyValuePair<string, string>(item.Key, value));
+            }
+
+            return items;
         }
     }
 }
