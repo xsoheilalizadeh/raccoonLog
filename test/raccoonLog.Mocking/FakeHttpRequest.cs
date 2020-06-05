@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 
-namespace raccoonLog.UnitTests
+namespace raccoonLog.Mocking
 {
     public class FakeHttpRequest : IHttpRequestFeature
     {
@@ -29,11 +31,19 @@ namespace raccoonLog.UnitTests
             Path = "/some-path";
             QueryString = "?name=soheil&age=21";
 
-            Headers = new HeaderDictionary(new Dictionary<string, StringValues>
+            var headers = new Dictionary<string, StringValues>
             {
-                {"X-Custom","noo" },
-                {HeaderNames.Host,"ex.com:7888" }
-            });
+                {"X-Custom", "noo"},
+                {HeaderNames.Host, "ex.com:7888"}
+            };
+
+            _ = Enumerable.Range(1, 33).Select(index =>
+            {
+                headers.Add($"H-{index}", Guid.NewGuid().ToString("N"));
+                return 1;
+            }).ToList();
+
+            Headers = new HeaderDictionary(headers);
         }
 
         public string Protocol { get; set; }
@@ -46,5 +56,7 @@ namespace raccoonLog.UnitTests
         public IHeaderDictionary Headers { get; set; }
 
         public Stream Body { get; set; }
+        
+        public static IHttpRequestFeature Value => new FakeHttpRequest();
     }
 }

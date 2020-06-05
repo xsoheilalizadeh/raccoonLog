@@ -2,25 +2,35 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Primitives;
 
-namespace raccoonLog.UnitTests
+namespace raccoonLog.Mocking
 {
     public class FakeHttpResponse : IHttpResponseFeature
     {
         public FakeHttpResponse(string? body = null)
         {
             StatusCode = StatusCodes.Status200OK;
-
-            Headers = new HeaderDictionary(new Dictionary<string, StringValues>
+            
+            var headers = new Dictionary<string, StringValues>
             {
-               {"X-Custom","boo" },
-               {"X-Custom-Test","boo" }
-            });
+                {"X-Custom","boo" },
+                {"X-Custom-Test","boo" }
+            };
+
+            _ = Enumerable.Range(1, 33).Select(index =>
+            {
+                headers.Add($"H-{index}", Guid.NewGuid().ToString("N"));
+                return 1;
+            }).ToList();
+           
+            Headers = new HeaderDictionary(headers);
+            
 
             var stream = new MemoryStream();
 
@@ -31,6 +41,8 @@ namespace raccoonLog.UnitTests
 
             Body = stream;
         }
+        
+        public static IHttpResponseFeature Value => new FakeHttpResponse();
 
         public int StatusCode { get; set; }
 
