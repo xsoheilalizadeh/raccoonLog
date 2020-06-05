@@ -27,14 +27,6 @@ namespace HttpLoggingSample.Controllers
         public WeatherForecast GetSingle()
         {
             throw new NullReferenceException("1",new InvalidOperationException("2",new InvalidDataException("3")));
-            
-            var rng = new Random();
-            return new WeatherForecast
-            {
-                Date = DateTime.Now,
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            };
         }
 
         [HttpGet]

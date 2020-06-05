@@ -1,7 +1,4 @@
-﻿using System;
-using Nest;
-
-namespace raccoonLog.Stores.ElasticSearch
+﻿namespace raccoonLog.Stores.ElasticSearch
 {
     public class ElasticLogContext : LogContext
     {

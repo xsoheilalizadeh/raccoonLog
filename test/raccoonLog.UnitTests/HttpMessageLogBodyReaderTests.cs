@@ -22,7 +22,7 @@ namespace raccoonLog.UnitTests
 
             var body = await reader.ReadAsync(bodyStream, MediaTypeNames.Application.Json, json.Length);
 
-            Assert.Equal(body.ToString(), json);
+            Assert.Equal(body?.ToString(), json);
         }
 
         [Fact]

@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using raccoonLog;
 using raccoonLog.Stores.ElasticSearch;
-using raccoonLog.Stores.File;
 
 namespace HttpLoggingSample
 {

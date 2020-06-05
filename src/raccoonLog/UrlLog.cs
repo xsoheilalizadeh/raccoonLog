@@ -24,7 +24,7 @@ namespace raccoonLog
 
         public string Scheme { get; private set; }
 
-        public string Abosolute => this.ToString();
+        public string Absolute => this.ToString();
 
         public IReadOnlyList<KeyValuePair<string, string>> Parameters { get; private set; }
 
