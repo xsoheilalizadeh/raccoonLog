@@ -5,16 +5,6 @@ using raccoonLog.Handlers;
 
 namespace raccoonLog
 {
-    public class RaccoonLogBuilder
-    {
-        public RaccoonLogBuilder(IServiceCollection services)
-        {
-            Services = services;
-        }
-
-        internal IServiceCollection Services { get; set; }
-    }
-
     public static class RaccoonLogServiceCollectionExtensions
     {
         public static HttpLoggingBuilder AddHttpLogging(this IServiceCollection services,

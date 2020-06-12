@@ -48,9 +48,4 @@ namespace HttpLoggingSample.Controllers
             return Ok(form);
         }
     }
-
-    public class XForm
-    {
-        public string Name { get; set; }
-    }
 }
