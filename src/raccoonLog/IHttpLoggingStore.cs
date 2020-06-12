@@ -10,6 +10,9 @@ namespace raccoonLog
 
     public class DefaultHttpLoggingStore : IHttpLoggingStore
     {
-        public Task StoreAsync(LogContext logContext, CancellationToken cancellationToken = default) => Task.CompletedTask;
+        public Task StoreAsync(LogContext logContext, CancellationToken cancellationToken = default)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

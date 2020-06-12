@@ -14,7 +14,7 @@ namespace raccoonLog
             HelpLink = helpLink;
         }
 
-        public string Message { get; private set; }
+        public string Message { get; }
 
         public ExceptionLog InnerError { get; private set; }
 
@@ -40,17 +40,17 @@ namespace raccoonLog
             Timestamp = timestamp;
         }
 
-        public string TraceId { get; private set; }
+        public string TraceId { get; }
 
-        public HttpRequestLog Request { get; private set; }
+        public HttpRequestLog Request { get; }
 
-        public HttpResponseLog Response { get; private set; }
+        public HttpResponseLog Response { get; }
 
         public ExceptionLog? Error { get; private set; }
 
         public string Protocol { get; set; }
-        
-        public DateTime Timestamp { get; private set; }
+
+        public DateTime Timestamp { get; }
 
         public void SetError(Exception exception)
         {

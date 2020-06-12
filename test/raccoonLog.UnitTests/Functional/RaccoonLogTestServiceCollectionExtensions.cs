@@ -7,13 +7,12 @@ namespace raccoonLog.UnitTests.Functional
     {
         public static IServiceCollection SetHttpContext(this IServiceCollection services, HttpContext context)
         {
-            services.AddSingleton<IHttpContextAccessor>((sp) =>
+            services.AddSingleton<IHttpContextAccessor>(sp =>
             {
-                return new HttpContextAccessor() { HttpContext = context };
+                return new HttpContextAccessor {HttpContext = context};
             });
 
             return services;
         }
     }
-
 }

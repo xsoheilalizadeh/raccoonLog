@@ -11,16 +11,15 @@ namespace raccoonLog
 {
     public class HttpLoggingProvider : IHttpLoggingProvider
     {
+        private readonly ILogger<HttpLoggingProvider> _logger;
         private readonly IHttpRequestLogHandler _requestHandler;
         private readonly IHttpResponseLogHandler _responseHandler;
-
-        private readonly ILogger<HttpLoggingProvider> _logger;
 
         private readonly IHttpLoggingStore _store;
 
         private readonly IStoreQueue _storeQueue;
 
-        private RaccoonLogHttpOptions _options;
+        private readonly RaccoonLogHttpOptions _options;
 
         public HttpLoggingProvider(IHttpResponseLogHandler responseHandler,
             IHttpRequestLogHandler requestHandler,
@@ -44,14 +43,11 @@ namespace raccoonLog
 
             var exceptionFeature = context.Features.Get<IExceptionHandlerPathFeature>();
 
-            var logContext = new LogContext(Activity.Current?.Id ?? context.TraceIdentifier, 
+            var logContext = new LogContext(Activity.Current?.Id ?? context.TraceIdentifier,
                 requestLog, responseLog,
                 context.Request.Protocol, _options.HandleTimestamp());
 
-            if (exceptionFeature?.Error != null)
-            {
-                logContext.SetError(exceptionFeature.Error);
-            }
+            if (exceptionFeature?.Error != null) logContext.SetError(exceptionFeature.Error);
 
             _logger.Log(_options.Level, default, logContext, exceptionFeature?.Error, _options.Formatter);
 

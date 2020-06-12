@@ -17,24 +17,21 @@ namespace raccoonLog.Handlers
             _ignoredContentTypes = ignoredContentTypes;
         }
 
-        public async ValueTask<object?> ReadAsync(Stream body, string contentType,long? contentLength, CancellationToken cancellationToken = default)
+        public async ValueTask<object?> ReadAsync(Stream body, string contentType, long? contentLength,
+            CancellationToken cancellationToken = default)
         {
-            if (body == null)
-            {
-                throw new NullReferenceException(nameof(body));
-            }
+            if (body == null) throw new NullReferenceException(nameof(body));
 
-            if (_ignoredContentTypes.Any(t => !string.IsNullOrEmpty(contentType) && t.IndexOf(contentType, StringComparison.Ordinal) > -1))
-            {
+            if (_ignoredContentTypes.Any(t =>
+                !string.IsNullOrEmpty(contentType) && t.IndexOf(contentType, StringComparison.Ordinal) > -1))
                 return default;
-            }
 
-            if (body.Length <= 0)
+            if (body.Length <= 0) return default;
+
+            bool IsJson()
             {
-                return default;
+                return contentType.IndexOf("json", StringComparison.Ordinal) > -1;
             }
-
-            bool IsJson() => contentType.IndexOf("json", StringComparison.Ordinal) > -1;
 
             body.Position = 0;
 
@@ -42,12 +39,10 @@ namespace raccoonLog.Handlers
             {
                 return await JsonSerializer.DeserializeAsync<object>(body, cancellationToken: cancellationToken);
             }
-            else
-            {
-                var reader = new StreamReader(body);
-            
-                return await reader.ReadToEndAsync();
-            }
+
+            var reader = new StreamReader(body);
+
+            return await reader.ReadToEndAsync();
         }
     }
 }

@@ -6,7 +6,6 @@ namespace raccoonLog
     public class HttpMessageLogSensitiveDataOptions
     {
         public HashSet<string> Headers { get; set; } = new HashSet<string>();
-
     }
 
     public class HttpRequestLogSensitiveDataOptions : HttpMessageLogSensitiveDataOptions

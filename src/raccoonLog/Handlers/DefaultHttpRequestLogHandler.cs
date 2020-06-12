@@ -23,7 +23,8 @@ namespace raccoonLog.Handlers
             _logMessageFactory = logMessageFactory;
         }
 
-        public async ValueTask<HttpRequestLog> Handle(HttpRequest request, CancellationToken cancellationToken = default)
+        public async ValueTask<HttpRequestLog> Handle(HttpRequest request,
+            CancellationToken cancellationToken = default)
         {
             if (request == null)
             {
@@ -40,7 +41,8 @@ namespace raccoonLog.Handlers
             {
                 var reader = new HttpMessageLogBodyReader(_options.Request.IgnoreContentTypes);
 
-                var body = await reader.ReadAsync(request.Body, request.ContentType, request.ContentLength, cancellationToken);
+                var body = await reader.ReadAsync(request.Body, request.ContentType, request.ContentLength,
+                    cancellationToken);
 
                 logMessage.SetBody(body);
             }

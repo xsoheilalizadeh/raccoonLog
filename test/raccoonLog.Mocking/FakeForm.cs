@@ -19,37 +19,43 @@ namespace raccoonLog.Mocking
         public FakeForm()
         {
             Form = new FormCollection(new Dictionary<string, StringValues>
+                {
+                    {"Name", "Soheil"},
+                    {"age", "20"}
+                },
+                new FormFileCollection
+                {
+                    new FormFile(Stream.Null, 0, 100, "document", "doc.txt")
                     {
-                        {"Name", "Soheil"},
-                        {"age", "20"}
-                    },
-                   new FormFileCollection
-                   {
-                            new FormFile(Stream.Null, 0, 100, "document", "doc.txt")
-                            {
-                            Headers = new HeaderDictionary
-                            {
-                                {HeaderNames.ContentType, MediaTypeNames.Text.Plain},
-                                {HeaderNames.ContentDisposition, $"attachment; filename=\"{Guid.NewGuid():N}.text\""}
-                            }
-                        },
-                        new FormFile(Stream.Null, 0, 100, "video", "video.mp4")
+                        Headers = new HeaderDictionary
                         {
-                            Headers = new HeaderDictionary
-                            {
-                                {HeaderNames.ContentType, MediaTypeNames.Text.Plain},
-                                {HeaderNames.ContentDisposition, $"attachment; filename=\"{Guid.NewGuid():N}.text\""}
-                            }
-                        },
-                   });
+                            {HeaderNames.ContentType, MediaTypeNames.Text.Plain},
+                            {HeaderNames.ContentDisposition, $"attachment; filename=\"{Guid.NewGuid():N}.text\""}
+                        }
+                    },
+                    new FormFile(Stream.Null, 0, 100, "video", "video.mp4")
+                    {
+                        Headers = new HeaderDictionary
+                        {
+                            {HeaderNames.ContentType, MediaTypeNames.Text.Plain},
+                            {HeaderNames.ContentDisposition, $"attachment; filename=\"{Guid.NewGuid():N}.text\""}
+                        }
+                    }
+                });
         }
 
         public bool HasFormContentType => true;
 
         public IFormCollection Form { get; set; }
 
-        public IFormCollection ReadForm() => Form;
+        public IFormCollection ReadForm()
+        {
+            return Form;
+        }
 
-        public Task<IFormCollection> ReadFormAsync(CancellationToken cancellationToken) => Task.FromResult(Form);
+        public Task<IFormCollection> ReadFormAsync(CancellationToken cancellationToken)
+        {
+            return Task.FromResult(Form);
+        }
     }
 }

@@ -8,7 +8,6 @@ using Xunit;
 
 namespace raccoonLog.UnitTests
 {
-
     public class HttpMessageLogBodyReaderTests
     {
         [Fact]
@@ -26,6 +25,20 @@ namespace raccoonLog.UnitTests
         }
 
         [Fact]
+        public async Task ReadsNullWhenContentIsIgnored()
+        {
+            var bodyStream = new MemoryStream();
+
+            var ignoredContents = new HashSet<string> {MediaTypeNames.Text.Plain};
+
+            var reader = new HttpMessageLogBodyReader(ignoredContents);
+
+            var body = await reader.ReadAsync(bodyStream, MediaTypeNames.Text.Plain, 0);
+
+            Assert.Null(body);
+        }
+
+        [Fact]
         public async Task ReadsNullWhenContentLengthIsZero()
         {
             var bodyStream = new MemoryStream();
@@ -33,20 +46,6 @@ namespace raccoonLog.UnitTests
             var reader = new HttpMessageLogBodyReader(new HashSet<string>());
 
             var body = await reader.ReadAsync(bodyStream, MediaTypeNames.Application.Json, 0);
-
-            Assert.Null(body);
-        }
-
-        [Fact]
-        public async Task ReadsNullWhenContentIsIgnored()
-        {
-            var bodyStream = new MemoryStream();
-
-            var ignoredContents = new HashSet<string>() { MediaTypeNames.Text.Plain };
-
-            var reader = new HttpMessageLogBodyReader(ignoredContents);
-
-            var body = await reader.ReadAsync(bodyStream, MediaTypeNames.Text.Plain, 0);
 
             Assert.Null(body);
         }

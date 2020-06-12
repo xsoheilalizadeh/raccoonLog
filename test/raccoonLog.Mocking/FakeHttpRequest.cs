@@ -18,10 +18,7 @@ namespace raccoonLog.Mocking
 
             var stream = new MemoryStream();
 
-            if (body is object)
-            {
-                stream.Write(Encoding.UTF8.GetBytes(body));
-            }
+            if (body is object) stream.Write(Encoding.UTF8.GetBytes(body));
 
             Body = stream;
             Protocol = "HTTP/1";
@@ -46,6 +43,8 @@ namespace raccoonLog.Mocking
             Headers = new HeaderDictionary(headers);
         }
 
+        public static IHttpRequestFeature Value => new FakeHttpRequest();
+
         public string Protocol { get; set; }
         public string Scheme { get; set; }
         public string Method { get; set; }
@@ -56,7 +55,5 @@ namespace raccoonLog.Mocking
         public IHeaderDictionary Headers { get; set; }
 
         public Stream Body { get; set; }
-        
-        public static IHttpRequestFeature Value => new FakeHttpRequest();
     }
 }

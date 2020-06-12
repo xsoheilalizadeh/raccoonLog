@@ -4,10 +4,6 @@ namespace raccoonLog.IntegrationTests.Domain
 {
     public class Person
     {
-        public static Person Default =>
-            new Person("Soheil", 20, DateTime.Now, Gender.Male, true, new[] {"Learning"},
-                new Address("WL", 33, "DOO", 22));
-
         public Person(string name, int age, DateTime birthDate, Gender gender, bool isActive, string[] hobbies,
             Address address)
         {
@@ -19,6 +15,10 @@ namespace raccoonLog.IntegrationTests.Domain
             Hobbies = hobbies;
             Address = address;
         }
+
+        public static Person Default =>
+            new Person("Soheil", 20, DateTime.Now, Gender.Male, true, new[] {"Learning"},
+                new Address("WL", 33, "DOO", 22));
 
         public string Name { get; set; }
 

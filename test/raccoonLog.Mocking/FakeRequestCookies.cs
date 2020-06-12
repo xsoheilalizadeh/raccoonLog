@@ -12,7 +12,7 @@ namespace raccoonLog.Mocking
         {
             Cookies = new RequestCookieCollection(new Dictionary<string, string>
             {
-                {"auth_token", Guid.NewGuid().ToString() }
+                {"auth_token", Guid.NewGuid().ToString()}
             });
         }
 

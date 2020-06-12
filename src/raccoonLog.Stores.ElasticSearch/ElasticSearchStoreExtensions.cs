@@ -6,7 +6,8 @@ namespace raccoonLog.Stores.ElasticSearch
 {
     public static class ElasticSearchStoreExtensions
     {
-        public static void AddElasticSearchStore(this HttpLoggingBuilder builder, Action<ElasticSearchStoreOptions> configureOptions)
+        public static void AddElasticSearchStore(this HttpLoggingBuilder builder,
+            Action<ElasticSearchStoreOptions> configureOptions)
         {
             var services = builder.Services;
 

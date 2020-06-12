@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using raccoonLog.Handlers;
 
@@ -21,7 +21,7 @@ namespace raccoonLog
             Action<RaccoonLogHttpOptions> configureOptions)
         {
             services.Configure(configureOptions);
-            
+
             services.AddHttpContextAccessor();
 
             services.AddScoped<IDataProtector, DataProtector>();
@@ -47,16 +47,16 @@ namespace raccoonLog
         public static HttpLoggingBuilder AddHttpLogging(this IServiceCollection services)
         {
             return services.AddHttpLogging(o => { });
-        }   
+        }
 
         public static void AddStore<TStore>(this HttpLoggingBuilder builder,
-         ServiceLifetime lifetime = ServiceLifetime.Scoped) where TStore : class, IHttpLoggingStore
+            ServiceLifetime lifetime = ServiceLifetime.Scoped) where TStore : class, IHttpLoggingStore
         {
             var services = builder.Services;
 
             services.Add(new[]
             {
-                ServiceDescriptor.Describe(typeof(IHttpLoggingStore), typeof(TStore), lifetime),
+                ServiceDescriptor.Describe(typeof(IHttpLoggingStore), typeof(TStore), lifetime)
             });
         }
     }

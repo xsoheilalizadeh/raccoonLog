@@ -12,7 +12,6 @@ using Microsoft.Extensions.Options;
 using raccoonLog.IntegrationTests.Domain;
 using raccoonLog.Stores.File;
 using Xunit;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
 
@@ -20,15 +19,6 @@ namespace raccoonLog.IntegrationTests.FileStore
 {
     public class FileStoreTests : IClassFixture<TestServerFixture<FileStoreStartup>>
     {
-        private readonly HttpClient _client;
-
-        private readonly string _logFilePath;
-
-        private static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions
-        {
-            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-        };
-
         public FileStoreTests(TestServerFixture<FileStoreStartup> factory)
         {
             _client = factory.CreateClient(new WebApplicationFactoryClientOptions
@@ -39,38 +29,17 @@ namespace raccoonLog.IntegrationTests.FileStore
             var options = factory.Services.GetService<IOptions<FileStoreOptions>>().Value;
             _logFilePath = Path.Combine(Directory.GetCurrentDirectory(), options.SavePath, options.FileName);
 
-            if (File.Exists(_logFilePath))
-            {
-                File.Delete(_logFilePath);
-            }
+            if (File.Exists(_logFilePath)) File.Delete(_logFilePath);
         }
 
-        [Fact]
-        public async Task GetJsonRequestStoresInFile()
+        private readonly HttpClient _client;
+
+        private readonly string _logFilePath;
+
+        private static readonly JsonSerializerOptions SerializerOptions = new JsonSerializerOptions
         {
-            var response = await _client.GetAsync(EndPoints.GetJson);
-
-            await AssertStoredLog(response);
-        }
-
-        [Fact]
-        public async Task PostJsonRequestStoresInFile()
-        {
-            var json = new StringContent(JsonSerializer.Serialize(Person.Default, SerializerOptions),
-                Encoding.UTF8, MediaTypeNames.Application.Json);
-
-            var response = await _client.PostAsync(EndPoints.PostJson, json);
-
-            await AssertStoredLog(response);
-        }
-
-        [Fact]
-        public async Task GetPlainRequestStoresInFile()
-        {
-            var response = await _client.GetAsync(EndPoints.GetPlain);
-
-            await AssertStoredLog(response);
-        }
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
 
         private async Task AssertStoredLog(HttpResponseMessage response)
         {
@@ -86,6 +55,33 @@ namespace raccoonLog.IntegrationTests.FileStore
             logContext.Response.ShouldBe(response);
 
             Assert.Equal(logContext.Protocol, $"HTTP/{response.Version}");
+        }
+
+        [Fact]
+        public async Task GetJsonRequestStoresInFile()
+        {
+            var response = await _client.GetAsync(EndPoints.GetJson);
+
+            await AssertStoredLog(response);
+        }
+
+        [Fact]
+        public async Task GetPlainRequestStoresInFile()
+        {
+            var response = await _client.GetAsync(EndPoints.GetPlain);
+
+            await AssertStoredLog(response);
+        }
+
+        [Fact]
+        public async Task PostJsonRequestStoresInFile()
+        {
+            var json = new StringContent(JsonSerializer.Serialize(Person.Default, SerializerOptions),
+                Encoding.UTF8, MediaTypeNames.Application.Json);
+
+            var response = await _client.PostAsync(EndPoints.PostJson, json);
+
+            await AssertStoredLog(response);
         }
     }
 }

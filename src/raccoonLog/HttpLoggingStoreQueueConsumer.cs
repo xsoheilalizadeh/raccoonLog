@@ -9,9 +9,8 @@ namespace raccoonLog
 {
     public class StoreQueueConsumer : IHostedService
     {
-        private readonly IStoreQueue _storeQueue;
-
         private readonly ILogger<StoreQueueConsumer> _logger;
+        private readonly IStoreQueue _storeQueue;
 
         private readonly Timer _timer;
 

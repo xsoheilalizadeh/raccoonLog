@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Primitives;
-using System.Collections.Generic;
 
 namespace raccoonLog
 {
@@ -13,9 +13,9 @@ namespace raccoonLog
             Files = files;
         }
 
-        public List<KeyValuePair<string, StringValues>> Form { get; private set; }
+        public List<KeyValuePair<string, StringValues>> Form { get; }
 
-        public IReadOnlyList<FileLog> Files { get; private set; }
+        public IReadOnlyList<FileLog> Files { get; }
     }
 
     public class FileLog
@@ -29,17 +29,20 @@ namespace raccoonLog
             ContentDisposition = file.ContentDisposition;
         }
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
-        public string FileName { get; private set; }
+        public string FileName { get; }
 
-        public string ContentType { get; private set; }
+        public string ContentType { get; }
 
-        public long ContentLength { get; private set; }
+        public long ContentLength { get; }
 
-        public string ContentDisposition { get; private set; }
+        public string ContentDisposition { get; }
 
-        public static implicit operator FileLog(FormFile file) => new FileLog(file);
+        public static implicit operator FileLog(FormFile file)
+        {
+            return new FileLog(file);
+        }
 
         public override bool Equals(object? obj)
         {
@@ -75,6 +78,9 @@ namespace raccoonLog
             return a.Equals(b);
         }
 
-        public static bool operator !=(FileLog a, FileLog b) => !(a == b);
+        public static bool operator !=(FileLog a, FileLog b)
+        {
+            return !(a == b);
+        }
     }
 }

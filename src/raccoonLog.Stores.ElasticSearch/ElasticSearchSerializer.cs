@@ -50,7 +50,7 @@ namespace raccoonLog.Stores.ElasticSearch
         public void Serialize<T>(T data, Stream stream,
             SerializationFormatting formatting = SerializationFormatting.None)
         {
-            var json = JsonSerializer.Serialize<T>(data, _options.SerializerOptions);
+            var json = JsonSerializer.Serialize(data, _options.SerializerOptions);
 
             stream.Write(Encoding.UTF8.GetBytes(json));
         }
@@ -59,7 +59,7 @@ namespace raccoonLog.Stores.ElasticSearch
             SerializationFormatting formatting = SerializationFormatting.None,
             CancellationToken cancellationToken = default)
         {
-            return JsonSerializer.SerializeAsync<T>(stream, data, _options.SerializerOptions, cancellationToken);
+            return JsonSerializer.SerializeAsync(stream, data, _options.SerializerOptions, cancellationToken);
         }
     }
 }

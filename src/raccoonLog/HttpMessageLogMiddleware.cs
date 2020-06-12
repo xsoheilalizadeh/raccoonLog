@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.IO;
-using System.Threading.Tasks;
 
 namespace raccoonLog
 {
@@ -19,7 +19,7 @@ namespace raccoonLog
         public async Task Invoke(HttpContext context, IHttpLoggingProvider httpLogging)
         {
             context.Request.EnableBuffering();
-   
+
             var originalBody = context.Response.Body;
 
             var bodyStream = _recyclableMemoryStreamManager.GetStream();

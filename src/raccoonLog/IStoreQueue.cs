@@ -14,9 +14,8 @@ namespace raccoonLog
 
     public class StoreQueue : IStoreQueue
     {
-        private readonly ConcurrentQueue<Func<Task>> _queue = new ConcurrentQueue<Func<Task>>();
-
         private readonly ILogger<StoreQueue> _logger;
+        private readonly ConcurrentQueue<Func<Task>> _queue = new ConcurrentQueue<Func<Task>>();
 
         public StoreQueue(ILogger<StoreQueue> logger)
         {
@@ -29,10 +28,13 @@ namespace raccoonLog
             {
                 _logger.LogInformation("1 task dequeued, {count} remained", _queue.Count);
 
-                 await storeTask();
+                await storeTask();
             }
         }
-            
-        public void Enqueue(Func<Task> storeTask) => _queue.Enqueue(storeTask); 
+
+        public void Enqueue(Func<Task> storeTask)
+        {
+            _queue.Enqueue(storeTask);
+        }
     }
 }

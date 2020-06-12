@@ -11,27 +11,26 @@ namespace raccoonLog.Stores.File
 {
     public class FileStore : IHttpLoggingStore
     {
-        private readonly IHostEnvironment _environment;
+        private static readonly byte[] Utf8EndBracket = {(byte) ']'};
+        private static readonly byte[] Utf8StartBracket = {(byte) '['};
+        private static readonly byte[] Utf8Comma = {(byte) ','};
 
-        private readonly ILogger<FileStore> _logger;
+        private static readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1);
+        private readonly IHostEnvironment _environment;
 
         private readonly IFileSystem _fileSystem;
 
-        private readonly FileStoreOptions _storeOptions;
+        private readonly ILogger<FileStore> _logger;
 
         private readonly RaccoonLogHttpOptions _options;
 
-        private static readonly byte[] Utf8EndBracket = { (byte)']' };
-        private static readonly byte[] Utf8StartBracket = { (byte)'[' };
-        private static readonly byte[] Utf8Comma = { (byte)',' };
-
-        private static readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1);
+        private readonly FileStoreOptions _storeOptions;
 
         public FileStore(IHostEnvironment environment,
             IOptions<RaccoonLogHttpOptions> logHttpOptions,
             IOptions<FileStoreOptions> options,
             IFileSystem fileSystem
-, ILogger<FileStore> logger)
+            , ILogger<FileStore> logger)
         {
             _environment = environment;
             _storeOptions = options.Value;
@@ -44,10 +43,7 @@ namespace raccoonLog.Stores.File
 
         public async Task StoreAsync(LogContext logContext, CancellationToken cancellationToken = default)
         {
-            if (!Directory.Exists(DirectoryPath))
-            {
-                Directory.CreateDirectory(DirectoryPath);
-            }
+            if (!Directory.Exists(DirectoryPath)) Directory.CreateDirectory(DirectoryPath);
 
             var filePath = Path.Combine(DirectoryPath, $"{_storeOptions.FileName}");
 
@@ -55,9 +51,10 @@ namespace raccoonLog.Stores.File
 
             try
             {
-                await using var fileStream = _fileSystem.Open(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+                await using var fileStream = _fileSystem.Open(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite,
+                    FileShare.ReadWrite);
 
-                bool isBegin = false;    
+                var isBegin = false;
 
                 if (fileStream.Length == 0)
                 {
@@ -67,7 +64,7 @@ namespace raccoonLog.Stores.File
 
                 fileStream.Seek(isBegin ? 0 : -1, SeekOrigin.End);
 
-                var lastCharacter = (char)fileStream.ReadByte();
+                var lastCharacter = (char) fileStream.ReadByte();
 
                 if (lastCharacter == ']')
                 {
