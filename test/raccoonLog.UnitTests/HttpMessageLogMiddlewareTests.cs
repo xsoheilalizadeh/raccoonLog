@@ -20,7 +20,7 @@ namespace raccoonLog.UnitTests
             context.Response.Body = new MemoryStream();
             context.Response.Body.Write(Encoding.UTF8.GetBytes(content));
 
-            var middleware = new HttpMessageLogMiddleware( (ctx) => Task.CompletedTask);
+            var middleware = new HttpMessageLogMiddleware(ctx => Task.CompletedTask);
 
             await middleware.Invoke(context, httpLoggingProvider.Object);
 
@@ -43,7 +43,7 @@ namespace raccoonLog.UnitTests
             context.Response.Body = new MemoryStream();
             context.Response.Body.Write(Encoding.UTF8.GetBytes(content));
 
-            var middleware = new HttpMessageLogMiddleware((ctx) => throw new InvalidOperationException());
+            var middleware = new HttpMessageLogMiddleware(ctx => throw new InvalidOperationException());
 
             try
             {

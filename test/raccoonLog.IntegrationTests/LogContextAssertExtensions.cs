@@ -28,7 +28,7 @@ namespace raccoonLog.IntegrationTests
 
                 Assert.Equal(requestBody, requestLog.Body?.ToString());
             }
-            
+
             Assert.Equal(request.Method.Method, requestLog.Method);
             Assert.Equal(request.RequestUri, new Uri(requestLog.Url.ToString()));
         }

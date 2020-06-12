@@ -11,7 +11,7 @@ namespace HttpLoggingSample.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
+        private static readonly string[] Summaries =
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
@@ -26,7 +26,7 @@ namespace HttpLoggingSample.Controllers
         [HttpGet("single")]
         public WeatherForecast GetSingle()
         {
-            throw new NullReferenceException("1",new InvalidOperationException("2",new InvalidDataException("3")));
+            throw new NullReferenceException("1", new InvalidOperationException("2", new InvalidDataException("3")));
         }
 
         [HttpGet]
@@ -34,12 +34,12 @@ namespace HttpLoggingSample.Controllers
         {
             var rng = new Random();
             return Enumerable.Range(6, 5).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
+                {
+                    Date = DateTime.Now.AddDays(index),
+                    TemperatureC = rng.Next(-20, 55),
+                    Summary = Summaries[rng.Next(Summaries.Length)]
+                })
+                .ToArray();
         }
 
         [HttpPost]
@@ -47,7 +47,6 @@ namespace HttpLoggingSample.Controllers
         {
             return Ok(form);
         }
-
     }
 
     public class XForm
@@ -55,4 +54,3 @@ namespace HttpLoggingSample.Controllers
         public string Name { get; set; }
     }
 }
-

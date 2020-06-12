@@ -1,12 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.Net.Http.Headers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 
 namespace raccoonLog
 {
@@ -19,7 +19,7 @@ namespace raccoonLog
             JsonSerializerOptions = new JsonSerializerOptions
             {
                 IgnoreNullValues = true,
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             };
 
             JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -28,29 +28,24 @@ namespace raccoonLog
                 var log = new StringBuilder();
 
                 log.Append("* TraceId: ").Append(state.TraceId)
-                   .AppendFormat("\r\n> {0} ", state.Request.Method.ToUpper()).Append(state.Request.Url);
+                    .AppendFormat("\r\n> {0} ", state.Request.Method.ToUpper()).Append(state.Request.Url);
 
-                foreach (var (key, value) in state.Request.Headers)
-                {
-                    log.AppendFormat("\r\n> {0}: {1}", key, value);
-                }
+                foreach (var (key, value) in state.Request.Headers) log.AppendFormat("\r\n> {0}: {1}", key, value);
 
                 log.Append("\r\n");
 
                 log
-                   .AppendFormat("\r\n< {0} {1} {2}", state.Protocol, state.Response.StatusCode, (HttpStatusCode)state.Response.StatusCode);
+                    .AppendFormat("\r\n< {0} {1} {2}", state.Protocol, state.Response.StatusCode,
+                        (HttpStatusCode) state.Response.StatusCode);
 
-                foreach (var (key, value) in state.Response.Headers)
-                {
-                    log.AppendFormat("\r\n< {0}: {1}", key, value);
-                }
+                foreach (var (key, value) in state.Response.Headers) log.AppendFormat("\r\n< {0}: {1}", key, value);
 
                 return log.ToString();
             };
         }
 
         public Func<DateTime> HandleTimestamp { get; set; }
-        
+
         public LogLevel Level { get; set; }
 
         public Func<LogContext, Exception, string> Formatter { get; set; }

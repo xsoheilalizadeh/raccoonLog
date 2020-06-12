@@ -38,13 +38,9 @@ namespace HttpLoggingSample
             app.UseHttpLogging();
 
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
             else
-            {
                 app.UseExceptionHandler("/Error");
-            }
 
             app.UseRouting();
 
@@ -54,7 +50,7 @@ namespace HttpLoggingSample
             {
                 endpoints.MapControllers();
 
-                endpoints.MapGet("/Error", async (ctx) =>
+                endpoints.MapGet("/Error", async ctx =>
                 {
                     await ctx.Response.WriteAsync("This a error");
 

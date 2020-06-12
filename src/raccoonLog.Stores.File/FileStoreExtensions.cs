@@ -5,7 +5,11 @@ namespace raccoonLog.Stores.File
 {
     public static class FileStoreExtensions
     {
-        public static void AddFileStore(this HttpLoggingBuilder builder) => builder.AddFileStore(_ => { });
+        public static void AddFileStore(this HttpLoggingBuilder builder)
+        {
+            builder.AddFileStore(_ => { });
+        }
+
         public static void AddFileStore(this HttpLoggingBuilder builder, Action<FileStoreOptions> configureOptions)
         {
             var services = builder.Services;

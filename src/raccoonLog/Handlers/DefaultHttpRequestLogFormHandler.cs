@@ -11,9 +11,8 @@ namespace raccoonLog.Handlers
 {
     public class DefaultHttpRequestLogFormHandler : IHttpRequestLogFormHandler
     {
-        private readonly RaccoonLogHttpOptions _options;
-
         private readonly IDataProtector _dataProtector;
+        private readonly RaccoonLogHttpOptions _options;
 
         public DefaultHttpRequestLogFormHandler(IOptions<RaccoonLogHttpOptions> options, IDataProtector dataProtector)
         {
@@ -21,17 +20,12 @@ namespace raccoonLog.Handlers
             _dataProtector = dataProtector;
         }
 
-        public async ValueTask Handle(HttpRequest request, HttpRequestLog logMessage, CancellationToken cancellationToken = default)
+        public async ValueTask Handle(HttpRequest request, HttpRequestLog logMessage,
+            CancellationToken cancellationToken = default)
         {
-            if (request == null)
-            {
-                throw new NullReferenceException(nameof(request));
-            }
+            if (request == null) throw new NullReferenceException(nameof(request));
 
-            if (logMessage == null)
-            {
-                throw new NullReferenceException(nameof(logMessage));
-            }
+            if (logMessage == null) throw new NullReferenceException(nameof(logMessage));
 
             var form = await request.ReadFormAsync(cancellationToken);
 
@@ -40,13 +34,8 @@ namespace raccoonLog.Handlers
             var forms = form.Select(item =>
             {
                 if (sensitiveData.Contains(item.Key))
-                {
                     return new KeyValuePair<string, StringValues>(item.Key, _dataProtector.Protect(item.Value));
-                }
-                else
-                {
-                    return new KeyValuePair<string, StringValues>(item.Key, item.Value);
-                }
+                return new KeyValuePair<string, StringValues>(item.Key, item.Value);
             }).ToList();
 
             var files = form.Files.Select(file => new FileLog(file)).ToList();

@@ -12,10 +12,11 @@ namespace raccoonLog.UnitTests.Functional
     public class HttpLoggingTests
     {
         [Fact]
-        public async Task LogGetRequest()
+        public async Task LogFormRequest()
         {
             var context = new DefaultHttpContext();
             context.Features.Set<IHttpRequestFeature>(new FakeHttpRequest());
+            context.Features.Set<IFormFeature>(new FakeForm());
             context.Features.Set(new HttpResponseBodyWrapper(Stream.Null));
 
             var services = new ServiceCollection()
@@ -33,11 +34,10 @@ namespace raccoonLog.UnitTests.Functional
         }
 
         [Fact]
-        public async Task LogFormRequest()
+        public async Task LogGetRequest()
         {
             var context = new DefaultHttpContext();
             context.Features.Set<IHttpRequestFeature>(new FakeHttpRequest());
-            context.Features.Set<IFormFeature>(new FakeForm());
             context.Features.Set(new HttpResponseBodyWrapper(Stream.Null));
 
             var services = new ServiceCollection()
@@ -66,5 +66,4 @@ namespace raccoonLog.UnitTests.Functional
             return default;
         }
     }
-
 }

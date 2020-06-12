@@ -1,6 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
 using raccoonLog.Mocking;
 
 namespace raccoonLog.Benchmarks
@@ -17,16 +16,22 @@ namespace raccoonLog.Benchmarks
         public void SetUp()
         {
             _context = new DefaultHttpContext();
-            _context.Features.Set<IHttpRequestFeature>(FakeHttpRequest.Value);
-            _context.Features.Set<IHttpResponseFeature>(FakeHttpResponse.Value);
+            _context.Features.Set(FakeHttpRequest.Value);
+            _context.Features.Set(FakeHttpResponse.Value);
             _factory = new HttpLogMessageFactory(DefaultOptions.Default, NullProtector.Value);
         }
 
         [Benchmark]
-        public HttpRequestLog CreateRequestLog() => _factory.Create(_context.Request);
-        
+        public HttpRequestLog CreateRequestLog()
+        {
+            return _factory.Create(_context.Request);
+        }
+
         [Benchmark]
-        public HttpResponseLog CreateResponseLog() => _factory.Create(_context.Response);
+        public HttpResponseLog CreateResponseLog()
+        {
+            return _factory.Create(_context.Response);
+        }
 
         [GlobalCleanup]
         public void CleanUp()

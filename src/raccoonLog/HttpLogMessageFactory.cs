@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
 
 namespace raccoonLog
 {
@@ -50,17 +50,15 @@ namespace raccoonLog
             return new HttpResponseLog(response.StatusCode, response.ContentType, headers);
         }
 
-        public static List<KeyValuePair<string, string>> Map<TValue>(IEnumerable<KeyValuePair<string, TValue>> collection,
+        public static List<KeyValuePair<string, string>> Map<TValue>(
+            IEnumerable<KeyValuePair<string, TValue>> collection,
             IDataProtector protector, HashSet<string> protectedData, HashSet<string>? ignoredData)
         {
             var items = new List<KeyValuePair<string, string>>();
 
             foreach (var item in collection)
             {
-                if (ignoredData is object && ignoredData.Contains(item.Key))
-                {
-                    continue;
-                }
+                if (ignoredData is object && ignoredData.Contains(item.Key)) continue;
 
                 var value = item.Value.ToString();
 

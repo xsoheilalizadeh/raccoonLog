@@ -11,15 +11,17 @@ namespace raccoonLog
             Headers = headers;
         }
 
-        public int StatusCode { get; private set; }
+        public int StatusCode { get; }
 
         public object? Body { get; set; }
 
-        public string? ContentType { get; private set; }
+        public string? ContentType { get; }
 
-        public List<KeyValuePair<string, string>> Headers { get; private set; }
+        public List<KeyValuePair<string, string>> Headers { get; }
 
-        internal void SetBody(object? body) => Body = body;
+        internal void SetBody(object? body)
+        {
+            Body = body;
+        }
     }
 }
-

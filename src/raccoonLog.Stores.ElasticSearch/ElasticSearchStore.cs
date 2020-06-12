@@ -7,16 +7,15 @@ using Microsoft.Extensions.Options;
 
 namespace raccoonLog.Stores.ElasticSearch
 {
-
     public class ElasticSearchStore : IHttpLoggingStore
     {
-        private readonly ElasticSearchStoreOptions _options;
-
         private readonly ElasticLowLevelClient _client;
 
         private readonly ILogger<ElasticSearchStore> _logger;
+        private readonly ElasticSearchStoreOptions _options;
 
-        public ElasticSearchStore(IOptions<ElasticSearchStoreOptions> options, ILogger<ElasticSearchStore> logger, IElasticsearchSerializer serializer)
+        public ElasticSearchStore(IOptions<ElasticSearchStoreOptions> options, ILogger<ElasticSearchStore> logger,
+            IElasticsearchSerializer serializer)
         {
             _options = options.Value;
             _logger = logger;
@@ -30,12 +29,10 @@ namespace raccoonLog.Stores.ElasticSearch
 
         public async Task StoreAsync(LogContext logContext, CancellationToken cancellationToken = default)
         {
-            var response = await _client.IndexAsync<BytesResponse>(_options.Index, logContext.TraceId, PostData.Serializable(new ElasticLogContext(logContext)), ctx: cancellationToken);
-            
-            if (!response.Success)
-            {
-                _logger.LogError(response.OriginalException, response.OriginalException.Message);
-            }
+            var response = await _client.IndexAsync<BytesResponse>(_options.Index, logContext.TraceId,
+                PostData.Serializable(new ElasticLogContext(logContext)), ctx: cancellationToken);
+
+            if (!response.Success) _logger.LogError(response.OriginalException, response.OriginalException.Message);
         }
     }
 }
