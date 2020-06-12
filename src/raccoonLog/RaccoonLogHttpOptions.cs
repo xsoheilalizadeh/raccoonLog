@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
-using Microsoft.Net.Http.Headers;
 
 namespace raccoonLog
 {
@@ -55,32 +53,5 @@ namespace raccoonLog
         public RaccoonLogHttpRequestOptions Request { get; } = new RaccoonLogHttpRequestOptions();
 
         public RaccoonLogHttpResponseOptions Response { get; } = new RaccoonLogHttpResponseOptions();
-    }
-
-    public abstract class RaccoonLogHttpMessageOptions
-    {
-        public HashSet<string> IgnoreHeaders { get; set; } = new HashSet<string>();
-
-        public HashSet<string> IgnoreContentTypes { get; set; } = new HashSet<string>();
-    }
-
-    public class RaccoonLogHttpResponseOptions : RaccoonLogHttpMessageOptions
-    {
-        public RaccoonLogHttpResponseOptions()
-        {
-            IgnoreContentTypes.Add("text/html; charset=utf-8");
-        }
-
-        public HttpResponseLogSensitiveDataOptions SensitiveData { get; } = new HttpResponseLogSensitiveDataOptions();
-    }
-
-    public class RaccoonLogHttpRequestOptions : RaccoonLogHttpMessageOptions
-    {
-        public RaccoonLogHttpRequestOptions()
-        {
-            IgnoreHeaders.Add(HeaderNames.Cookie);
-        }
-
-        public HttpRequestLogSensitiveDataOptions SensitiveData { get; } = new HttpRequestLogSensitiveDataOptions();
     }
 }

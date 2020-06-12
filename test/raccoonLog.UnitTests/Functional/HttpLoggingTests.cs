@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
@@ -52,18 +51,6 @@ namespace raccoonLog.UnitTests.Functional
             var loggingProvider = serviceProvider.GetService<IHttpLoggingProvider>();
 
             await loggingProvider.LogAsync(context);
-        }
-    }
-
-    public class InMemoryStore : IHttpLoggingStore
-    {
-        public static LogContext Context { get; set; }
-
-        public Task StoreAsync(LogContext logContext, CancellationToken cancellationToken = default)
-        {
-            Context = logContext;
-
-            return default;
         }
     }
 }

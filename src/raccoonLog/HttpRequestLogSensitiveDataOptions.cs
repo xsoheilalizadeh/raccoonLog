@@ -3,11 +3,6 @@ using Microsoft.Net.Http.Headers;
 
 namespace raccoonLog
 {
-    public class HttpMessageLogSensitiveDataOptions
-    {
-        public HashSet<string> Headers { get; set; } = new HashSet<string>();
-    }
-
     public class HttpRequestLogSensitiveDataOptions : HttpMessageLogSensitiveDataOptions
     {
         public HttpRequestLogSensitiveDataOptions()
@@ -24,9 +19,5 @@ namespace raccoonLog
         public HashSet<string> Cookies { get; set; } = new HashSet<string>();
 
         public HashSet<string> Forms { get; set; } = new HashSet<string>();
-    }
-
-    public class HttpResponseLogSensitiveDataOptions : HttpMessageLogSensitiveDataOptions
-    {
     }
 }
