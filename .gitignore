@@ -364,5 +364,6 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
-.cov/
+.coverage/
 
+!/build/raccoonLog.Build.csproj.DotSettings

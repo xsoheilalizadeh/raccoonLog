@@ -9,8 +9,7 @@
             "type": "shell",
             "args": [
                 "build",
-                "${workspaceFolder}/raccoonLog.sln",
-                "--no-restore"
+                "${workspaceFolder}/raccoonLog.sln"
             ],
             "group": {
                 "kind": "build",
@@ -38,13 +37,9 @@
                 "isDefault": true
             },
             "args": [
-                "test",
-                "/p:CollectCoverage=true",
-                "/p:CoverletOutputFormat=\"opencover,lcov\"",
-                "/p:CoverletOutput=../../.cov/cov",
-                "--no-restore"
+                "test"
             ],
-            "problemMatcher": "$msCompile",
+            "problemMatcher": "$msCompile"
         }
     ]
 }

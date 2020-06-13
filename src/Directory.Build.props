@@ -3,7 +3,6 @@
     <Authors>Soheil Alizadeh</Authors>
     <LangVersion>latest</LangVersion>
     <Company>raccoonLog</Company>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -17,7 +16,6 @@
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Label="TargetFrameoworks">

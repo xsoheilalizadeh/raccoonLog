@@ -1,4 +1,5 @@
 {
-    "coverage-gutters.xmlname": "cov.opencover.xml",
-    "coverage-gutters.lcovname": "cov.info",
+    "coverage-gutters.xmlname": "coverage.opencover.xml",
+    "coverage-gutters.lcovname": "coverage.info",
+    "nuke.buildProjectPattern" : "**/build/*build*.csproj"
 }
