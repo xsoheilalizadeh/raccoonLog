@@ -366,3 +366,4 @@ MigrationBackup/
 
 .coverage/
 
+!/build/raccoonLog.Build.csproj.DotSettings
